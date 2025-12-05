@@ -1,0 +1,10 @@
+{
+    "QWEN": {
+        "api_key": "xxx",
+        "base_url": "https://dashscope.aliyuncs.com/compatible-mode/v1"
+    },
+    "DOUBAO":{
+        "api_key": "xxx",
+        "base_url": "https://ark.cn-beijing.volces.com/api/v3/"
+    }
+}

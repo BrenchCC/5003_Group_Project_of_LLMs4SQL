@@ -1,0 +1,201 @@
+SQL_Statement,Char_Count,Word Count,Query Type,Tables,Table Count,Aggregate,Join Count,Nestedness Level,Column_Count,Aggregate_Count,UDF_Count,Function_Count,Predicate_Count
+SELECT template_type_code FROM Templates GROUP BY template_type_code ORDER BY count(*) DESC LIMIT 1,99,13,SELECT,['TEMPLATES'],1,YES,0,0,1,1,0,1,0
+"SELECT Population ,  LifeExpectancy FROM country WHERE Name  =  ""Brazil""",72,10,SELECT,['COUNTRY'],1,NO,0,0,2,0,0,0,1
+"SELECT Maker ,  Model FROM MODEL_LIST;",38,6,SELECT,['MODEL_LIST'],1,NO,0,0,2,0,0,0,0
+"SELECT count(*) ,  t2.name FROM hiring AS t1 JOIN shop AS t2 ON t1.shop_id  =  t2.shop_id GROUP BY t2.name",106,19,SELECT,"['HIRING', 'SHOP']",2,YES,1,0,2,1,0,1,1
+SELECT Name FROM teacher WHERE Teacher_id NOT IN (SELECT Teacher_id FROM course_arrange),88,12,SELECT,"['TEACHER','course_arrange']",2,NO,0,1,1,0,0,0,1
+SELECT t1.name FROM employee AS t1 JOIN evaluation AS t2 ON t1.Employee_ID  =  t2.Employee_ID ORDER BY t2.bonus DESC LIMIT 1,124,20,SELECT,"['EVALUATION', 'EMPLOYEE']",2,NO,1,0,1,0,0,0,1
+SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode GROUP BY T1.Name ORDER BY COUNT(*) DESC LIMIT 1,138,23,SELECT,"['COUNTRYLANGUAGE', 'COUNTRY']",2,YES,1,0,1,1,0,1,1
+"SELECT count(*) FROM FLIGHTS AS T1 JOIN AIRLINES AS T2 ON T1.Airline  =  T2.uid WHERE T2.Airline = ""JetBlue Airways""",116,19,SELECT,"['FLIGHTS', 'AIRLINES']",2,YES,1,0,1,1,0,1,2
+SELECT max(charge_amount) FROM Charges,38,4,SELECT,['Charges'],1,YES,0,0,1,1,0,1,0
+SELECT LANGUAGE FROM countrylanguage GROUP BY LANGUAGE ORDER BY count(*) DESC LIMIT 1,85,13,SELECT,['COUNTRYLANGUAGE'],1,YES,0,0,1,1,0,1,0
+"SELECT T1.series_name FROM TV_Channel AS T1 JOIN Cartoon AS T2 ON T1.id = T2.Channel WHERE T2.Title = ""The Rise of the Blue Beetle!"";",133,23,SELECT,"['TV_CHANNEL', 'CARTOON']",2,NO,1,0,1,0,0,0,2
+SELECT city FROM employee WHERE age  <  30 GROUP BY city HAVING count(*)  >  1,78,15,SELECT,['EMPLOYEE'],1,YES,0,0,1,1,0,1,2
+"SELECT COUNT(*) FROM ( SELECT T1.CountryId ,  COUNT(*) FROM COUNTRIES AS T1 JOIN CAR_MAKERS AS T2 ON T1.CountryId  =  T2.Country GROUP BY T1.CountryId HAVING count(*)  >  2 );",175,28,SELECT,"['COUNTRIES', 'CAR_MAKERS']",2,YES,1,1,1,3,0,3,2
+SELECT T1.treatment_type_description FROM Treatment_types AS T1 JOIN Treatments AS T2 ON T1.treatment_type_code  =  T2.treatment_type_code GROUP BY T1.treatment_type_code ORDER BY sum(cost_of_treatment) ASC LIMIT 1,214,23,SELECT,"['TREATMENT_TYPES', 'TREATMENTS']",2,YES,1,0,1,1,0,1,1
+"SELECT COUNT(T2.Language) FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T1.Name  =  ""Aruba""",127,18,SELECT,"['COUNTRYLANGUAGE', 'COUNTRY']",2,YES,1,0,1,1,0,1,2
+"SELECT count(*) FROM country WHERE GovernmentForm  =  ""Republic""",64,8,SELECT,['COUNTRY'],1,YES,0,0,1,1,0,1,1
+"SELECT DISTINCT T1.Region FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  ""English"" OR T2.Language  =  ""Dutch""",160,23,SELECT,"['COUNTRYLANGUAGE', 'COUNTRY']",2,NO,1,0,1,0,0,0,3
+SELECT other_student_details FROM Students ORDER BY other_student_details DESC,78,8,SELECT,['STUDENTS'],1,NO,0,0,1,0,0,0,0
+SELECT T2.name FROM Likes AS T1 JOIN Highschooler AS T2 ON T1.student_id  =  T2.id GROUP BY T1.student_id HAVING count(*)  >=  2,128,21,SELECT,"['LIKES', 'HIGHSCHOOLER']",2,YES,1,0,1,1,0,1,2
+SELECT avg(age) FROM visitor WHERE Level_of_membership  <=  4,61,8,SELECT,['VISITOR'],1,YES,0,0,1,1,0,1,1
+"SELECT T2.transcript_date ,  T1.transcript_id FROM Transcript_Contents AS T1 JOIN Transcripts AS T2 ON T1.transcript_id  =  T2.transcript_id GROUP BY T1.transcript_id HAVING count(*)  >=  2",189,23,SELECT,"['TRANSCRIPT_CONTENTS', 'TRANSCRIPTS']",2,YES,1,0,2,1,0,1,2
+SELECT count(DISTINCT template_id) FROM Documents,49,5,SELECT,['Documents'],1,YES,0,0,1,1,0,1,0
+"SELECT count(*) ,  LOCATION FROM shop GROUP BY LOCATION",55,9,SELECT,['SHOP'],1,YES,0,0,2,1,0,1,0
+"SELECT City ,  Country FROM AIRPORTS WHERE AirportName  =  ""Alton""",66,10,SELECT,['AIRPORTS'],1,NO,0,0,2,0,0,0,1
+SELECT T1.Name FROM conductor AS T1 JOIN orchestra AS T2 ON T1.Conductor_ID  =  T2.Conductor_ID GROUP BY T2.Conductor_ID HAVING COUNT(*)  >  1,142,21,SELECT,"['ORCHESTRA', 'CONDUCTOR']",2,YES,1,0,1,1,0,1,2
+SELECT Model FROM CAR_NAMES GROUP BY Model ORDER BY count(*) DESC LIMIT 1;,74,13,SELECT,['CAR_NAMES'],1,YES,0,0,1,1,0,1,0
+SELECT Major_Record_Format FROM orchestra GROUP BY Major_Record_Format ORDER BY COUNT(*) ASC,92,11,SELECT,['ORCHESTRA'],1,YES,0,0,1,1,0,1,0
+SELECT T1.Airline FROM AIRLINES AS T1 JOIN FLIGHTS AS T2 ON T1.uid  =  T2.Airline GROUP BY T1.Airline HAVING count(*)  >  10,124,21,SELECT,"['AIRLINES', 'FLIGHTS']",2,YES,1,0,1,1,0,1,2
+SELECT count(*) FROM Dogs WHERE age  <  ( SELECT avg(age) FROM Dogs ),69,13,SELECT,['DOGS'],1,YES,0,1,1,2,0,2,1
+"SELECT T1.country_code ,  T1.first_name FROM players AS T1 JOIN rankings AS T2 ON T1.player_id  =  T2.player_id ORDER BY T2.tours DESC LIMIT 1",142,22,SELECT,"['PLAYERS', 'RANKINGS']",2,NO,1,0,2,0,0,0,1
+"SELECT vote_id ,  phone_number ,  state FROM votes",50,8,SELECT,['votes'],1,NO,0,0,3,0,0,0,0
+"SELECT T1.document_id ,  T2.document_name FROM Paragraphs AS T1 JOIN Documents AS T2 ON T1.document_id  =  T2.document_id GROUP BY T1.document_id ORDER BY count(*) DESC LIMIT 1",176,25,SELECT,"['DOCUMENTS', 'PARAGRAPHS']",2,YES,1,0,2,1,0,1,1
+SELECT transcript_date FROM Transcripts ORDER BY transcript_date DESC LIMIT 1,77,10,SELECT,['TRANSCRIPTS'],1,NO,0,0,1,0,0,0,0
+SELECT Hometown FROM teacher GROUP BY Hometown ORDER BY COUNT(*) DESC LIMIT 1,77,13,SELECT,['TEACHER'],1,YES,0,0,1,1,0,1,0
+SELECT avg(age) FROM student WHERE stuid NOT IN (SELECT T1.stuid FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid),128,22,SELECT,"['HAS_PET', 'STUDENT']",2,YES,1,1,1,1,0,1,2
+"SELECT Final_Table_Made ,  Best_Finish FROM poker_player",56,6,SELECT,['poker_player'],1,NO,0,0,2,0,0,0,0
+SELECT T1.degree_summary_name FROM Degree_Programs AS T1 JOIN Student_Enrolment AS T2 ON T1.degree_program_id  =  T2.degree_program_id GROUP BY T1.degree_summary_name ORDER BY count(*) DESC LIMIT 1,197,23,SELECT,"['STUDENT_ENROLMENT', 'DEGREE_PROGRAMS']",2,YES,1,0,1,1,0,1,1
+SELECT Name FROM singer ORDER BY Net_Worth_Millions ASC,55,8,SELECT,['SINGER'],1,NO,0,0,1,0,0,0,0
+SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Brazil' INTERSECT SELECT document_id FROM Paragraphs WHERE paragraph_text  =  'Ireland',148,17,SELECT,['PARAGRAPHS'],1,NO,0,0,1,0,0,0,2
+SELECT count(*) FROM AIRLINES,29,4,SELECT,['AIRLINES'],1,YES,0,0,1,1,0,1,0
+"SELECT avg(loser_age) ,  avg(winner_age) FROM matches",53,6,SELECT,['matches'],1,YES,0,0,2,2,0,2,0
+"SELECT T1.FlightNo FROM FLIGHTS AS T1 JOIN AIRPORTS AS T2 ON T1.SourceAirport   =  T2.AirportCode WHERE T2.City  =  ""Aberdeen""",126,18,SELECT,"['AIRPORTS', 'FLIGHTS']",2,NO,1,0,1,0,0,0,2
+"SELECT Name FROM teacher WHERE Hometown != ""Little Lever Urban Distric""",71,11,SELECT,['TEACHER'],1,NO,0,0,1,0,0,0,1
+"SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  ""English"" AND T2.IsOfficial  =  ""T"" INTERSECT SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  ""French"" AND T2.IsOfficial  =  ""T""",306,45,SELECT,"['COUNTRYLANGUAGE', 'COUNTRY']",2,NO,2,0,1,0,0,0,6
+"SELECT avg(weight) ,  pettype FROM pets GROUP BY pettype",56,9,SELECT,['PETS'],1,YES,0,0,2,1,0,1,0
+"SELECT T2.Language FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T1.Continent  =  ""Asia"" GROUP BY T2.Language ORDER BY COUNT (*) DESC LIMIT 1",177,28,SELECT,"['COUNTRYLANGUAGE', 'COUNTRY']",2,YES,1,0,1,1,0,1,2
+SELECT avg(grade) FROM Highschooler WHERE id IN (SELECT T1.student_id FROM Friend AS T1 JOIN Highschooler AS T2 ON T1.student_id  =  T2.id),139,21,SELECT,"['HIGHSCHOOLER', 'FRIEND']",2,YES,1,1,1,1,0,1,2
+"SELECT T2.name ,  T2.location FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.Year  =  2014 INTERSECT SELECT T2.name ,  T2.location FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.Year  =  2015",261,41,SELECT,"['STADIUM', 'CONCERT']",2,NO,2,0,2,0,0,0,4
+"SELECT count(DISTINCT series_name) ,  count(DISTINCT content) FROM TV_Channel;",78,8,SELECT,['TV_Channel'],1,YES,0,0,2,2,0,2,0
+"SELECT T2.Name ,  COUNT(*) FROM course_arrange AS T1 JOIN teacher AS T2 ON T1.Teacher_ID  =  T2.Teacher_ID GROUP BY T2.Name",123,19,SELECT,"['COURSE_ARRANGE', 'TEACHER']",2,YES,1,0,2,1,0,1,1
+"SELECT T1.killed ,  T1.injured FROM death AS T1 JOIN ship AS t2 ON T1.caused_by_ship_id  =  T2.id WHERE T2.tonnage  =  't'",122,20,SELECT,"['SHIP', 'DEATH AS']",2,NO,1,0,2,0,0,0,2
+"SELECT T1.first_name ,  T1.country_code ,  T1.birth_date FROM players AS T1 JOIN matches AS T2 ON T1.player_id  =  T2.winner_id ORDER BY T2.winner_rank_points DESC LIMIT 1",171,24,SELECT,"['PLAYERS', 'MATCHES']",2,NO,1,0,3,0,0,0,1
+SELECT T1.cylinders FROM CARS_DATA AS T1 JOIN CAR_NAMES AS T2 ON T1.Id  =  T2.MakeId WHERE T2.Model  =  'volvo' ORDER BY T1.accelerate ASC LIMIT 1;,147,24,SELECT,"['CARS_DATA', 'CAR_NAMES']",2,NO,1,0,1,0,0,0,2
+"SELECT count(*) ,  student_course_id FROM Transcript_Contents GROUP BY student_course_id ORDER BY count(*) DESC LIMIT 1",119,15,SELECT,['TRANSCRIPT_CONTENTS'],1,YES,0,0,2,2,0,2,0
+SELECT DISTINCT country FROM singer WHERE age  >  20,52,9,SELECT,['SINGER'],1,NO,0,0,1,0,0,0,1
+"SELECT petid ,  weight FROM pets WHERE pet_age  >  1",52,10,SELECT,['PETS'],1,NO,0,0,2,0,0,0,1
+"SELECT property_name FROM Properties WHERE property_type_code  =  ""House"" UNION SELECT property_name FROM Properties WHERE property_type_code  =  ""Apartment"" AND room_count  >  1",178,21,SELECT,['PROPERTIES'],1,NO,0,0,1,0,0,0,3
+SELECT count(*) FROM CARS_DATA WHERE YEAR  =  1980;,51,8,SELECT,['CARS_DATA'],1,YES,0,0,1,1,0,1,1
+SELECT T1.AirportCode FROM AIRPORTS AS T1 JOIN FLIGHTS AS T2 ON T1.AirportCode  =  T2.DestAirport OR T1.AirportCode  =  T2.SourceAirport GROUP BY T1.AirportCode ORDER BY count(*) DESC LIMIT 1,191,27,SELECT,"['AIRPORTS', 'FLIGHTS']",2,YES,1,0,1,1,0,1,2
+SELECT min(grade) FROM Highschooler WHERE id NOT IN (SELECT T1.student_id FROM Friend AS T1 JOIN Highschooler AS T2 ON T1.student_id  =  T2.id),143,22,SELECT,"['HIGHSCHOOLER', 'FRIEND']",2,YES,1,1,1,1,0,1,2
+"SELECT avg(LifeExpectancy) FROM country WHERE Name NOT IN (SELECT T1.Name FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  ""English"" AND T2.IsOfficial  =  ""T"")",208,30,SELECT,"['COUNTRYLANGUAGE', 'COUNTRY']",2,YES,1,1,1,1,0,1,4
+"SELECT sum(Population) ,  max(GNP) FROM country WHERE Continent  =  ""Asia""",74,10,SELECT,['COUNTRY'],1,YES,0,0,2,2,0,2,1
+SELECT T2.petid FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid WHERE T1.Lname  =  'Smith',105,18,SELECT,"['HAS_PET', 'STUDENT']",2,NO,1,0,1,0,0,0,2
+SELECT Money_Rank FROM poker_player ORDER BY Earnings DESC LIMIT 1,66,10,SELECT,['POKER_PLAYER'],1,NO,0,0,1,0,0,0,0
+"SELECT winner_name ,  loser_name FROM matches ORDER BY minutes DESC LIMIT 1",75,12,SELECT,['MATCHES'],1,NO,0,0,2,0,0,0,0
+SELECT course_description FROM Courses WHERE course_name  =  'math',67,8,SELECT,['COURSES'],1,NO,0,0,1,0,0,0,1
+"SELECT T2.horsepower ,  T1.Make FROM CAR_NAMES AS T1 JOIN CARS_DATA AS T2 ON T1.MakeId  =  T2.Id WHERE T2.cylinders  =  3 ORDER BY T2.horsepower DESC LIMIT 1;",158,26,SELECT,"['CARS_DATA', 'CAR_NAMES']",2,NO,1,0,2,0,0,0,2
+SELECT name FROM visitor WHERE Level_of_membership  >  4 ORDER BY Level_of_membership DESC,90,12,SELECT,['VISITOR'],1,NO,0,0,1,0,0,0,1
+SELECT max(age) FROM Dogs,25,4,SELECT,['Dogs'],1,YES,0,0,1,1,0,1,0
+SELECT name FROM museum WHERE Museum_ID NOT IN (SELECT museum_id FROM visit),76,12,SELECT,"['MUSEUM','visit']",2,NO,0,1,1,0,0,0,1
+"SELECT Country ,  count(*) FROM TV_Channel GROUP BY Country ORDER BY count(*) DESC LIMIT 1;",91,15,SELECT,['TV_CHANNEL'],1,YES,0,0,2,2,0,2,0
+"SELECT DISTINCT T1.first_name ,  T3.treatment_type_description FROM professionals AS T1 JOIN Treatments AS T2 ON T1.professional_id  =  T2.professional_id JOIN Treatment_types AS T3 ON T2.treatment_type_code  =  T3.treatment_type_code",234,25,SELECT,"['TREATMENT_TYPES', 'PROFESSIONALS', 'TREATMENTS']",3,NO,2,0,2,0,0,0,2
+"SELECT COUNT( DISTINCT Continent) FROM country AS T1 JOIN countrylanguage AS T2 ON T1.Code  =  T2.CountryCode WHERE T2.Language  =  ""Chinese""",141,20,SELECT,"['COUNTRYLANGUAGE', 'COUNTRY']",2,YES,1,0,1,1,0,1,2
+SELECT Nationality FROM people GROUP BY Nationality ORDER BY COUNT(*) DESC LIMIT 1,82,13,SELECT,['PEOPLE'],1,YES,0,0,1,1,0,1,0
+"SELECT document_name ,  template_id FROM Documents WHERE Document_Description LIKE ""%w%""",88,10,SELECT,['DOCUMENTS'],1,NO,0,0,2,0,0,0,1
+SELECT Record_Company FROM orchestra GROUP BY Record_Company ORDER BY COUNT(*) DESC LIMIT 1,91,13,SELECT,['ORCHESTRA'],1,YES,0,0,1,1,0,1,0
+SELECT name FROM shop WHERE shop_id NOT IN (SELECT shop_id FROM hiring),71,12,SELECT,['SHOP'],1,NO,0,1,1,0,0,0,1
+"SELECT document_id ,  template_id ,  Document_Description FROM Documents WHERE document_name  =  ""Robbin CV""",108,13,SELECT,['DOCUMENTS'],1,NO,0,0,3,0,0,0,1
+SELECT template_type_code FROM Templates GROUP BY template_type_code HAVING count(*)  <  3,90,11,SELECT,['TEMPLATES'],1,YES,0,0,1,1,0,1,1
+SELECT T2.name FROM Friend AS T1 JOIN Highschooler AS T2 ON T1.student_id  =  T2.id WHERE T2.grade  >  5 GROUP BY T1.student_id HAVING count(*)  >=  2,150,25,SELECT,"['HIGHSCHOOLER', 'FRIEND']",2,YES,1,0,1,1,0,1,3
+"SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'Lettice' INTERSECT SELECT T1.name ,  T1.date FROM battle AS T1 JOIN ship AS T2 ON T1.id  =  T2.lost_in_battle WHERE T2.name  =  'HMS Atalanta'",252,42,SELECT,"['SHIP', 'BATTLE']",2,NO,2,0,2,0,0,0,3
+"SELECT section_name ,  section_description FROM Sections",56,6,SELECT,['Sections'],1,NO,0,0,2,0,0,0,0
+SELECT country FROM singer WHERE age  >  40 INTERSECT SELECT country FROM singer WHERE age  <  30,97,17,SELECT,['SINGER'],1,NO,0,0,1,0,0,0,2
+"SELECT name ,  age ,  weight FROM Dogs WHERE abandoned_yn  =  1",63,12,SELECT,['DOGS'],1,NO,0,0,3,0,0,0,1
+SELECT count(*) FROM Documents,30,4,SELECT,['Documents'],1,YES,0,0,1,1,0,1,0
+SELECT count(*) FROM battle WHERE id NOT IN ( SELECT lost_in_battle FROM ship WHERE tonnage  =  '225' );,104,18,SELECT,"['SHIP', 'BATTLE']",2,YES,0,1,1,1,0,1,2
+SELECT template_id FROM Templates EXCEPT SELECT template_id FROM Documents,74,9,SELECT,['Documents'],1,NO,0,0,1,0,0,0,0
+"SELECT Name FROM country WHERE Continent  =  ""Africa""  AND population  <  (SELECT min(population) FROM country WHERE Continent  =  ""Asia"")",138,19,SELECT,['COUNTRY'],1,NO,0,1,1,1,0,1,3
+SELECT Name FROM teacher WHERE Age  =  32 OR Age  =  33,55,12,SELECT,['TEACHER'],1,NO,0,0,1,0,0,0,2
+"SELECT Age ,  Hometown FROM teacher",35,6,SELECT,['teacher'],0,NO,0,0,2,0,0,0,0
+"SELECT avg(ranking) ,  T1.first_name FROM players AS T1 JOIN rankings AS T2 ON T1.player_id  =  T2.player_id GROUP BY T1.first_name",131,19,SELECT,"['PLAYERS AS T1', 'RANKINGS']",2,YES,1,0,2,1,0,1,1
+SELECT count(*) FROM area_code_state,36,4,SELECT,['area_code_state'],1,YES,0,0,1,1,0,1,0
+"SELECT avg(num_of_ticket) ,  max(num_of_ticket) FROM visit",58,6,SELECT,['visit'],1,YES,0,0,2,2,0,2,0
+"SELECT T2.department_name ,  T1.department_id FROM Degree_Programs AS T1 JOIN Departments AS T2 ON T1.department_id  =  T2.department_id GROUP BY T1.department_id ORDER BY count(*) DESC LIMIT 1",193,25,SELECT,"['DEPARTMENTS', 'DEGREE_PROGRAMS']",2,YES,1,0,2,1,0,1,1
+"SELECT Title FROM Cartoon WHERE Directed_by = ""Ben Jones"" OR Directed_by = ""Brandon Vietti"";",92,14,SELECT,['CARTOON'],1,NO,0,0,1,0,0,0,2
+SELECT Record_Company FROM orchestra ORDER BY Year_of_Founded DESC,66,8,SELECT,['ORCHESTRA'],1,NO,0,0,1,0,0,0,0
+SELECT DISTINCT T1.model FROM MODEL_LIST AS T1 JOIN CAR_NAMES AS T2 ON T1.Model  =  T2.Model JOIN CARS_DATA AS T3 ON T2.MakeId  =  T3.Id JOIN CAR_MAKERS AS T4 ON T1.Maker  =  T4.Id WHERE T3.weight  <  3500 AND T4.FullName != 'Ford Motor Company';,246,41,SELECT,"['CARS_DATA', 'CAR_NAMES', 'CAR_MAKERS', 'MODEL_LIST']",4,NO,3,0,1,0,0,0,5
+SELECT T1.AirportCode FROM AIRPORTS AS T1 JOIN FLIGHTS AS T2 ON T1.AirportCode  =  T2.DestAirport OR T1.AirportCode  =  T2.SourceAirport GROUP BY T1.AirportCode ORDER BY count(*) LIMIT 1,186,26,SELECT,"['AIRPORTS', 'FLIGHTS']",2,YES,1,0,1,1,0,1,2
+"SELECT name ,  capacity FROM stadium ORDER BY average DESC LIMIT 1",66,12,SELECT,['STADIUM'],1,NO,0,0,2,0,0,0,0
+SELECT count(*) FROM Other_Available_Features,45,4,SELECT,['Other_Available_Features'],1,YES,0,0,1,1,0,1,0
+"SELECT Name ,  Population ,  LifeExpectancy FROM country WHERE Continent  =  ""Asia"" ORDER BY SurfaceArea DESC LIMIT 1",117,18,SELECT,['COUNTRY'],1,NO,0,0,3,0,0,0,1
+"SELECT Airline ,  Abbreviation FROM AIRLINES WHERE Country  =  ""USA""",68,10,SELECT,['AIRLINES'],1,NO,0,0,2,0,0,0,1
+"SELECT sum(ranking_points) ,  T1.first_name FROM players AS T1 JOIN rankings AS T2 ON T1.player_id  =  T2.player_id GROUP BY T1.first_name",138,19,SELECT,"['PLAYERS', 'RANKINGS']",2,YES,1,0,2,1,0,1,1
+"SELECT T2.name ,  count(*) FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id GROUP BY T1.stadium_id",122,19,SELECT,"['STADIUM', 'CONCERT']",2,YES,1,0,2,1,0,1,1
+"SELECT document_id ,  document_name ,  document_description FROM Documents",74,8,SELECT,['Documents'],1,NO,0,0,3,0,0,0,0
+SELECT name FROM stadium EXCEPT SELECT T2.name FROM concert AS T1 JOIN stadium AS T2 ON T1.stadium_id  =  T2.stadium_id WHERE T1.year  =  2014,142,23,SELECT,"['STADIUM', 'CONCERT']",2,NO,1,0,1,0,0,0,2
+SELECT winner_name FROM matches WHERE YEAR  =  2013 INTERSECT SELECT winner_name FROM matches WHERE YEAR  =  2016,113,17,SELECT,['MATCHES'],1,NO,0,0,1,0,0,0,2
+"SELECT Name FROM people WHERE Nationality != ""Russia""",53,8,SELECT,['PEOPLE'],1,NO,0,0,1,0,0,0,1
+SELECT name FROM employee ORDER BY age,38,7,SELECT,['EMPLOYEE'],1,NO,0,0,1,0,0,0,0
+SELECT count(DISTINCT Nationality) FROM conductor,49,5,SELECT,['conductor'],1,YES,0,0,1,1,0,1,0
+SELECT DISTINCT T1.Year FROM CARS_DATA AS T1 WHERE T1.Weight  >  3000 AND T1.weight  <  4000;,93,15,SELECT,['CARS_DATA'],1,NO,0,0,1,0,0,0,2
+"SELECT package_option ,  series_name FROM TV_Channel WHERE hight_definition_TV  =  ""yes""",88,10,SELECT,['TV_CHANNEL'],1,NO,0,0,2,0,0,0,1
+SELECT name FROM Highschooler EXCEPT SELECT T2.name FROM Friend AS T1 JOIN Highschooler AS T2 ON T1.student_id  =  T2.id,120,19,SELECT,"['HIGHSCHOOLER', 'FRIEND']",2,NO,1,0,1,0,0,0,1
+SELECT Name FROM singer ORDER BY Net_Worth_Millions DESC LIMIT 1,64,10,SELECT,['SINGER'],1,NO,0,0,1,0,0,0,0
+"SELECT first_name ,  last_name FROM players WHERE hand  =  'L' ORDER BY birth_date",82,13,SELECT,['PLAYERS'],1,NO,0,0,2,0,0,0,1
+SELECT Name FROM conductor ORDER BY Year_of_Work DESC,53,8,SELECT,['CONDUCTOR'],1,NO,0,0,1,0,0,0,0
+"SELECT DISTINCT T1.fname ,  T1.age FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid",97,17,SELECT,"['HAS_PET', 'STUDENT']",2,NO,1,0,2,0,0,0,1
+"SELECT count(*) FROM FLIGHTS WHERE DestAirport  =  ""ATO""",56,8,SELECT,['FLIGHTS'],1,YES,0,0,1,1,0,1,1
+"SELECT pettype ,  weight FROM pets ORDER BY pet_age LIMIT 1",59,11,SELECT,['PETS'],1,NO,0,0,2,0,0,0,0
+"SELECT template_id ,  count(*) FROM Documents GROUP BY template_id",66,9,SELECT,['DOCUMENTS'],1,YES,0,0,2,1,0,1,0
+"SELECT T1.owner_id ,  T1.last_name FROM Owners AS T1 JOIN Dogs AS T2 ON T1.owner_id  =  T2.owner_id JOIN Treatments AS T3 ON T2.dog_id  =  T3.dog_id GROUP BY T1.owner_id ORDER BY count(*) DESC LIMIT 1",200,33,SELECT,"['TREATMENTS', 'OWNERS', 'DOGS']",3,YES,2,0,2,1,0,1,2
+SELECT T1.CountryName FROM COUNTRIES AS T1 JOIN CONTINENTS AS T2 ON T1.Continent  =  T2.ContId JOIN CAR_MAKERS AS T3 ON T1.CountryId  =  T3.Country WHERE T2.Continent  =  'europe' GROUP BY T1.CountryName HAVING count(*)  >=  3;,227,33,SELECT,"['CONTINENTS', 'COUNTRIES', 'CAR_MAKERS']",3,YES,2,0,1,1,0,1,4
+SELECT avg(T2.Earnings) FROM people AS T1 JOIN poker_player AS T2 ON T1.People_ID  =  T2.People_ID WHERE T1.Height  >  200,122,18,SELECT,"['POKER_PLAYER', 'PEOPLE']",2,YES,1,0,1,1,0,1,2
+"SELECT T2.Title FROM TV_Channel AS T1 JOIN Cartoon AS T2 ON T1.id = T2.Channel WHERE T1.series_name = ""Sky Radio"";",114,19,SELECT,"['TV_CHANNEL', 'CARTOON']",2,NO,1,0,1,0,0,0,2
+SELECT count(DISTINCT pettype) FROM pets,40,5,SELECT,['pets'],1,YES,0,0,1,1,0,1,0
+SELECT sum(bonus) FROM evaluation,33,4,SELECT,['evaluation'],1,YES,0,0,1,1,0,1,0
+SELECT COUNT(*) FROM CARS_DATA WHERE Cylinders  >  6;,53,8,SELECT,['CARS_DATA'],1,YES,0,0,1,1,0,1,1
+"SELECT line_1 ,  line_2 FROM addresses",38,6,SELECT,['addresses'],1,NO,0,0,2,0,0,0,0
+"SELECT DISTINCT breed_code ,  size_code FROM dogs",49,7,SELECT,['dogs'],1,NO,0,0,2,0,0,0,0
+"SELECT T3.Name FROM course_arrange AS T1 JOIN course AS T2 ON T1.Course_ID  =  T2.Course_ID JOIN teacher AS T3 ON T1.Teacher_ID  =  T3.Teacher_ID WHERE T2.Course  =  ""Math""",172,26,SELECT,"['COURSE_ARRANGE', 'COURSE', 'TEACHER']",3,NO,2,0,1,0,0,0,3
+SELECT grade FROM Highschooler,30,4,SELECT,['Highschooler'],,NO,0,0,1,0,0,0,0
+"SELECT count(*) FROM FLIGHTS AS T1 JOIN AIRPORTS AS T2 ON T1.DestAirport  =  T2.AirportCode JOIN AIRPORTS AS T3 ON T1.SourceAirport  =  T3.AirportCode WHERE T2.City  =  ""Ashley"" AND T3.City  =  ""Aberdeen""",204,30,SELECT,"['AIRPORTS', 'FLIGHTS']",2,YES,2,0,1,1,0,1,4
+"SELECT email_address ,  cell_number ,  home_phone FROM professionals",68,8,SELECT,['professionals'],1,NO,0,0,3,0,0,0,0
+"SELECT Package_Option FROM TV_Channel WHERE series_name = ""Sky Radio"";",70,9,SELECT,['TV_CHANNEL'],1,NO,0,0,1,0,0,0,1
+SELECT T1.Name FROM singer AS T1 JOIN song AS T2 ON T1.Singer_ID  =  T2.Singer_ID GROUP BY T1.Name HAVING COUNT(*)  >  1,120,21,SELECT,"['SONG', 'SINGER']",2,YES,1,0,1,1,0,1,2
+SELECT DISTINCT T2.Model FROM CAR_NAMES AS T1 JOIN MODEL_LIST AS T2 ON T1.Model  =  T2.Model JOIN CAR_MAKERS AS T3 ON T2.Maker  =  T3.Id JOIN CARS_DATA AS T4 ON T1.MakeId  =  T4.Id WHERE T3.FullName  =  'General Motors' OR T4.weight  >  3500;,242,40,SELECT,"['CARS_DATA', 'CAR_NAMES', 'MODEL_LIST', 'CAR_MAKERS']",4,NO,3,0,1,0,0,0,5
+"SELECT count(*) ,  T1.stuid FROM student AS T1 JOIN has_pet AS T2 ON T1.stuid  =  T2.stuid GROUP BY T1.stuid",108,19,SELECT,"['HAS_PET', 'STUDENT']",2,YES,1,0,2,1,0,1,1
+"SELECT AirportCode ,  AirportName FROM AIRPORTS WHERE city  =  ""Anthony""",72,10,SELECT,['AIRPORTS'],1,NO,0,0,2,0,0,0,1
+SELECT count(DISTINCT current_address_id) FROM Students,55,5,SELECT,['Students'],1,YES,0,0,1,1,0,1,0
+SELECT T1.City FROM AIRPORTS AS T1 JOIN FLIGHTS AS T2 ON T1.AirportCode  =  T2.DestAirport GROUP BY T1.City ORDER BY count(*) DESC LIMIT 1,138,23,SELECT,"['AIRPORTS', 'FLIGHTS']",2,YES,1,0,1,1,0,1,1
+SELECT Name FROM teacher ORDER BY Age ASC,41,8,SELECT,['TEACHER'],1,NO,0,0,1,0,0,0,0
+"SELECT Airline FROM AIRLINES WHERE Abbreviation  =  ""UAL""",57,8,SELECT,['AIRLINES'],1,NO,0,0,1,0,0,0,1
+SELECT avg(age) FROM Dogs,25,4,SELECT,['Dogs'],1,YES,0,0,1,1,0,1,0
+"SELECT min(Number_products) ,  max(Number_products) FROM shop",61,6,SELECT,['shop'],1,YES,0,0,2,2,0,2,0
+"SELECT DISTINCT T1.first_name ,  T1.middle_name ,  T1.last_name FROM Students AS T1 JOIN Student_Enrolment AS T2 ON T1.student_id  =  T2.student_id JOIN Degree_Programs AS T3 ON T2.degree_program_id  =  T3.degree_program_id WHERE T3.degree_summary_name  =  'Bachelor'",267,31,SELECT,"['DEGREE_PROGRAMS', 'STUDENT_ENROLMENT', 'STUDENTS']",3,NO,2,0,3,0,0,0,3
+"SELECT T1.Name ,  T2.Orchestra FROM conductor AS T1 JOIN orchestra AS T2 ON T1.Conductor_ID  =  T2.Conductor_ID",111,16,SELECT,"['ORCHESTRA', 'CONDUCTOR']",2,NO,1,0,2,0,0,0,1
+"SELECT count(*) FROM Friend AS T1 JOIN Highschooler AS T2 ON T1.student_id  =  T2.id WHERE T2.name  =  ""Kyle""",109,18,SELECT,"['HIGHSCHOOLER', 'FRIEND']",2,YES,1,0,1,1,0,1,2
+SELECT  T1.course_name FROM Courses AS T1 JOIN Student_Enrolment_Courses AS T2 ON T1.course_id  =  T2.course_id GROUP BY T1.course_name ORDER BY count(*) DESC LIMIT 1,166,23,SELECT,"['COURSES', 'STUDENT_ENROLMENT_COURSES']",2,YES,1,0,1,1,0,1,1
+"SELECT Name FROM country ORDER BY Population DESC LIMIT 3\tworld_1', 'SELECT T2.name FROM Friend AS T1 JOIN Highschooler AS T2 ON T1.student_id  =  T2.id INTERSECT SELECT T2.name FROM Likes AS T1 JOIN Highschooler AS T2 ON T1.liked_id  =  T2.id",244,39,SELECT,"['LIKES', 'HIGHSCHOOLER', 'COUNTRY', 'FRIEND']",4,NO,2,0,1,0,0,0,2
+"SELECT count(*) FROM FLIGHTS AS T1 JOIN AIRPORTS AS T2 ON T1.DestAirport  =  T2.AirportCode JOIN AIRLINES AS T3 ON T3.uid  =  T1.Airline WHERE T2.City  =  ""Aberdeen"" AND T3.Airline  =  ""United Airlines""",202,31,SELECT,"['AIRPORTS', 'FLIGHTS', 'AIRLINES']",3,YES,2,0,1,1,0,1,4
+"SELECT DISTINCT COUNT ( DISTINCT t4.citingpaperid )  ,  t3.venueid FROM paperkeyphrase AS t2 JOIN keyphrase AS t1 ON t2.keyphraseid  =  t1.keyphraseid JOIN paper AS t3 ON t3.paperid  =  t2.paperid JOIN cite AS t4 ON t3.paperid  =  t4.citedpaperid WHERE t1.keyphrasename  =  ""NLP"" GROUP BY t3.venueid ORDER BY COUNT ( DISTINCT t4.citingpaperid ) DESC;",350,52,SELECT,"['KEYPHRASE', 'CITE', 'PAPER', 'PAPERKEYPHRASE']",4,YES,3,0,2,2,0,2,3
+SELECT count(*) FROM premises,29,4,SELECT,['premises'],1,YES,0,0,1,1,0,1,0
+SELECT T1.artist_name FROM song AS T1 JOIN files AS T2 ON T1.f_id  =  T2.f_id ORDER BY T2.duration LIMIT 1,106,19,SELECT,"['SONG', 'FILES']",2,NO,1,0,1,0,0,0,1
+"SELECT Nationality ,  COUNT(*) FROM journalist GROUP BY Nationality",67,9,SELECT,['JOURNALIST'],1,YES,0,0,2,1,0,1,0
+"SELECT sportname ,  count(*) FROM Sportsinfo GROUP BY sportname",63,9,SELECT,['SPORTSINFO'],1,YES,0,0,2,1,0,1,0
+SELECT avg(long) FROM station WHERE id NOT IN (SELECT station_id FROM status GROUP BY station_id HAVING max(bikes_available)  >  10),132,19,SELECT,"['STATION', 'STATUS']",2,YES,0,1,1,2,0,2,2
+SELECT T2.Governor FROM election AS T1 JOIN party AS T2 ON T1.Party  =  T2.Party_ID WHERE T1.District  =  1,107,18,SELECT,"['PARTY', 'ELECTION']",2,NO,1,0,1,0,0,0,2
+"SELECT DISTINCT t3.paperid FROM paperkeyphrase AS t2 JOIN keyphrase AS t1 ON t2.keyphraseid  =  t1.keyphraseid JOIN paper AS t3 ON t3.paperid  =  t2.paperid WHERE t1.keyphrasename  =  ""instance segmentation"" AND t3.journalid  >=  0;",232,32,SELECT,"['KEYPHRASE', 'PAPER', 'PAPERKEYPHRASE']",3,NO,2,0,1,0,0,0,4
+SELECT count(*) FROM inventory WHERE store_id  =  1,51,8,SELECT,['INVENTORY'],1,YES,0,0,1,1,0,1,1
+"SELECT name ,  price FROM products",34,6,SELECT,['products'],1,NO,0,0,2,0,0,0,0
+SELECT name FROM projects WHERE hours BETWEEN 100 AND 300,57,10,SELECT,['PROJECTS'],1,NO,0,0,1,0,0,0,1
+"SELECT product_details FROM products WHERE product_details LIKE ""%Latte%"" OR product_details LIKE ""%Americano%""",111,12,SELECT,['PRODUCTS'],1,NO,0,0,1,0,0,0,2
+"SELECT population FROM state WHERE state_name  =  ""california"";",63,8,SELECT,['STATE'],1,NO,0,0,1,0,0,0,1
+"SELECT count(*) ,  cName FROM tryout GROUP BY cName ORDER BY count(*) DESC",74,13,SELECT,['TRYOUT'],1,YES,0,0,2,2,0,2,0
+"SELECT Appelation FROM WINE WHERE YEAR  >  2008 EXCEPT SELECT Appelation FROM APPELLATIONS WHERE Area  =  ""Central Coast""",121,18,SELECT,"['APPELLATIONS', 'WINE']",2,NO,0,0,1,0,0,0,2
+SELECT T1.title FROM albums AS T1 JOIN tracks AS T2 ON T1.id = T2.album_id GROUP BY T1.id HAVING count(T1.id)  >  10;,117,21,SELECT,"['TRACKS', 'ALBUMS']",2,YES,1,0,1,1,0,1,2
+"SELECT T1.vehicle_id ,  T1.vehicle_details FROM Vehicles AS T1 JOIN Lessons AS T2 ON T1.vehicle_id  =  T2.vehicle_id GROUP BY T1.vehicle_id ORDER BY count(*) DESC LIMIT 1",170,25,SELECT,"['LESSONS', 'VEHICLES']",2,YES,1,0,2,1,0,1,1
+"SELECT name ,  height ,  prominence FROM mountain WHERE range != 'Aberdare Range'",81,13,SELECT,['MOUNTAIN'],1,NO,0,0,3,0,0,0,1
+SELECT Team FROM technician GROUP BY Team HAVING COUNT(*)  >=  2,64,11,SELECT,['TECHNICIAN'],1,YES,0,0,1,1,0,1,1
+SELECT T1.Aircraft FROM aircraft AS T1 JOIN MATCH AS T2 ON T1.Aircraft_ID  =  T2.Winning_Aircraft GROUP BY T2.Winning_Aircraft HAVING COUNT(*)  >=  2,149,21,SELECT,"['MATCH', 'AIRCRAFT']",2,YES,1,0,1,1,0,1,2
+SELECT Name FROM TRACK WHERE Name LIKE '%you%',46,8,SELECT,['TRACK'],1,NO,0,0,1,0,0,0,1
+SELECT zip_code FROM weather GROUP BY zip_code HAVING avg(mean_visibility_miles)  <  10,87,11,SELECT,['WEATHER'],1,YES,0,0,1,1,0,1,1
+"SELECT T1.problem_description FROM problems AS T1 JOIN staff AS T2 ON T1.reported_by_staff_id = T2.staff_id WHERE T2.staff_first_name = ""Christop""",146,18,SELECT,"['STAFF', 'PROBLEMS']",2,NO,1,0,1,0,0,0,2
+"SELECT highest_elevation FROM highlow WHERE state_name  =  ""delaware"";",70,8,SELECT,['HIGHLOW'],1,NO,0,0,1,0,0,0,1
+"SELECT T2.document_type_name FROM All_documents AS T1 JOIN Ref_document_types AS T2 ON T1.document_type_code  =  T2.document_type_code WHERE T1.document_name  =  ""How to read a book""",182,22,SELECT,"['ALL_DOCUMENTS', 'REF_DOCUMENT_TYPES']",2,NO,1,0,1,0,0,0,2
+SELECT first_name FROM customer WHERE customer_id NOT IN( SELECT customer_id FROM rental WHERE rental_date  >  '2005-08-23 02:06:01' ),134,18,SELECT,"['RENTAL', 'CUSTOMER']",2,NO,0,1,1,0,0,0,2
+SELECT city_code FROM STUDENT GROUP BY city_code ORDER BY count(*) DESC LIMIT 1,79,13,SELECT,['STUDENT'],1,YES,0,0,1,1,0,1,0
+SELECT DISTINCT order_id FROM orders ORDER BY date_order_placed,63,8,SELECT,['ORDERS'],1,NO,0,0,1,0,0,0,0
+"SELECT DISTINCT t1.title FROM papers AS t1 JOIN authorship AS t2 ON t1.paperid  =  t2.paperid JOIN inst AS t3 ON t2.instid  =  t3.instid WHERE t3.name  =  ""Indiana University""",175,28,SELECT,"['PAPERS', 'INST', 'AUTHORSHIP']",3,NO,2,0,1,0,0,0,2
+"SELECT T1.organisation_id ,  count(*) FROM Projects AS T1 JOIN Project_outcomes AS T2 ON T1.project_id  =  T2.project_id GROUP BY T1.organisation_id ORDER BY count(*) DESC LIMIT 1",179,25,SELECT,"['PROJECTS', 'PROJECT_OUTCOMES']",2,YES,1,0,2,2,0,2,1
+SELECT Author FROM submission WHERE Submission_ID NOT IN (SELECT Submission_ID FROM acceptance),95,12,SELECT,['SUBMISSION'],1,NO,0,1,1,0,0,0,2
+SELECT t3.name FROM record AS t1 JOIN event AS t2 ON t1.event_id  =  t2.id JOIN stadium AS t3 ON t3.id  =  t2.stadium_id GROUP BY t2.stadium_id ORDER BY count(*) DESC LIMIT 1,174,31,SELECT,"['EVENT', 'STADIUM', 'RECORD']",3,YES,2,0,1,1,0,1,2
+"SELECT Date_of_ceremony ,  RESULT FROM music_festival",53,6,SELECT,['music_festival'],1,NO,0,0,2,0,0,0,0
+"SELECT avg(acc_bal) ,  acc_type FROM customer WHERE credit_score  <  50 GROUP BY acc_type",89,13,SELECT,['CUSTOMER'],1,YES,0,0,2,1,0,1,1
+SELECT T2.decor FROM Reservations AS T1 JOIN Rooms AS T2 ON T1.Room  =  T2.RoomId GROUP BY T2.decor ORDER BY count(T2.decor) ASC LIMIT 1;,137,23,SELECT,"['RESERVATIONS', 'ROOMS']",2,YES,1,0,1,1,0,1,1
+"SELECT order_id ,  count(*) FROM Invoices GROUP BY order_id",59,9,SELECT,['INVOICES'],1,YES,0,0,2,1,0,1,0
+SELECT * FROM Assessment_Notes ORDER BY date_of_notes ASC,57,8,SELECT,['ASSESSMENT_NOTES'],1,NO,0,0,1,0,0,0,0
+"SELECT customer_id ,  customer_name FROM customers ORDER BY customer_id ASC",75,10,SELECT,['CUSTOMERS'],1,NO,0,0,2,0,0,0,0
+SELECT DISTINCT pName FROM Player WHERE pName LIKE '%a%',56,9,SELECT,['PLAYER'],1,NO,0,0,1,0,0,0,1
+"SELECT DISTINCT t2.paperid FROM paperdataset AS t3 JOIN dataset AS t5 ON t3.datasetid  =  t5.datasetid JOIN paperkeyphrase AS t4 ON t4.paperid  =  t3.paperid JOIN paper AS t2 ON t2.paperid  =  t3.paperid JOIN venue AS t6 ON t6.venueid  =  t2.venueid JOIN keyphrase AS t1 ON t4.keyphraseid  =  t1.keyphraseid WHERE t5.datasetname  =  ""Jeopardy! Questions"" AND t1.keyphrasename  =  ""Parsing"" AND t2.year  =  2014 AND t6.venuename  =  ""ACL"";",438,64,SELECT,"['PAPERDATASET', 'PAPERKEYPHRASE', 'KEYPHRASE', 'VENUE', 'DATASET', 'PAPER']",6,NO,5,0,1,0,0,0,9
+SELECT Name FROM manager ORDER BY LEVEL ASC,43,8,SELECT,['MANAGER'],1,NO,0,0,1,0,0,0,0
+SELECT DISTINCT city FROM addresses,35,5,SELECT,['addresses'],1,NO,0,0,1,0,0,0,0
+"SELECT DISTINCT t2.paperid FROM paper AS t2 JOIN journal AS t1 ON t2.journalid  =  t1.journalid WHERE t1.journalname  =  ""Academic radiology"" AND t2.year  =  1995;",163,24,SELECT,"['PAPER', 'JOURNAL']",2,NO,1,0,1,0,0,0,3
+"SELECT T2.type ,  count(*) FROM school_bus AS T1 JOIN school AS T2 ON T1.school_id  =  T2.school_id GROUP BY T2.type",116,19,SELECT,"['SCHOOL_BUS', 'SCHOOL']",2,YES,1,0,2,1,0,1,1
+SELECT rid FROM routes WHERE dst_apid IN (SELECT apid FROM airports WHERE country  =  'United States') AND src_apid IN (SELECT apid FROM airports WHERE country  =  'United States'),180,28,SELECT,"['AIRPORTS', 'ROUTES']",2,YES,0,1,1,0,0,0,4
+SELECT cust_name FROM customer EXCEPT SELECT T1.cust_name FROM customer AS T1 JOIN loan AS T2 ON T1.cust_id  =  T2.cust_id WHERE T2.loan_type  =  'Mortgages',157,23,SELECT,"['CUSTOMER', 'LOAN']",2,NO,1,0,1,0,0,0,2
+"SELECT city ,  state FROM bank WHERE bname  =  'morningside'",60,10,SELECT,['BANK'],1,NO,0,0,2,0,0,0,1
+SELECT catalog_publisher FROM catalogs GROUP BY catalog_publisher ORDER BY count(*) DESC LIMIT 1,96,13,SELECT,['CATALOGS'],1,YES,0,0,1,1,0,1,0
+"SELECT T1.id ,  count(*) FROM stadium AS T1 JOIN game AS T2 ON T1.id  =  T2.stadium_id GROUP BY T1.id",101,19,SELECT,"['STADIUM', 'GAME']",2,YES,1,0,2,1,0,1,1
+SELECT T2.address FROM staff AS T1 JOIN address AS T2 ON T1.address_id  =  T2.address_id WHERE T1.first_name  =  'Elsa',119,18,SELECT,"['STAFF', 'ADDRESS']",2,NO,1,0,1,0,0,0,2

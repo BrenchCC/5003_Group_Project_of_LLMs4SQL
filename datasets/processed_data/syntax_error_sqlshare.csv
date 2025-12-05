@@ -1,0 +1,1590 @@
+SQL Statement,Modified_Statement,Original,Error_Category
+"SELECT  SUM(cnt) FROM ( SELECT  z, COUNT(DISTINCT x) AS cnt FROM ( SELECT a.follower AS x ,  b.followee AS z FROM  [354].[twitter_rv.6157841] a JOIN  [354].[twitter_rv.6157841] b ON a.followee = b.follower ) joined WHERE  z < 4000 GROUP BY  z --OPTION (MERGE JOIN ,  ORDER GROUP) ) joined_distinct","SELECT SUM(cnt)
+FROM (
+    SELECT z, COUNT(DISTINCT x) AS cnt
+    FROM (
+        SELECT a.follower AS x, b.followee AS z
+        FROM [354].[twitter_rv.6157841] a
+        JOIN [354].[twitter_rv.6157841] b ON a.followee = b.follower
+    ) joined
+    WHERE z < 4000
+    GROUP BY z
+    --OPTION (MERGE JOIN, ORDER GROUP)
+) joined_distinct
+WHERE joined_distinct.z = joined.z;  ",YES,alias-ambiguous
+"WITH  pop AS (SELECT  [time],  [pop],  log([fsc_small],  10) as [fsc_small] FROM  [1059].[STATS_VIEW]) SELECT  * FROM  pop PIVOT ( SUM([fsc_small]) FOR  [pop] in ([beads],  [picoeuk],  [prochloro],  [synecho],  [pennates],  [unkNOwn]) ) as pivot_table","WITH pop AS (
+    SELECT [time], [pop], log([fsc_small], 10) AS [fsc_small]
+    FROM [1059].[STATS_VIEW]
+)
+SELECT *
+FROM pop
+PIVOT (
+    SUM([fsc_small]) FOR [pop] IN ([beads], [picoeuk], [prochloro], [synecho], [pennates], [unkNOwn])
+) AS pivot_table
+WHERE pop.pop = pivot_table.pop; -- Incorrectly referencing 'pop.pop' outside its scope in the WHERE clause, introducing an alias ambiguity.",YES,alias-ambiguous
+"create table Article (pubid int primary key,  journal text,  month text,  volume text,  number text)","create table Article (pubid int primary key,  journal text,  month text,  volume text,  number text)",NO,NO Error
+"SELECT  * max(salary),  min(salary),  avg(salary),  count(*) FROM  ( SELECT  Name,  [Job Title] as job_title, [2010 Gross Earnings] as salary FROM  [1314howe].[uw_salaries_2011.txt] ) x WHERE  job_title like '%RESEAR%SR' AND  job_title NOt like '%APL%' AND  salary > 100000 ORDER BY  salary desc","SELECT 
+  MAX(salary) AS max_salary, 
+  MIN(salary) AS min_salary, 
+  AVG(salary) AS avg_salary, 
+  COUNT(*) AS total_count
+FROM  
+  (SELECT 
+     Name, 
+     [Job Title] AS job_title, 
+     [2010 Gross Earnings] AS salary 
+   FROM [1314howe].[uw_salaries_2011.txt]
+  ) x 
+WHERE 
+  job_title LIKE '%RESEAR%SR' 
+  AND job_title NOT LIKE '%APL%' 
+  AND salary > 100000 
+ORDER BY x.salary DESC;  -- Ambiguous use of 'x.salary' when 'x' is NOt necessary and could confuse the parser or reader.",YES,alias-ambiguous
+"SELECT  ROW_NUMBER() OVER (PARTITION BY TAIL_NUM ORDER BY  YEAR,  MONTH,  DAY_OF_MONTH,  ARR_TIME) ID,  ORIGIN,  DEST,  TAIL_NUM,  FL_NUM, DATEFROMPARTS(YEAR,  MONTH,  DAY_OF_MONTH) DATE, CARRIER,  DEP_TIME,  ARR_TIME,  DISTANCE,  AIR_TIME FROM  [372].[flights09] WHERE  TAIL_NUM != ''","SELECT  ROW_NUMBER() OVER (PARTITION BY TAIL_NUM ORDER BY  YEAR,  MONTH,  DAY_OF_MONTH,  ARR_TIME) AS ID, 
+        ORIGIN, 
+        DEST, 
+        TAIL_NUM, 
+        FL_NUM, 
+        DATEFROMPARTS(YEAR,  MONTH,  DAY_OF_MONTH) AS DATE, 
+        CARRIER,  
+        DEP_TIME, 
+        ARR_TIME, 
+        DISTANCE, 
+        AIR_TIME 
+FROM [372].[flights09] 
+WHERE TAIL_NUM != ''
+HAVING COUNT(*) > 10;",YES,aggr-having
+"SELECT max(salary),  min(salary),  avg(salary),  count(*) FROM  ( SELECT  Name,  [Job Title] as job_title, [2010 Gross Earnings] as salary FROM  [1314howe].[uw_salaries_2011.txt] ) x WHERE  job_title like '%RESEAR%SR' --AND  job_title NOt like '%APL%' --AND  salary > 100000 ORDER BY  salary desc","SELECT max(salary),  min(name),  avg(salary),  count(*) FROM  ( SELECT  Name,  [Job Title] as job_title, [2010 Gross Earnings] as salary FROM  [1314howe].[uw_salaries_2011.txt] ) x WHERE  job_title like '%RESEAR%SR' --AND  job_title NOt like '%APL%' --AND  salary > 100000 ORDER BY  salary desc",YES,type-mismatch-condition
+"SELECT  [All Proteins], SUM(numuniquepepsCG242_01+numuniquepepsCG242_02+numuniquepepsCG242_03) AS [CG242 unique peps sum] FROM  [412].[Oyster 242 spec counts] GROUP BY  [All Proteins]","SELECT  [All Proteins],
+        SUM(numuniquepepsCG242_01 + numuniquepepsCG242_02 + numuniquepepsCG242_03) AS [CG242 unique peps sum],
+        numuniquepepsCG242_01  -- NOn-aggregated column added to create an error
+FROM  [412].[Oyster 242 spec counts]
+GROUP BY  [All Proteins]",YES,aggr-attribute
+SELECT  * FROM  [446].[LineP_CAMERA_anNOtation] WHERE  Function_1 LIKE 'iron',SELECT  * FROM  [446].[LineP_CAMERA_anNOtation] WHERE  Function_1 LIKE 'iron',NO,NO Error
+"SELECT  iron.Station,  protein.Station FROM [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] iron ,  [446].[Iron-related_Proteins] protein WHERE  iron.Station != protein.Station","SELECT iron.Station AS Iron_Station, 
+       protein.Station AS Protein_Station
+FROM [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] AS iron,
+     [446].[Iron-related_Proteins] AS protein
+WHERE iron.Station != protein.Station
+GROUP BY iron.Station, protein.Station
+HAVING LEN(iron.Station) < 3;",YES,aggr-having
+"SELECT  [PeptideSequence],  SUM([2_01 TotalArea]) AS CG2_01,  SUM([2_02 TotalArea]) AS CG2_02,  SUM([2_03 TotalArea]) AS CG2_03,  SUM([5_01 TotalArea]) AS CG5_01,  SUM([5_02 TotalArea]) AS CG5_02,  SUM([5_03 TotalArea]) AS CG5_03,  SUM([8_01 TotalArea]) AS CG8_01,  SUM([8_02 TotalArea]) AS CG8_02,  SUM([8_03 TotalArea]) AS CG8_03,  SUM([11_01 TotalArea]) AS CG11_01,  SUM([11_02 TotalArea]) AS CG11_02,  SUM([11_03 TotalArea]) AS CG11_03,   SUM([26_01 TotalArea]) AS CG26_01,  SUM([26_02 TotalArea]) AS CG26_02,  SUM([26_03 TotalArea]) AS CG26_03,  SUM([29_01 TotalArea]) AS CG29_01,  SUM([29_02 TotalArea]) AS CG29_02,  SUM([29_03 TotalArea]) AS CG29_03,  SUM([32_01 TotalArea]) AS CG32_01,  SUM([32_02 TotalArea]) AS CG32_02,  SUM([32_03 TotalArea]) AS CG32_03,  SUM([35_01 TotalArea]) AS CG35_01,  SUM([35_02 TotalArea]) AS CG35_02,  SUM([35_03 TotalArea]) AS CG35_03,  SUM([221_01 TotalArea]) AS CG221_01,  SUM([221_02 TotalArea]) AS CG221_02,  SUM([221_03 TotalArea]) AS CG221_03,  SUM([224_01 TotalArea]) AS CG224_01,  SUM([224_02 TotalArea]) AS CG224_02,  SUM([224_03 TotalArea]) AS CG224_03,  SUM([227_01 TotalArea]) AS CG227_01,  SUM([227_02 TotalArea]) AS CG227_02,  SUM([227_03 TotalArea]) AS CG227_03,  SUM([230_01 TotalArea]) AS CG230_01,  SUM([230_02 TotalArea]) AS CG230_02,  SUM([230_03 TotalArea]) AS CG230_03, SUM([242_01 TotalArea]) AS CG242_01,  SUM([242_02 TotalArea]) AS CG242_02,  SUM([242_03 TotalArea]) AS CG242_03,  SUM([245_01 TotalArea]) AS CG245_01,  SUM([245_02 TotalArea]) AS CG245_02,  SUM([245_03 TotalArea]) AS CG245_03,  SUM([248_01 TotalArea]) AS CG248_01,  SUM([248_02 TotalArea]) AS CG248_02,  SUM([248_03 TotalArea]) AS CG248_03,  SUM([251_01 TotalArea]) AS CG251_01,  SUM([251_02 TotalArea]) AS CG251_02,  SUM([251_03 TotalArea]) AS CG251_03 FROM  [412].[pep peak areas all oysters2.txt] GROUP BY  [PeptideSequence]","SELECT  [PeptideSequence],  SUM([2_01 TotalArea]) AS CG2_01,  SUM([2_02 TotalArea]) AS CG2_02,  SUM([2_03 TotalArea]) AS CG2_03,  SUM([5_01 TotalArea]) AS CG5_01,  SUM([5_02 TotalArea]) AS CG5_02,  SUM([5_03 TotalArea]) AS CG5_03,  SUM([8_01 TotalArea]) AS CG8_01,  SUM([8_02 TotalArea]) AS CG8_02,  SUM([8_03 TotalArea]) AS CG8_03,  SUM([11_01 TotalArea]) AS CG11_01,  SUM([11_02 TotalArea]) AS CG11_02,  SUM([11_03 TotalArea]) AS CG11_03,   SUM([26_01 TotalArea]) AS CG26_01,  SUM([26_02 TotalArea]) AS CG26_02,  SUM([26_03 TotalArea]) AS CG26_03,  SUM([29_01 TotalArea]) AS CG29_01,  SUM([29_02 TotalArea]) AS CG29_02,  SUM([29_03 TotalArea]) AS CG29_03,  SUM([32_01 TotalArea]) AS CG32_01,  SUM([32_02 TotalArea]) AS CG32_02,  SUM([32_03 TotalArea]) AS CG32_03,  SUM([35_01 TotalArea]) AS CG35_01,  SUM([35_02 TotalArea]) AS CG35_02,  SUM([35_03 TotalArea]) AS CG35_03,  SUM([221_01 TotalArea]) AS CG221_01,  SUM([221_02 TotalArea]) AS CG221_02,  SUM([221_03 TotalArea]) AS CG221_03,  SUM([224_01 TotalArea]) AS CG224_01,  SUM([224_02 TotalArea]) AS CG224_02,  SUM([224_03 TotalArea]) AS CG224_03,  SUM([227_01 TotalArea]) AS CG227_01,  SUM([227_02 TotalArea]) AS CG227_02,  SUM([227_03 TotalArea]) AS CG227_03,  SUM([230_01 TotalArea]) AS CG230_01,  SUM([230_02 TotalArea]) AS CG230_02,  SUM([230_03 TotalArea]) AS CG230_03, SUM([242_01 TotalArea]) AS CG242_01,  SUM([242_02 TotalArea]) AS CG242_02,  SUM([242_03 TotalArea]) AS CG242_03,  SUM([245_01 TotalArea]) AS CG245_01,  SUM([245_02 TotalArea]) AS CG245_02,  SUM([245_03 TotalArea]) AS CG245_03,  SUM([248_01 TotalArea]) AS CG248_01,  SUM([248_02 TotalArea]) AS CG248_02,  SUM([248_03 TotalArea]) AS CG248_03,  SUM([251_01 TotalArea]) AS CG251_01,  SUM([251_02 TotalArea]) AS CG251_02,  SUM([251_03 TotalArea]) AS CG251_03 FROM  [412].[pep peak areas all oysters2.txt] GROUP BY  [PeptideSequence]",NO,NO Error
+"SELECT CGI_ID, GOslim_bin FROM  [1123].[Cgigas-DEGlist-sql]deg left join [1123].[qDOD_Cgigas_GOslim_DISTINCT]sl on deg.baseMean=sl.CGI_ID","SELECT deg.CGI_ID, sl.GOslim_bin 
+FROM [1123].[Cgigas-DEGlist-sql].deg AS deg
+LEFT JOIN [1123].[qDOD_Cgigas_GOslim_DISTINCT].sl AS sl 
+ON deg.CGI_ID = (SELECT CGI_ID FROM [1123].[qDOD_Cgigas_GOslim_DISTINCT] WHERE GOslim_bin LIKE '%metabolism%');",YES,type-mismatch-nested
+"SELECT  InterproEntry,  count(*) InterproIdHits  FROM  [826].[Ox_Fracy_uniqueIPRsperprotein] group by InterproEntry order by InterproIdHits DESC","SELECT  InterproEntry,  count(*) InterproIdHits  FROM  [826].[Ox_Fracy_uniqueIPRsperprotein] group by InterproEntry order by InterproIdHits DESC",NO,NO Error
+"SELECT  geneDesc.* ,  methRatio.MethRatio FROM  [354].[TJGR_Gene_SPID_evalue_Description.txt] geneDesc ,  [354].[methylation_ratio_CG_gene] methRatio WHERE  geneDesc.Column1 = SUBSTRING(methRatio.GroupID,  CHARINDEX('CGI',  methRatio.GroupID),  LEN(methRatio.GroupID))","SELECT  geneDesc.* ,  methRatio.MethRatio FROM  [354].[TJGR_Gene_SPID_evalue_Description.txt] geneDesc ,  [354].[methylation_ratio_CG_gene] methRatio WHERE  geneDesc.Column1 = SUBSTRING(methRatio.GroupID,  CHARINDEX('CGI',  methRatio.GroupID),  LEN(methRatio.GroupID))",NO,NO Error
+"SELECT  * FROM  [1052].[Pile Point Currents 00-11.txt] maxebb ,  [1052].[Pile Point Currents 00-11.txt] slackebb WHERE  maxebb.date = slackebb.date AND  maxebb.current_intensity = 'Max Ebb' AND  slackebb.current_intensity like '%Slack%'","SELECT  * FROM  [1052].[Pile Point Currents 00-11.txt] maxebb ,  [1052].[Pile Point Currents 00-11.txt] slackebb WHERE  maxebb.date = slackebb.date AND  abc.current_intensity = 'Max Ebb' AND  slackebb.current_intensity like '%Slack%'",YES,alias-undefined
+"SELECT  x, y, z FROM  [1267].[table_1A17_3.csv] WHERE  res_surface_area_ratio > 0.4","SELECT x, y, z FROM [1267].[table_1A17_3.csv] WHERE res_surface_area_ratio > 'high';",YES,type-mismatch-condition
+"SELECT  t1.[Isolate ID],  t2.[Isolate ID],  t1.[Arc1327e Box],  t2.[Arc1327e Box] FROM  [table_t01_30Aug.csv] t1 join [table_t02_30Aug_1.csv] t2 on (t1.[Isolate ID] = t2.[Isolate ID]) where t1.[Isolate ID] <> ' ' and t2.[Isolate ID] <> ' '","SELECT t1.[Isolate ID], t2.[Isolate ID], t1.[Arc1327e Box], t2.[Arc1327e Box]
+FROM [table_t01_30Aug.csv] t1
+JOIN [table_t02_30Aug_1.csv] t2 ON (t1.[Isolate ID] = t2.[Isolate ID])
+WHERE t1.[Isolate ID] <> '123' AND t2.[Isolate ID] <> 456;",YES,type-mismatch-condition
+"SELECT  S.LAT,  S.LON,  S.[file], T.[OCEAN.TEMP], T.SALINITY, S.day, S.[BULK.RED] FROM  [1057].[Tokyo4_sds_timestamp] as S, [1057].[Tokyo4_sds_TS] as T WHERE  S.timestamp = T.timestamp","SELECT S.LAT, 
+       S.LON, 
+       S.[file], 
+       T.[OCEAN.TEMP], 
+       T.SALINITY, 
+       S.day, 
+       S.[BULK.RED]
+FROM [1057].[Tokyo4_sds_timestamp] AS S, 
+     [1057].[Tokyo4_sds_TS] AS T 
+WHERE S.timestamp = T.timestamp
+HAVING COUNT(*) > 5;",YES,aggr-having
+"SELECT  * FROM  [826].[PmTE_ALL-DE.txt] DE ,  [826].[table_Psemu1FL_RT_spgp_gp_ok.txt] supergroup WHERE  supergroup.Consensus = DE.name AND  logFC_Fe < 0.5 AND  logFC_Fe > -0.5 AND  logFC_P < -1 AND  logFC_Si < -1 AND  logFC_Urea < -1 AND  (PValue_Fe < 0.05 OR  PValue_P < 0.05 OR  PValue_Si < 0.05 OR  PValue_Urea < 0.05)","SELECT  
+    AVG(DE.logFC_Fe) AS Avg_logFC_Fe,  -- Using an aggregate function
+    DE.*,
+    supergroup.*
+FROM  
+    [826].[PmTE_ALL-DE.txt] DE,
+    [826].[table_Psemu1FL_RT_spgp_gp_ok.txt] supergroup 
+WHERE  
+    supergroup.Consensus = DE.name 
+    AND DE.logFC_Fe < 0.5 
+    AND DE.logFC_Fe > -0.5 
+    AND DE.logFC_P < -1 
+    AND DE.logFC_Si < -1 
+    AND DE.logFC_Urea < -1 
+    AND (DE.PValue_Fe < 0.05 OR  DE.PValue_P < 0.05 OR  DE.PValue_Si < 0.05 OR  DE.PValue_Urea < 0.05)
+GROUP BY DE.name;  -- Group by added, but might be insufficient or incorrect",YES,aggr-attribute
+"select s.ssgcidid,  s.uniprot,  ec.""EC Numbers"",  ec.""Database"" as ec_source,  ec.enzyme_id as ec_source_id,  s.anNOtation from [Unique_EC_mapped_to_UniProt] ec join [ssgcid_uniprot.csv] s on (s.uniprot = ec.accession)","SELECT s.ssgcidid, 
+       s.uniprot, 
+       ec.""EC Numbers"", 
+       ec.""Database"" AS ec_source, 
+       ec.enzyme_id AS ec_source_id, 
+       s.anNOtation 
+FROM [Unique_EC_mapped_to_UniProt] ec 
+JOIN [ssgcid_uniprot.csv] s ON (s.uniprot = ec.accession)
+HAVING COUNT(*) > 5;",YES,aggr-having
+"SELECT  newid, rand(hashbytes('sha',  Collaborator)+ datepart(ms,  GETDATE())) FROM  [1314howe].[organization pairs]","SELECT  newid, rand(hashbytes('sha',  Collaborator)+ datepart(ms,  GETDATE())) AS id1 FROM  [1314howe].[organization pairs] where id2='ms'",YES,alias-undefined
+"SELECT  [Saito_Id],  [Identified Proteins],  [Accession],  [BLAST_NR ANNOTATION],  [BLAST NR OR GANISM],  [BLAST Microbial P col1],  [BLAST Microbial P col2],  [Molecular Weight (kDa)] ,  3 AS Sample ,  'P8' AS Station ,  70 AS 'Depth (m)' ,  [(G3)-S8-70m] AS [Spectral Count] FROM  [446].[Cleaned_Saito_GEOMICS1D_SubsurfaceProteins_withprelimcounts.csv]","SELECT [Saito_Id], [Identified Proteins], [Accession], [BLAST_NR ANNOTATION], [BLAST NR ORGANISM], [BLAST Microbial P col1], [BLAST Microbial P col2], [Molecular Weight (kDa)],
+       3 AS Sample, 'P8' AS Station, 70 AS 'Depth (m)', CAST([(G3)-S8-70m] AS INT) AS [Spectral Count]
+FROM [446].[Cleaned_Saito_GEOMICS1D_SubsurfaceProteins_withprelimcounts.csv];",YES,type-mismatch-condition
+"SELECT  Source,  COUNT(Label) FROM  [446].[GeoMICS_key.csv] GROUP BY  Source","SELECT  Source, 
+        COUNT(Label), 
+        Label  -- NOn-aggregated column added to create an error
+FROM  [446].[GeoMICS_key.csv] 
+GROUP BY  Source",YES,aggr-attribute
+"SELECT * max(salary),  min(salary),  avg(salary),  count(*) FROM  ( SELECT  Name,  [Job Title] as job_title, [2010 Gross Earnings] as salary FROM  [1314howe].[uw_salaries_2011.txt] ) x WHERE --job_title like '%RESEAR%PRINCI%' job_title like 'ASSISTANT PROFESSOR ' --name like '%balazinska%' --AND  job_title NOt like '%APL%' AND  salary < 120800 --ORDER BY  salary desc","SELECT *, 
+       MAX(salary) AS max_salary, 
+       MIN(salary) AS min_salary, 
+       AVG(salary) AS avg_salary, 
+       COUNT(*) AS total
+FROM (SELECT Name, 
+             [Job Title] AS job_title, 
+             [2010 Gross Earnings] AS salary 
+      FROM [1314howe].[uw_salaries_2011.txt]
+      WHERE job_title = 'ASSISTANT PROFESSOR'
+            AND salary < 120800) AS x
+HAVING AVG(salary) > 100000;",YES,aggr-having
+SELECT  CAST(score AS FLOAT) AS scoreNum FROM  [823].[CGbigill5x_asgff],SELECT  CAST(score AS FLOAT) AS scoreNum FROM  [823].[CGbigill5x_asgff] where floatnum.ab=3;,YES,alias-undefined
+"SELECT  cast(date + ' ' + time as datetime) as timestamp,  location,  event_kNOts,  current_intensity FROM  [1052].[Pile Point Currents 00-11.txt] ORDER BY  cast(date + ' ' + time as datetime)","SELECT  cast(a.date + ' ' + a.time as datetime) as timestamp,  
+        location, 
+        event_kNOts,  
+        current_intensity 
+FROM  [1052].[Pile Point Currents 00-11.txt]
+ORDER BY  cast(x.date + ' ' + x.time as datetime);",YES,alias-undefined
+"SELECT  cast( datepart(hour,  binid) as varchar(2)) + ':00' as hour,  binid as timestamp,  salinity as salinity,  fluorescence,  transmission,  [(O2/Ar)sat] as oxygen_sat,  pop as seaflow_pop,  conc as seaflow_conc,  chl_big as seaflow_chl,  fsc_big as seaflow_fsc,  pe as seaflow_pe FROM  [1314howe].[SDS and Seaflow Joined with Biological productivity] ORDER BY  binid asc","SELECT  cast( datepart(hour,  binid) as varchar(2)) + ':00' as hour,  binid as timestamp,  salinity as salinity,  fluorescence,  transmission,  [(O2/Ar)sat] as oxygen_sat,  pop as seaflow_pop,  conc as seaflow_conc,  chl_big as seaflow_chl,  fsc_big as seaflow_fsc,  pe as seaflow_pe FROM  [1314howe].[SDS and Seaflow Joined with Biological productivity] ORDER BY  binid asc",NO,NO Error
+"select distinct a.fullname,  p.id as pubID from field f,  author a,  publication p where f.p='author' and f.k=p.id and f.v=a.fullname","SELECT MAX(a.fullname) AS fullname,  -- Misusing MAX() on a textual column without GROUP BY
+       p.id as pubID
+FROM field f,  
+     author a,  
+     publication p 
+WHERE f.p='author' 
+      AND f.k=p.id 
+      AND f.v=a.fullname;",YES,aggr-attribute
+"SELECT  Count (*) From ( SELECT * FROM  [1123].[BiGo_mito_cleam] where context like '__CT_' --modified respectively for CA,  CT,  CC and CT_Count >= 5 and ratio > 0) --modified respectively for zero methylation (= 0.000 ) betty","SELECT  Count (*) From ( SELECT * FROM  [1123].[BiGo_mito_cleam] where context like '__CT_' --modified respectively for CA,  CT,  CC and CT_Count >= ""anti"" and ratio > 'a') --modified respectively for zero methylation (= 0.000 ) betty",YES,type-mismatch-condition
+"SELECT  x % 103 AS bucket,  SUM(sumdegree) AS edges FROM  [354].[twitter_rv.6200000.sumdegree] GROUP BY  (x % 103) ORDER BY  edges desc","SELECT x % 103 AS bucket, 
+       SUM(sumdegree) AS edges
+FROM [354].[twitter_rv.6200000.sumdegree]
+GROUP BY (x % 103)
+HAVING AVG(sumdegree) > '1000'
+ORDER BY edges DESC;",YES,type-mismatch-condition
+"WITH  data (species,  latitude,  longitude) AS (SELECT  * from [690].[All3col]),  bounds (minLat, minLong, maxLat, maxLong) AS (SELECT  min(latitude), min(longitude), max(latitude), max(longitude) FROM  data) SELECT  * FROM  bounds","WITH 
+data (species, latitude, longitude) AS (
+    SELECT * FROM [690].[All3col]
+),
+bounds (minLat, minLong, maxLat, maxLong) AS (
+    SELECT min(latitude), min(longitude), max(latitude), max(longitude) FROM data
+)
+SELECT AVG(minLat) AS AverageMinLat, -- Using AVG without a proper context
+       minLong, 
+       maxLat, 
+       maxLong 
+FROM bounds;",YES,aggr-attribute
+"select category from ( SELECT  case when budget = 'Moore' then 'Moore/Sloan' when budget = 'Sloan' then 'Moore/Sloan' else budget end as budget ,  case when Description Like '%Faculty:%' and category_label = 'Salaries' then 'Faculty' when Description Like '%Faculty:%' and category_label = 'Benefits' then 'Faculty' when Description Like '%tudents%' and category_label = 'Salaries' then 'Students' when Description Like '%tudents%' and category_label = 'Benefits' then 'Students' when Description Like '%ost-doc%' and category_label = 'Benefits' then 'Postdoc' when Description Like '%ost-doc%' and category_label = 'Salaries' then 'Postdoc' when Description Like '%Pro Staff%' and category_label = 'Salaries' then 'Research Staff' when Description Like '%Pro Staff%' and category_label = 'Benefits' then 'Research Staff' when Description Like '%Admin Pro%' and category_label = 'Salaries' then 'Admin Staff' when Description Like '%Admin Pro%' and category_label = 'Benefits' then 'Admin Staff' when Description Like '%Classified Staff%' and category_label = 'Salaries' then 'Admin Staff' when Description Like '%Classified Staff%' and category_label = 'Benefits' then 'Admin Staff' when Description Like '%Bill%' and category_label = 'Salaries' then 'Admin Staff' when Description Like '%Bill%' and category_label = 'Benefits' then 'Admin Staff' when Description Like '%visiting%' and category_label = 'Salaries' then 'Admin Staff' when Description Like '%visiting%' and category_label = 'Benefits' then 'Admin Staff' when Description Like '%Chance%' and category_label = 'Salaries' then 'Admin Staff' when Description Like '%Chance%' and category_label = 'Benefits' then 'Admin Staff' when Description Like '%Hyak%' and category_label = 'Salaries' then 'Admin Staff' when Description Like '%Hyak%' and category_label = 'Benefits' then 'Admin Staff' when Description Like '%Hourly%' and category_label = 'Salaries' then 'Admin Staff' when Description Like '%Hourly%' and category_label = 'Benefits' then 'Admin Staff' when category_label = 'Consulting' or category_label = 'Equipment' or category_label = 'Supplies' or category_label = 'Contractual Services' or category_label='Recharge' then 'Other' else category_label end as category ,  Description ,  case when len(INV_Date) <2 then NULL when PO_Invoice = 'CR3566' then '9/1/2015' else cast(inv_date as date) end as inv_date ,  cast(case when BAR_Amt is null then Encumbered else BAR_Amt end as float) as amount ,  cd,  PO_Invoice,  Encumbered FROM  [1314howe].[ALL_Operations_Details.csv] ) x group by category","select category from (
+    SELECT
+        case when budget = 'Moore' then 'Moore/Sloan'
+             when budget = 'Sloan' then 'Moore/Sloan'
+             else budget
+        end as budget,
+        case when Description Like '%Faculty:%' and category_label = 'Salaries' then 'Faculty'
+             when Description Like '%Faculty:%' and category_label = 'Benefits' then 'Faculty'
+             when Description Like '%tudents%' and category_label = 'Salaries' then 'Students'
+             when Description Like '%tudents%' and category_label = 'Benefits' then 'Students'
+             when Description Like '%ost-doc%' and category_label = 'Benefits' then 'Postdoc'
+             when Description Like '%ost-doc%' and category_label = 'Salaries' then 'Postdoc'
+             when Description Like '%Pro Staff%' and category_label = 'Salaries' then 'Research Staff'
+             when Description Like '%Pro Staff%' and category_label = 'Benefits' then 'Research Staff'
+             when Description Like '%Admin Pro%' and category_label = 'Salaries' then 'Admin Staff'
+             when Description Like '%Admin Pro%' and category_label = 'Benefits' then 'Admin Staff'
+             when Description Like '%Classified Staff%' and category_label = 'Salaries' then 'Admin Staff'
+             when Description Like '%Classified Staff%' and category_label = 'Benefits' then 'Admin Staff'
+             when Description Like '%Bill%' and category_label = 'Salaries' then 'Admin Staff'
+             when Description Like '%Bill%' and category_label = 'Benefits' then 'Admin Staff'
+             when Description Like '%visiting%' and category_label = 'Salaries' then 'Admin Staff'
+             when Description Like '%visiting%' and category_label = 'Benefits' then 'Admin Staff'
+             when Description Like '%Chance%' and category_label = 'Salaries' then 'Admin Staff'
+             when Description Like '%Chance%' and category_label = 'Benefits' then 'Admin Staff'
+             when Description Like '%Hyak%' and category_label = 'Salaries' then 'Admin Staff'
+             when Description Like '%Hyak%' and category_label = 'Benefits' then 'Admin Staff'
+             when Description Like '%Hourly%' and category_label = 'Salaries' then 'Admin Staff'
+             when Description Like '%Hourly%' and category_label = 'Benefits' then 'Admin Staff'
+             when category_label = 'Consulting' or category_label = 'Equipment' or category_label = 'Supplies' or category_label = 'Contractual Services' or category_label='Recharge' then 'Other'
+             else category_label
+        end as category,
+        Description,
+        case when len(INV_Date) <2 then NULL
+             when PO_Invoice = 'CR3566' then '9/1/2015'
+             else cast(inv_date as date)
+        end as inv_date,
+        cast(case when BAR_Amt is null then Encumbered else BAR_Amt end as float) as amount,
+        cd,
+        PO_Invoice,
+        Encumbered
+    FROM [1314howe].[ALL_Operations_Details.csv]
+) x
+group by category",YES,alias-ambiguous
+SELECT  * FROM  [TEST prot pep IDs] WHERE  [peptide sequence] IN (SELECT  [peptide sequence] FROM  [412].[TEST prot pep IDs] GROUP BY  [peptide sequence] HAVING COUNT (*) < 2),"SELECT * 
+FROM [TEST prot pep IDs] 
+WHERE [peptide sequence] IN (
+    SELECT [peptide sequence] 
+    FROM [412].[TEST prot pep IDs] 
+    GROUP BY [peptide sequence] 
+    HAVING SUM(LENGTH([peptide sequence])) < 10 ",YES,aggr-having
+"SELECT  distinct n.isolate_id,  s.subject_ids,  n.sub_bag_NO,  n.sub_q,  n.date,  n.date_trashed,  n.cp_q,  n.cp_bag_NO,  n.date_2,  n.date_trashed_2,  n.to_be_regrown,  n.arc1327e_q,  a.concat_arc1327e_boxes,  l.concat_locations,  ad.concat_arc1327e_dates,  n.NOtes FROM  [table_nearly_winNOwed_subqry.csv] n full outer join [table_isol_concat_subj_id.csv] s on (s.isolate_id = n.isolate_id) full outer join [table_isol_concat_arch_box.csv] a on (a.isolate_id = n.isolate_id) full outer join [table_isol_concat_locn.csv] l on (l.isolate_id = n.isolate_id) full outer join [table_isol_concat_arch_date.csv] ad on (ad.isolate_id = n.isolate_id)","SELECT distinct
+    isolate_id,
+    s.subject_ids,
+    n.sub_bag_NO,
+    n.sub_q,
+    n.date,
+    n.date_trashed,
+    n.cp_q,
+    n.cp_bag_NO,
+    n.date_2,
+    n.date_trashed_2,
+    n.to_be_regrown,
+    n.arc1327e_q,
+    a.concat_arc1327e_boxes,
+    l.concat_locations,
+    ad.concat_arc1327e_dates,
+    n.NOtes
+FROM
+    [table_nearly_winNOwed_subqry.csv] n
+FULL OUTER JOIN [table_isol_concat_subj_id.csv] s ON (s.isolate_id = n.isolate_id)
+FULL OUTER JOIN [table_isol_concat_arch_box.csv] a ON (a.isolate_id = n.isolate_id)
+FULL OUTER JOIN [table_isol_concat_locn.csv] l ON (l.isolate_id = n.isolate_id)
+FULL OUTER JOIN [table_isol_concat_arch_date.csv] ad ON (ad.isolate_id = n.isolate_id)
+ORDER BY isolate_id",YES,alias-ambiguous
+"SELECT  ind from (SELECT  res_type_sh,  pdb_id,  res_index AS ind FROM  [1267].[h2_w_2.csv]) AS R1","SELECT  ind from (SELECT  res_type_sh,  pdb_id,  res_index AS ind FROM  [1267].[h2_w_2.csv]) AS R1",NO,NO Error
+SELECT  * FROM  [521].[FirstLinePoetTitle2.csv] WHERE  Title LIKE 'the%',SELECT  * FROM  [521].[FirstLinePoetTitle2.csv] WHERE  Title LIKE 'the%',NO,NO Error
+select * from 1385_queries where sql_code NOt like '%table_%'  and sql_code like '%AND %'  and sql_code NOt like '%JOIN %' --where is_public = 0,select * from 1385_queries where sql_code NOt like '%table_%'  and sql_code like '%AND %'  and sql_code NOt like '%JOIN %' --where is_public = 0,NO,NO Error
+Select count(*) from ( SELECT * FROM  [1123].[BiGO_betty_plain_methratio_v1.txt] Where CT_count >=5 ) pls,"Select count(*) from ( SELECT * FROM  [1123].[BiGO_betty_plain_methratio_v1.txt] Where CT_count >='5' ) pls ",YES,type-mismatch-condition
+"select distinct se.ssgcidid,  se.uniprot,  se.""EC Numbers"",  se.ec_source,  se.anNOtation,  ecp.pathway_id,  ecp.pathway_name from [ssgcid_EC_map] se join [ec_pathway.csv] ecp on ecp.ec_number = se.""EC Numbers"" where ecp.pathway_name is NOt null","SELECT distinct 
+    a.ssgcidid,  
+    a.uniprot,  
+    a.""EC Numbers"",  
+    a.ec_source,  
+    a.anNOtation,  
+    ecp.pathway_id,  
+    ecp.pathway_name 
+FROM 
+    [ssgcid_EC_map] se 
+JOIN 
+    [ec_pathway.csv] ecp 
+ON 
+    ecp.ec_number = b.""EC Numbers""
+WHERE 
+    ecp.pathway_name is NOt null;",YES,alias-undefined
+"SELECT 
+    Column1 AS seqid, 
+    Column4 AS start, 
+    Column5 AS [end], 
+    'BiGillExonExp' AS Feature, 
+    (Column10 / Column12) AS feat_bp 
+FROM 
+    [1123].[BiGill_ThBAM_cov_exon_2.txt]","SELECT 
+    Column1 AS seqid, 
+    Column4 AS start, 
+    Column5 AS [end], 
+    'BiGillExonExp' AS Feature, 
+    AVG((Column10 / Column12)) AS feat_bp -- Incorrect use of AVG without GROUP BY
+FROM 
+    [1123].[BiGill_ThBAM_cov_exon_2.txt];",YES,aggr-attribute
+SELECT  * FROM [446].[V2_GDGT Data for Francois database.csv] AS gdgt FULL OUTER JOIN [446].[table_V2_Carlson_carbon data_GeoMICS.csv] AS doc ON doc.[Depth..m.] = gdgt.[Depth..m.] AND  doc.Station = gdgt.Station FULL OUTER JOIN  [446].[V2_O2_measurements_final.csv] AS oxy ON doc.[Depth..m.] = oxy.[Depth] AND  doc.Station = oxy.Station,"SELECT * 
+FROM [446].[V2_GDGT Data for Francois database.csv] AS gdgt 
+FULL OUTER JOIN [446].[table_V2_Carlson_carbon data_GeoMICS.csv] AS doc 
+ON doc.[Depth..m.] = CAST(gdgt.[Depth..m.] AS VARCHAR) AND doc.Station = gdgt.Station 
+FULL OUTER JOIN [446].[V2_O2_measurements_final.csv] AS oxy 
+ON doc.[Depth..m.] = CAST(oxy.[Depth] AS VARCHAR) AND doc.Station = oxy.Station;",YES,type-mismatch-condition
+select distinct conf_id from [1143].tbl_organizer order by conf_id,select distinct conf_id from [1143].tbl_organizer tblO order by tbo.conf_id,YES,alias-undefined
+"SELECT  CAST([Time] AS Datetime) AS [DateTime] ,  DATEDIFF(SECOND, {d '1970-01-01'},  CAST([Time] AS Datetime)) AS [UnixTimestamp] ,  [LAT] ,  [LON] ,  CASE WHEN [CONDUCTIVITY] = 'NA' THEN NULL ELSE [CONDUCTIVITY] END AS [CONDUCTIVITY] ,  [SALINITY] ,  [OCEAN.TEMP] ,  [BULK.RED] ,  [STREAM.PRESSURE] ,  [FILTER.PRESSURE] ,  CASE WHEN [MACHINE.TEMP] = 'NA' THEN NULL ELSE [MACHINE.TEMP] END AS [MACHINE.TEMP] ,  [Xaccel] ,  [Yaccel] ,  [Zaccel] ,  [MILLISECOND.TIMER] ,  [LASER.POWER] ,  [EVENT.RATE] ,  [FLOW.METER] ,  CASE WHEN [position] = 'NA' THEN NULL ELSE [position] END AS [position] ,  [CHL] ,  [LightTrans] ,  [acqError] ,  [D1D2] ,  CASE WHEN [PAR] = 'NA' THEN NULL ELSE [PAR] END AS [PAR] ,  [time] ,  [day] ,  [file] ,  [DMY] ,  [HMS] FROM  [1059].[sds.tab] ORDER BY  [UnixTimestamp] ASC","SELECT
+    CAST([Time] AS Datetime) AS [DateTime],
+    DATEDIFF(SECOND, {d '1970-01-01'}, CAST([Time] AS Datetime)) AS [UnixTimestamp],
+    [LAT],
+    [LON],
+    CASE WHEN [CONDUCTIVITY] = 'NA' THEN NULL ELSE [CONDUCTIVITY] END AS [CONDUCTIVITY],
+    [SALINITY],
+    [OCEAN.TEMP],
+    [BULK.RED],
+    [STREAM.PRESSURE],
+    [FILTER.PRESSURE],
+    CASE WHEN [MACHINE.TEMP] = 'NA' THEN NULL ELSE [MACHINE.TEMP] END AS [MACHINE.TEMP],
+    [Xaccel],
+    [Yaccel],
+    [Zaccel],
+    [MILLISECOND.TIMER],
+    [LASER.POWER],
+    [EVENT.RATE],
+    [FLOW.METER],
+    CASE WHEN [position] = 'NA' THEN NULL ELSE [position] END AS [position],
+    [CHL],
+    [LightTrans],
+    [acqError],
+    [D1D2],
+    CASE WHEN [PAR] = 'NA' THEN NULL ELSE [PAR] END AS [PAR],
+    CAST([day] AS DATE) AS [day], -- Assume [day] contains both 'YYYY-MM-DD' and 'DD-MM-YYYY' formats
+    [file],
+    [DMY],
+    [HMS]
+FROM
+    [1059].[sds.tab]
+ORDER BY
+    [UnixTimestamp] ASC;",YES,type-mismatch-nested
+"SELECT  [Saito_Id] ,  CASE WHEN [Identified Proteins] = '#NO Error' THEN NULL ELSE [Identified Proteins] END AS [Identified Proteins] ,  [Accession] ,  [BLAST_NR ANNOTATION] ,  [BLAST NR OR GANISM] ,  [BLAST Microbial P col1] ,  [BLAST Microbial P col2] ,  [Molecular Weight] ,  [(G13) S1-15m] ,  [(G14)-S1-40m] ,  [(G15)-S1-70m] ,  [(G10)-S4-45m] ,  [(G11)-S4-65m] ,  [(G2)-S8-33m] ,  [(G3)-S8-70m] ,  [(G6)-S6-15m] ,  [(G7)-S6-45m] FROM  [446].[table_Saito_GEOMICS1D_SubsurfaceProteins_withprelimcounts.csv]","WITH  SurfaceMetals AS (
+    SELECT  Station, MIN([Depth..m.]) AS MinDepth 
+    FROM  [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] 
+    GROUP BY  Station
+) 
+SELECT  
+    iron.[Depth..m.],  
+    y.MinDepth 
+FROM 
+    [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] iron ,  
+    [446].[Iron-related_Proteins] protein ,  
+    SurfaceMetals 
+WHERE  
+    iron.Station = protein.Station 
+    AND SurfaceMetals.Station = iron.Station 
+    --AND  iron.[Depth..m.] = SurfaceMetals.MinDepth",YES,alias-undefined
+SELECT  * FROM  [1123].[scratch_methratio_out] where ratio = 'NA' and C_count > 0,SELECT  * FROM  [1123].[scratch_methratio_out] where ratio = 'NA' and C_count > 0,NO,NO Error
+"WITH  SurfaceMetals AS (SELECT  Station, MIN([Depth..m.]) AS MinDepth FROM  [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] GROUP BY  Station) SELECT  iron.[Depth..m.],  SurfaceMetals.MinDepth FROM [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] iron ,  [446].[Iron-related_Proteins] protein ,  SurfaceMetals WHERE  iron.Station = protein.Station AND  SurfaceMetals.Station = iron.Station --AND  iron.[Depth..m.] = SurfaceMetals.MinDepth","WITH SurfaceMetals AS (
+    SELECT Station, MIN([Depth..m.]) AS MinDepth
+    FROM [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv]
+    GROUP BY Station
+)
+SELECT iron.[Depth..m.], SurfaceMetals.MinDepth
+FROM [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] iron, [446].[Iron-related_Proteins] protein, SurfaceMetals
+WHERE iron.Station = protein.Station 
+AND SurfaceMetals.Station = iron.Station
+AND CAST(iron.[Depth..m.] AS VARCHAR) = SurfaceMetals.MinDepth;",YES,type-mismatch-condition
+"SELECT  term_id ,  doc_id , sum(frequency)  ftd ,  max(dist_doc_cnt.D) D FROM  [1314howe].[reuters_terms.csv] , (SELECT  count (distinct doc_id) D FROM  [1314howe].[reuters_terms.csv] ) dist_doc_cnt Group by term_id ,  doc_id","SELECT term_id, doc_id, SUM(frequency) AS ftd, MAX(CAST(dist_doc_cnt.D AS VARCHAR)) AS D
+FROM [1314howe].[reuters_terms.csv], 
+     (SELECT COUNT(DISTINCT doc_id) AS D FROM [1314howe].[reuters_terms.csv]) dist_doc_cnt
+GROUP BY term_id, doc_id;",YES,type-mismatch-condition
+SELECT  * FROM  [1123].[TJGR_Gill_meth_CDSexpression_gene] Where sum > 10,"SELECT *, sum as total_sum FROM [1123].[TJGR_Gill_meth_CDSexpression_gene]
+WHERE sum > 10 AND total_sum > 10",YES,alias-ambiguous
+SELECT  * FROM  [1314howe].[UW 2010 Salaries] where job_title like '%ASSISTANT %PROF%' order by salary asc,"SELECT  * 
+FROM  [1314howe].[UW 2010 Salaries] x 
+WHERE  y.job_title LIKE '%ASSISTANT %PROF%' 
+ORDER BY  salary ASC;",YES,alias-undefined
+"SELECT STUFF(STUFF(REPLICATE('0', 6-LEN(HMS)) + convert(VARCHAR(6), HMS), 3, 0, ':'), 6, 0, ':') as HMS FROM 
+    Class","SELECT 
+    STUFF(STUFF(REPLICATE('0', 6-LEN(HMS)) + CONVERT(VARCHAR(a), HMS), 3, 0, ':'), 6, 0, ':') as HMS,
+    HMS as Original_HMS
+FROM 
+    Class",YES,type-mismatch-condition
+"SELECT  * FROM  [1123].[BSoysterGENE] Where ""Sum mRNA"" > 100 and ""Percent mCpG (mRNA)"" > 80","SELECT 
+    AVG(""Sum mRNA"") AS AvgSummRNA, -- Misusing AVG() in a context that doesn't require it
+    ""Percent mCpG (mRNA)"" 
+FROM 
+    [1123].[BSoysterGENE] 
+WHERE 
+    ""Sum mRNA"" > 100 
+    AND ""Percent mCpG (mRNA)"" > 80;",YES,aggr-attribute
+SELECT  * FROM  [1123].[table_fish546_module1_blast_table.txt] INNER JOIN  [1123].[table_associations_uni_swisspro_012410.tabular] ON [1123].[table_fish546_module1_blast_table.txt].SPID=[1123].[table_associations_uni_swisspro_012410.tabular].ID,SELECT  * FROM  [1123].[table_fish546_module1_blast_table.txt] INNER JOIN  [1123].[table_associations_uni_swisspro_012410.tabular] ON [1123].[table_fish546_module1_blast_table.txt].SPID=[1123].[table_associations_uni_swisspro_012410.tabular].ID,NO,NO Error
+"SELECT  [VLP.mL] as VirusCount ,  [DAPI..cells.ml.] as BactCount FROM  [446].[Virus_Count_vs_Bact_Count] WHERE  [VLP.ml] <> 'NA' AND  [DAPI..cells.ml.] <> 'NA'","SELECT  [VLP.mL] as VirusCount ,  [DAPI..cells.ml.] as BactCount FROM  [446].[Virus_Count_vs_Bact_Count] WHERE  [VLP.ml] <> 'NA' AND  [DAPI..cells.ml.] <> 'NA'",NO,NO Error
+"SELECT  CAST([Time] AS Datetime) AS [DateTime] ,  DATEDIFF(SECOND, {d '1970-01-01'},  CAST([Time] AS Datetime)) ,  [LAT] ,  [LON] ,  CASE WHEN [CONDUCTIVITY] = 'NA' THEN NULL ELSE [CONDUCTIVITY] END AS [CONDUCTIVITY] ,  [SALINITY] ,  [OCEAN.TEMP] ,  [BULK.RED] ,  [STREAM.PRESSURE] ,  [FILTER.PRESSURE] ,  CASE WHEN [MACHINE.TEMP] = 'NA' THEN NULL ELSE [MACHINE.TEMP] END AS [MACHINE.TEMP] ,  [Xaccel] ,  [Yaccel] ,  [Zaccel] ,  [MILLISECOND.TIMER] ,  [LASER.POWER] ,  [EVENT.RATE] ,  [FLOW.METER] ,  CASE WHEN [position] = 'NA' THEN NULL ELSE [position] END AS [position] ,  [CHL] ,  [LightTrans] ,  [acqError] ,  [D1D2] ,  CASE WHEN [PAR] = 'NA' THEN NULL ELSE [PAR] END AS [PAR] ,  [time] ,  [day] ,  [file] ,  [DMY] ,  [HMS] FROM  [1059].[sds2.tab] ORDER BY  [DateTime] ASC","SELECT  CAST([Time] AS Datetime) AS [DateTime] ,  DATEDIFF(SECOND, {d '1970-01-01'},  CAST([Time] AS Datetime)) ,  [LAT] ,  [LON] ,  CASE WHEN [CONDUCTIVITY] = 'NA' THEN NULL ELSE [CONDUCTIVITY] END AS [CONDUCTIVITY] ,  [SALINITY] ,  [OCEAN.TEMP] ,  [BULK.RED] ,  [STREAM.PRESSURE] ,  [FILTER.PRESSURE] ,  CASE WHEN [MACHINE.TEMP] = 'NA' THEN NULL ELSE [MACHINE.TEMP] END AS [MACHINE.TEMP] ,  [Xaccel] ,  [Yaccel] ,  [Zaccel] ,  [MILLISECOND.TIMER] ,  [LASER.POWER] ,  [EVENT.RATE] ,  [FLOW.METER] ,  CASE WHEN [position] = 'NA' THEN NULL ELSE [position] END AS [position] ,  [CHL] ,  [LightTrans] ,  [acqError] ,  [D1D2] ,  CASE WHEN [PAR] = 'NA' THEN NULL ELSE [PAR] END AS [PAR] ,  [time] ,  [day] ,  [file] ,  [DMY] ,  [HMS] FROM  [1059].[sds2.tab] ORDER BY  [DateTime] ASC",NO,NO Error
+"WITH  Radius AS (SELECT  6378100 AS Radius) ,  Numbered AS (SELECT  [DateTime],  [LAT],  [LON],  ROW_NUMBER() OVER (ORDER BY  [DateTime] ASC) AS [Row] FROM  [1059].[SDS_VIEW]) SELECT  b.[DateTime] ,  Radius * (SQRT(POWER(b.[LAT]-a.[LAT], 2) + POWER(b.[LON]-a.[LON], 2))) / 360 * 2 * 3.1415926 * Radius AS Euclid FROM  Numbered a ,  Numbered b ,  Radius WHERE  a.[Row] + 1 = b.[Row] ORDER BY  [DateTime] DESC","WITH  Radius AS (SELECT  6378100 AS Radius) ,  Numbered AS (SELECT  [DateTime],  [LAT],  [LON],  ROW_NUMBER() OVER (ORDER BY  [DateTime] ASC) AS [Row] FROM  [1059].[SDS_VIEW]) SELECT  b.[DateTime] ,  Radius * (SQRT(POWER(b.[LAT]-a.[LAT], 2) + POWER(b.[LON]-a.[LON], 2))) / 360 * 2 * 3.1415926 * Radius AS Euclid FROM  Numbered a ,  Numbered b ,  Radius WHERE  a.[Row] + 1 = b.[Row] ORDER BY  [DateTime] DESC",NO,NO Error
+"SELECT  SUM (app_bio_female),  SUM(offers_bio_female) FROM  [813].[table_oser11.csv] WHERE  app_total > 300","SELECT  SUM(app_bio_female), SUM(offers_bio_female)
+FROM [813].[table_oser11.csv]
+WHERE app_total = (SELECT app_total FROM [813].[table_oser11.csv] WHERE app_total > 300);",YES,type-mismatch-nested
+"SELECT  *, 801 AS FileNumber FROM  [446].[Protein_Groups_N_Pacific_801bacteria_anNOtation.csv] UNION ALL SELECT  *, 802 AS FileNumber FROM  [446].[Protein_Groups_N_Pacific_802bacteria_anNOtation.csv] UNION ALL SELECT  *, 803 AS FileNumber FROM  [446].[Protein_Groups_N_Pacific_803bacteria_anNOtation.csv]","SELECT  *, 801 AS FileNumber FROM  [446].[Protein_Groups_N_Pacific_801bacteria_anNOtation.csv] UNION ALL SELECT  *, 802 AS FileNumber FROM  [446].[Protein_Groups_N_Pacific_802bacteria_anNOtation.csv] UNION ALL SELECT  *, 803 AS FileNumber FROM  [446].[Protein_Groups_N_Pacific_803bacteria_anNOtation.csv]",NO,NO Error
+"SELECT  DISTINCT CASE WHEN PATINDEX('%[0-9]%',  [protein]) = 1 -- first char is number AND  CHARINDEX(', ',  [protein]) = 0 -- AND  NO comma present THEN [protein] ELSE SUBSTRING([protein], PATINDEX('%[0-9]%',  [protein]),  -- start at first number CHARINDEX(', ',  [protein])-PATINDEX('%[0-9]%',  [protein])) -- length END AS [protein D2] ,  [tot indep spectra] AS [tot spectra D2] FROM  [412].[D2_trip_files_169_170_171.prot.txt]","SELECT DISTINCT
+    CASE 
+        WHEN PATINDEX('%[0-9]%', protein) = 1 -- first char is number
+        AND CHARINDEX(', ', protein) = 0 -- NO comma present
+        THEN protein
+        ELSE SUBSTRING(protein, PATINDEX('%[0-9]%', protein), -- start at first number
+                       CHARINDEX(', ', protein) - PATINDEX('%[0-9]%', protein)) -- length
+    END AS protein, -- Alias same as original column name
+    tot_indep_spectra AS tot_spectra_D2
+FROM [412].[D2_trip_files_169_170_171.prot.txt]",YES,alias-ambiguous
+SELECT  * FROM  [446].[uw_salaries_2011.txt] WHERE  Column6 IS NULL,"SELECT * 
+FROM [446].[uw_salaries_2011.txt] 
+WHERE Column6 IS NULL
+GROUP BY Column1 -- Assuming Column1 for demonstration as a placeholder
+HAVING COUNT(*) > 5;",YES,aggr-having
+SELECT  * FROM  [412].[all sequenced proteins all treatments.txt] LEFT JOIN  [412].[103B_245_01.txt] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[103B_245_01.txt].proteinCG245_01 LEFT JOIN  [412].[103B_245_02.txt] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[103B_245_02.txt].proteinCG245_02 LEFT JOIN  [412].[103B_245_03.txt] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[103B_245_03.txt].proteinCG245_03,"SELECT * 
+FROM [412].[all sequenced proteins all treatments.txt]
+LEFT JOIN [412].[103B_245_01.txt] 
+  ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = (SELECT proteinCG245_01 FROM [412].[103B_245_01.txt])
+LEFT JOIN [412].[103B_245_02.txt] 
+  ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = (SELECT proteinCG245_02 FROM [412].[103B_245_02.txt])
+LEFT JOIN [412].[103B_245_03.txt] 
+  ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = (SELECT proteinCG245_03 FROM [412].[103B_245_03.txt]);",YES,type-mismatch-nested
+SELECT  COUNT (*) FROM ( SELECT  * FROM  [1123].[_BiGoM3cg5]),SELECT COUNT(*) FROM (SELECT CAST(column_name AS INT) FROM [1123].[_BiGoM3cg5]);,YES,type-mismatch-condition
+SELECT  * FROM  [412].[table_lowco2 spec counts background.txt] INNER JOIN  [412].[table_Cg proteome db evalue -10.txt] ON [412].[table_lowco2 spec counts background.txt].protein=[412].[table_Cg proteome db evalue -10.txt].Protein,"SELECT  * 
+FROM  [412].[table_lowco2 spec counts background.txt] a
+INNER JOIN  [412].[table_Cg proteome db evalue -10.txt] b 
+ON a.protein = c.Protein;",YES,alias-undefined
+"SELECT  * FROM  ( SELECT  sql_query,  sql_query_hash ,  x_col_name,  y_col_name ,  vizlet_type ,  row_number() over (partition by sql_query,  sql_query_hash,  x_col_name,  y_col_name order by score desc) as rnk FROM  [1314howe].[Vizlet Scores] --GROUP BY  sql_query,  sql_query_hash,  x_col_name,  y_col_name ) x WHERE  x.rnk = 1","SELECT *
+FROM (
+    SELECT 
+        sql_query, 
+        sql_query_hash,
+        x_col_name,
+        y_col_name,
+        vizlet_type,
+        row_number() over (
+            partition by sql_query, sql_query_hash, x_col_name, y_col_name 
+            order by score desc
+        ) as rnk,
+        sql_query as query 
+    FROM [1314howe].[Vizlet Scores]
+) x
+WHERE x.rnk = 1",YES,alias-ambiguous
+"SELECT  c.DEST,  n.ORIGIN,  c.ARR_TIME,  n.DEP_TIME FROM  [372].[flights09_part] c JOIN [372].[flights09_part] n ON c.TAIL_NUM = n.TAIL_NUM AND  (c.DATE < n.DATE OR  (c.DATE = n.DATE AND  c.ARR_TIME <= n.DEP_TIME)) AND  c.DEST != n.ORIGIN","SELECT  c.DEST,  n.ORIGIN,  c.ARR_TIME,  n.DEP_TIME FROM  [372].[flights09_part] c JOIN [372].[flights09_part] n ON c.TAIL_NUM = n.TAIL_NUM AND  (c.DATE < n.DATE OR  (c.DATE = n.DATE AND  c.ARR_TIME <= n.DEP_TIME)) AND  c.DEST != n.ORIGIN",NO,NO Error
+"SELECT  count(*) FROM  ( SELECT  fs.sql_query,  vs.query_hash,  vs.x_col,  vs.y_col,  vs.vizlet_type,  count(*) as score FROM  [1307].[vizlets_28NOv11_16h16m43s_every_displayed_vizlet.csv] vs LEFT OUTER JOIN  [1307].[vizlets_23NOv11_10h34m16s_vizlet_and_action_features.csv] fs ON (vs.query_hash = fs.sql_query_hash and vs.x_col = fs.x_col_name and vs.y_col = fs.y_col_name and vs.vizlet_type = fs.vizlet_type) WHERE   1=1 GROUP BY  fs.sql_query,  vs.query_hash,  vs.x_col,  vs.y_col,  vs.vizlet_type --ORDER BY  count(*) desc --  ) z","SELECT COUNT(*) 
+FROM (
+    SELECT fs.sql_query, 
+           vs.query_hash, 
+           vs.x_col, 
+           vs.y_col, 
+           vs.vizlet_type,  
+           COUNT(*) AS score 
+    FROM [1307].[vizlets_28NOv11_16h16m43s_every_displayed_vizlet.csv] vs 
+    LEFT OUTER JOIN [1307].[vizlets_23NOv11_10h34m16s_vizlet_and_action_features.csv] fs 
+        ON (vs.query_hash = fs.sql_query_hash 
+            AND vs.x_col = fs.x_col_name 
+            AND vs.y_col = fs.y_col_name 
+            AND vs.vizlet_type = fs.vizlet_type) 
+    WHERE 1=1 
+    GROUP BY fs.sql_query, 
+             vs.query_hash, 
+             vs.x_col, 
+             vs.y_col, 
+             vs.vizlet_type 
+    HAVING COUNT(vs.query_hash) > 10 
+) z;",YES,aggr-having
+"SELECT  'Tokyo_1' as source ,  cast([TCPhase..Deg.] as float) ,  cast([C1RPh..Deg.] as float)","SELECT  
+    'Tokyo_1' as source, 
+    AVG(cast([TCPhase..Deg.] as float)) AS AvgTCPhase,  -- Using AVG without GROUP BY
+    SUM(cast([C1RPh..Deg.] as float)) AS SumC1RPh  -- Using SUM without GROUP BY",YES,aggr-attribute
+SELECT  * FROM  [1307].[table_cinq_cents_objets_1312NOmiques.csv],"SELECT 
+    AVG(*)  
+FROM 
+    [1307].[table_cinq_cents_objets_1312NOmiques.csv];",YES,aggr-attribute
+SELECT  cast(cast('11:35 PM' as time) as datetime),"SELECT  cast(cast(x.time_value as time) as datetime)
+FROM [Example].[Time_Table] x;",YES,alias-undefined
+"SELECT  M1ID, M1ratio, T1D3ratio, T1D5ratio FROM  [1123].[filt3_M1]m1 join [1123].[filt3_M3]m3 on m1.M1ID=m3.M3ID join [1123].[filt3_T1D3]t1d3 on m1.M1ID=t1d3.T1D3ID join [1123].[filt3_T1D5]t1d5 on m1.M1ID=t1d5.T1D5ID join [1123].[filt3_T3D3]t3d3 on m1.M1ID=t3d3.T3D3ID join [1123].[filt3_T3D5]t3d5 on m1.M1ID=t3d5.T3D5ID where [M1coverage] >= '5' and [M3coverage] >= '5' and [T1D3coverage] >= '5' and [T1D5coverage] >= '5' and [T3D3coverage] >= '5' and [T3D5coverage] >= '5'","SELECT  M1ID, M1ratio, T1D3ratio, T1D5ratio FROM  [1123].[filt3_M1] m1 join [1123].[filt3_M3] m3 on m1.M1ID=m3.M3ID join [1123].[filt3_T1D3] t1d3 on m1.M1ID=t1d3.T1D3ID join [1123].[filt3_T1D5] t1d5 on m1.M1ID=t1d5.T1D5ID join [1123].[filt3_T3D3]t3d3 on m1.M1ID=t3d3.T3D3ID join [1123].[filt3_T3D5]t3d5 on m1.M1ID=t3d5.T3D5ID where [M1coverage] >= '5' and [M3coverage] >= '5' and [T1D3coverage] >= '5' and [T1D5coverage] >= '5' and [T3D3coverage] >= '5' and [T3D5coverage] >= '5'",YES,alias-ambiguous
+SELECT  * FROM  [1314howe].[UW highest paid employee by department] where middle ='T',"SELECT  * 
+FROM  [1314howe].[UW highest paid employee by department] as emp
+WHERE  dept.middle = 'T';",YES,alias-undefined
+"SELECT  floor(latitude/0.7)*0.7 as latbin ,  floor(longitude/0.7)*0.7 as lonbin ,  floor(0.2/0.7)*0.7,  0.49/0.7 ,  species FROM  [690].[All3col]","SELECT  floor(latitude/0.7)*0.7 as latbin ,  floor(longitude/0.7)*0.7 as lonbin ,  floor(0.2/0.7)*0.7,  0.49/0.7 ,  species FROM  [690].[All3col]",NO,NO Error
+"SELECT  CAS001, CASE WHEN CAS001=2 THEN 'NM' WHEN CAS001=1 THEN 'M' WHEN CAS001=0 THEN 'U' END AS CAS001MethStat FROM  [412].[summed presence absence fragment peaks]","SELECT  CAS001, CASE WHEN CAS001=2 THEN 'NM' WHEN CAS001=1 THEN 'M' WHEN CAS001=0 THEN 'U' END AS CAS001MethStat FROM  [412].[summed presence absence fragment peaks]",NO,NO Error
+select idx from Frame1 where idx = 1 union select idx from Frame2 where idx= 21,"SELECT idx, FrameID FROM (
+    SELECT idx, 'Frame1' AS FrameID FROM Frame1 WHERE idx = 1
+    UNION ALL
+    SELECT idx, 'Frame2' AS FrameID FROM Frame2 WHERE idx = 21
+) AS CombinedFrames
+ORDER BY FrameID, idx",NO,NO Error
+SELECT  * FROM  [876].[table_NUTR_DEF_1.csv],SELECT * FROM [876].[table_NUTR_DEF_1.csv] WHERE nutrient_id = (SELECT nutrient_id FROM [876].[table_NUTR_DEF_1.csv]);,YES,type-mismatch-nested
+"SELECT [protein] AS [protein63], [protein probability] AS [protein probability63], [percent coverage] AS [percent coverage63], [tot indep spectra] AS [tot indep spectra63], [peptides] AS [peptides63] FROM  [412].[table_Prophet_2014_Sept_08_BeringSea63.prot.xls] WHERE  [tot indep spectra]>1","SELECT [protein] AS [protein63], [protein probability] AS [protein probability63], [percent coverage] AS [percent coverage63], [tot indep spectra] AS [tot indep spectra63], [peptides] AS [peptides63] FROM  [412].[table_Prophet_2014_Sept_08_BeringSea63.prot.xls] WHERE  [tot indep spectra]>1",NO,NO Error
+SELECT  * FROM  [1002].[Tokyo_2_merged_data_time_binned],SELECT  * FROM  [1002].[Tokyo_2_merged_data_time_binned],NO,NO Error
+"select distinct x.followee,  y.follower from twittermat x,  twittermat y where x.follower=y.followee","select distinct x.followee,  y.follower from twittermat x,  twittermat y where x.follower=y.followee",NO,NO Error
+"SELECT DISTINCT T.day as Day,  T.[file] as File_Id, (CAST(T.opp as FLOAT))/(CAST(T.evt as FLOAT)) as opp_evt, (1000*(-9*POWER(10, -5)*POWER(CAST(D.[STREAM.PRESSURE] as FLOAT), 4) + 0.0066 * POWER(CAST(D.[STREAM.PRESSURE] as FLOAT), 3) - 0.173 * POWER(CAST(D.[STREAM.PRESSURE] as FLOAT), 2) + 2.5013 * CAST(D.[STREAM.PRESSURE] as FLOAT) + 2.1059) * 0.1738) as flow_rate FROM  [1057].[Thompson9_stats.tab] as T, [1057].[Thompson9_sds.tab] as D WHERE  T.day = D.day AND  T.[file] = D.[file] AND  ISNUMERIC(D.[STREAM.PRESSURE])<>0","SELECT DISTINCT T.day as Day,  T.[file] as File_Id, (CAST(T.opp as FLOAT))/(CAST(T.evt as FLOAT)) as opp_evt, (1000*(-9*POWER(10, -5)*POWER(CAST(D.[STREAM.PRESSURE] as FLOAT), 4) + 0.0066 * POWER(CAST(D.[STREAM.PRESSURE] as FLOAT), 3) - 0.173 * POWER(CAST(D.[STREAM.PRESSURE] as FLOAT), 2) + 2.5013 * CAST(D.[STREAM.PRESSURE] as FLOAT) + 2.1059) * 0.1738) as flow_rate FROM  [1057].[Thompson9_stats.tab] as T, [1057].[Thompson9_sds.tab] as D WHERE  T.day = D.day AND  T.[file] = D.[file] AND  ISNUMERIC(D.[STREAM.PRESSURE])<>0",NO,NO Error
+SELECT  * FROM  [412].[rpom peptide and protein presence summed] WHERE  [protein presence]>36,"SELECT *, [protein presence] as protein_presence FROM [412].[rpom peptide and protein presence summed]
+WHERE [protein presence] > 36 AND protein_presence > 36",YES,alias-ambiguous
+SELECT  COUNT(*) FROM  [446].[1341ls_and_nutrients_for_odv],"SELECT 
+    COUNT(*), 
+    ColumnName  -- NOn-aggregated column added to create an error
+FROM 
+    [446].[1341ls_and_nutrients_for_odv];",YES,aggr-attribute
+"select ra.PersonalName, ap.PMID from [Research-Affiliation] ra join Author_PMID ap on (ap.PersonalName = ra.PersonalName)","select ra.PersonalName, pa.PMID from [Research-Affiliation] ra join Author_PMID ap on (pa.PersonalName = ra.PersonalName)",YES,alias-undefined
+"SELECT  first.s,  second.s,  third.s FROM  [354].[small_graph] first ,  [354].[small_graph] second ,  [354].[small_graph] third WHERE  first.d = second.s AND  second.d = third.s AND  third.d = first.s AND  first.s < second.s AND  second.s < third.s","SELECT  first.s,  second.s,  third.s FROM  [354].[small_graph] first ,  [354].[small_graph] second ,  [354].[small_graph] third WHERE  first.d = second.s AND  second.d = third.s AND  third.d = first.s AND  first.s < second.s AND  second.s < third.s",NO,NO Error
+"select count(distinct substring([protein code-1],  7,  7)) from [xstal_tracker.csv] where [protein code-1] like 'Myth%'  group by  [data set?], [diffraction?], [crystals?]","SELECT 
+    count(distinct substring(d.[protein code-1], 7, 7)) 
+FROM 
+    [xstal_tracker.csv] 
+WHERE 
+    d.[protein code-1] LIKE 'Myth%'  
+GROUP BY  
+    x.[data set?], x.[diffraction?], x.[crystals?];",YES,alias-undefined
+SELECT  * FROM  [446].[V2_LineP_nutrients_formatted.csv] Where station = 'P1',"SELECT * 
+FROM [446].[V2_LineP_nutrients_formatted.csv] 
+WHERE station = 'P1'
+HAVING COUNT(station) > 1;",YES,aggr-having
+"select u.[ec numbers] as enzyme,  a.* from report_anacor a join [uniprot_enzyme_map.csv] u on (u.accession = a.uniprot)","SELECT 
+    z.[ec numbers] as enzyme,  
+    a.* 
+FROM 
+    report_anacor a 
+JOIN 
+    [uniprot_enzyme_map.csv] u 
+ON 
+    (u.accession = a.uniprot);",YES,alias-undefined
+"SELECT   survey_institution, app_bio_female FROM  [813].[oser11.csv]","SELECT survey_institution, CAST(app_bio_female AS INT) AS app_bio_female
+FROM [813].[oser11.csv];",YES,type-mismatch-condition
+"SELECT  oyster.groupid ,  COUNT(*) as methcnt FROM  [354].[oyster.v9.glean.final.rename.mRNA.gff] oyster , [354].[cni1319n_oyster_v9_M_fuzznuc_CG.gff] allcg WHERE  oyster.seqname=allcg.seqname AND  (oyster.startidx > allcg.startidx AND  oyster.startidx < allcg.endidx OR  allcg.startidx > oyster.startidx AND  allcg.startidx < oyster.endidx) GROUP BY  oyster.groupid","SELECT oyster.groupid, 
+       COUNT(*) AS methcnt 
+FROM [354].[oyster.v9.glean.final.rename.mRNA.gff] oyster, 
+     [354].[cni1319n_oyster_v9_M_fuzznuc_CG.gff] allcg 
+WHERE oyster.seqname = allcg.seqname 
+  AND (oyster.startidx > allcg.startidx 
+       AND oyster.startidx < allcg.endidx 
+       OR allcg.startidx > oyster.startidx 
+       AND allcg.startidx < oyster.endidx) 
+GROUP BY oyster.groupid 
+HAVING COUNT(allcg.seqname) > 10;",YES,aggr-having
+"SELECT  CONVERT(VARCHAR,  [time],  126) as [time],  lat,  lon,  salinity,  ocean_tmp,  par FROM  [1059].[SFL_VIEW] ORDER BY  [time] ASC","SELECT  CONVERT(VARCHAR,  [time],  126) as [time],  lat,  lon,  salinity,  ocean_tmp,  par FROM  [1059].[SFL_VIEW] ORDER BY  [time] ASC",NO,NO Error
+"SELECT isnull(a.row_num, isnull(b.row_num, null) ) as row , isnull(a.column_num, isnull(b.column_num, null) ) as row , a.row_num, a.column_num, b.row_num, b.column_num  ,  a.value ,  b.value, a.value + b.value sum_value FROM [187].[table_Matrix A.txt]  A full outer join [187].[table_Matrix B.txt] B on A.row_num = B.row_num and A.column_num  = b.column_num","SELECT 
+  ISNULL(a.row_num, ISNULL(b.row_num, NULL)) AS final_row_num,
+  ISNULL(a.column_num, ISNULL(b.column_num, NULL)) AS final_column_num,
+  a.row_num AS a_row_num,
+  a.column_num AS a_column_num,
+  b.row_num AS b_row_num,
+  b.column_num AS b_column_num,
+  a.value AS a_value,
+  b.value AS b_value,
+  a.value + b.value AS sum_value
+FROM [187].[table_Matrix A.txt] A
+FULL OUTER JOIN [187].[table_Matrix B.txt] B
+  ON A.row_num = (SELECT row_num FROM [187].[table_Matrix A.txt]) AND A.column_num = B.column_num;",YES,type-mismatch-nested
+SELECT  * FROM  [1123].[Pgen_blastx_uniprot_sql.tab]ann left join [1123].[uniprot-reviewed_wGO_010714]uni on ann.Column3 = uni.Entry,SELECT  * FROM  [1123].[Pgen_blastx_uniprot_sql.tab] ann left join [1123].[uniprot-reviewed_wGO_010714] uni on ann.Column3 = uni.Entry,NO,NO Error
+SELECT  * FROM  [1123].[qDOD Cgigas Gene Descriptions (Swiss-prot)] where CGI_ID = 'CGI_10009035',"SELECT * 
+FROM [1123].[qDOD Cgigas Gene Descriptions (Swiss-prot)]
+WHERE CGI_ID = (SELECT CGI_ID FROM [1123].[qDOD Cgigas Gene Descriptions (Swiss-prot)]);",YES,type-mismatch-nested
+SELECT  * FROM  [412].[all sequenced proteins all treatments.txt] LEFT JOIN  [412].[CG2 unique peps > 1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG2 unique peps > 1].[All Proteins] LEFT JOIN  [412].[CG5 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG5 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG8 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG8 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG11 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG11 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG26 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG26 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG29 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG29 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG32 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG32 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG35 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG35 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG221 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG221 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG224 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG224 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG227 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG227 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG230 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG230 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG242 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG242 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG245 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG245 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG248 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG248 unique peps >1].[All Proteins] LEFT JOIN  [412].[CG251 unique peps >1] ON [412].[all sequenced proteins all treatments.txt].[All Proteins]=[412].[CG251 unique peps >1].[All Proteins],"SELECT 
+    AVG([412].[all sequenced proteins all treatments.txt].[All Proteins]) -- Misusing AVG() on a likely NOn-numeric column
+FROM 
+    [412].[all sequenced proteins all treatments.txt]
+LEFT JOIN 
+    [412].[CG2 unique peps > 1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG2 unique peps > 1].[All Proteins]
+LEFT JOIN 
+    [412].[CG5 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG5 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG8 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG8 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG11 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG11 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG26 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG26 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG29 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG29 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG32 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG32 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG35 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG35 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG221 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG221 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG224 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG224 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG227 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG227 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG230 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG230 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG242 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG242 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG245 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG245 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG248 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG248 unique peps >1].[All Proteins]
+LEFT JOIN 
+    [412].[CG251 unique peps >1] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[CG251 unique peps >1].[All Proteins];",YES,aggr-attribute
+"SELECT  spectrum AS [spectrum56], start_scan AS start_scan56, expect AS expect56, peptide AS peptide56, protein AS protein56 FROM  [412].[table_BactDetection56.pep.txt]","SELECT  spectrum AS [spectrum56], start_scan AS start_scan56, expect AS expect56, peptide AS peptide56, protein AS protein56 FROM  [412].[table_BactDetection56.pep.txt]",NO,NO Error
+select * FROM ['[1123].[QDOD'] WHERE  c.school_code BETWEEN 1000 AND  2000,select * FROM ['[1123].[QDOD'] WHERE  c.school_code BETWEEN 1000 AND  2000,NO,NO Error
+SELECT  * FROM  [299].[seastar_clc_uniprot_sprot_2.tab]blast Left join [1123].[uniprot-reviewed_wGO_010714]unp on blast.Column3=unp.Entry Where Pathway like 'cell',"SELECT * 
+FROM [299].[seastar_clc_uniprot_sprot_2.tab] AS blast
+LEFT JOIN [1123].[uniprot-reviewed_wGO_010714] AS unp
+  ON blast.Column3 = (SELECT Entry FROM [1123].[uniprot-reviewed_wGO_010714])
+WHERE Pathway LIKE '%cell%';",YES,type-mismatch-nested
+select distinct conf_id from [1143].tbl_organizer,select distinct conf_id from [1143].tbl_organizer,NO,NO Error
+SELECT  TOP 1 * FROM  Paired ORDER BY  [DateTime] DESC,SELECT  TOP 1 * FROM  Paired x ORDER BY  y.[DateTime] DESC;,YES,alias-undefined
+SELECT  MAX(x) FROM (SELECT  NULL AS x UNION ALL SELECT  1 AS x) y,SELECT MAX(CAST(x AS VARCHAR)) FROM (SELECT NULL AS x UNION ALL SELECT 'one' AS x) y;,YES,type-mismatch-condition
+"SELECT  clock ,  clock / 10000000 as clock_millions ,  (clock) as log_clock ,  issues,  ticks,  m2issues,  m1issues ,  issues/ticks as issues_per_tick ,  memrefs/ticks as memrefs_per_tick ,  phantoms/ticks as phantoms_per_tick ,  streams/ticks as streams_per_tick FROM  ( SELECT  m1.source as source1,  m2.source as source2 ,  m1.clock as clock ,  cast((m2.clock - m1.clock) as float) as ticks ,  m2.issues as m2issues,  m1.issues as m1issues ,  (m2.issues - m1.issues)  as issues ,  (m2.memrefs - m1.memrefs)  as memrefs ,  (m2.phantoms - m1.phantoms)  as phantoms ,  (m2.streams - m1.streams)  as streams FROM  1314howe.measurement m1 ,  1314howe.measurement m2 WHERE  m2.clock > m1.clock AND  NOT EXISTS ( SELECT  clock FROM  1314howe.measurement m3 WHERE  m1.clock < m3.clock AND  m2.clock > m3.clock ) ) x ORDER BY  clock asc","SELECT 
+    clock, 
+    clock / 10000000 as clock_millions, 
+    LOG(clock) as log_clock,  -- Assuming clock might contain zeros or negative values
+    issues, 
+    ticks, 
+    m2issues, 
+    m1issues, 
+    issues / ticks as issues_per_tick, 
+    CAST(memrefs AS VARCHAR) / ticks as memrefs_per_tick,  -- Error: Dividing string by number
+    phantoms / ticks as phantoms_per_tick, 
+    streams / ticks as streams_per_tick 
+FROM 
+    (SELECT 
+        m1.source as source1, 
+        m2.source as source2, 
+        m1.clock as clock, 
+        CAST((m2.clock - m1.clock) as float) as ticks, 
+        m2.issues as m2issues, 
+        m1.issues as m1issues, 
+        (m2.issues - m1.issues) as issues, 
+        (m2.memrefs - m1.memrefs) as memrefs, 
+        (m2.phantoms - m1.phantoms) as phantoms, 
+        (m2.streams - m1.streams) as streams 
+     FROM 
+        1314howe.measurement m1, 
+        1314howe.measurement m2 
+     WHERE 
+        m2.clock > m1.clock 
+        AND NOT EXISTS 
+            (SELECT clock FROM 1314howe.measurement m3 WHERE m1.clock < m3.clock AND m2.clock > m3.clock)
+    ) x 
+ORDER BY 
+    clock asc;",YES,type-mismatch-condition
+SELECT  * FROM  [1317].[COFFEEEEEEEEEE] where value >1000 and price >.15 and year >1900,"SELECT  * 
+FROM  [1317].[COFFEEEEEEEEEE] c
+WHERE  d.value > 1000 AND e.price > .15 AND f.year > 1900;",YES,alias-undefined
+"SELECT  Column1 as time, Column2-1 as doNOr_idx, Column3 as acceptor_idx, Column4 as doNOr_resnm, Column5 as doNOr_resid, Column6 as doNOr_atom, Column7 as acceptor_resnm, Column8 as acceptor_resid, Column9 as acceptor_atom, Column10 as distance, Column11 as angle from Article ","SELECT 
+    Column1 as time, 
+    CAST(Column2 AS VARCHAR) - 1 as doNOr_idx, -- Error: Subtracting an integer from a string
+    Column3 as acceptor_idx, 
+    Column4 as doNOr_resnm, 
+    Column5 as doNOr_resid, 
+    Column6 as doNOr_atom, 
+    Column7 as acceptor_resnm, 
+    Column8 as acceptor_resid, 
+    Column9 as acceptor_atom, 
+    CAST(Column10 AS VARCHAR) as distance, -- Potential error if distance calculations are expected
+    CAST(Column11 AS VARCHAR) as angle -- Potential error if angle calculations are needed
+FROM 
+    Article;",YES,type-mismatch-condition
+"SELECT * max(salary),  min(salary),  avg(salary),  count(*) FROM  ( SELECT  Name,  [Job Title] as job_title, [2010 Gross Earnings] as salary FROM  [1314howe].[uw_salaries_2011.txt] ) x WHERE job_title like '%RESEAR%PRINCI%' job_title like 'ASSISTANT PROFESSOR ' name like '%balazinska%' AND  job_title NOt like '%APL%' AND  salary < 112800 ORDER BY  salary desc","SELECT MAX(salary), 
+       MIN(salary), 
+       AVG(salary), 
+       COUNT(*)
+FROM (
+    SELECT Name, 
+           [Job Title] AS job_title, 
+           [2010 Gross Earnings] AS salary 
+    FROM [1314howe].[uw_salaries_2011.txt]
+) x
+WHERE job_title LIKE '%RESEAR%PRINCI%' 
+  AND job_title LIKE 'ASSISTANT PROFESSOR ' 
+  AND Name LIKE '%balazinska%' 
+  AND job_title NOT LIKE '%APL%' 
+  AND salary < 112800
+HAVING AVG(salary) > 100000
+ORDER BY salary DESC;",YES,aggr-having
+"SELECT term_id, tf, D, docs_with_T , log(D)-log(docs_with_T) as idf , tf * (log(D)-log(docs_with_T)) as [tf-idf] FROM ( SELECT term_id, SUM(frequency) as tf , (SELECT  COUNT(distinct doc_id) FROM  [1314howe].[reuters_terms.csv]) as D , COUNT(*) as docs_with_T FROM  [1314howe].[reuters_terms.csv] GROUP BY  term_id ) a ORDER BY  [tf-idf] desc","SELECT term_id, 
+       tf, 
+       D, 
+       docs_with_T, 
+       LOG(D) - LOG(docs_with_T) AS idf, 
+       tf * (LOG(D) - LOG(docs_with_T)) AS [tf-idf]
+FROM (
+    SELECT term_id, 
+           SUM(frequency) AS tf, 
+           (SELECT COUNT(DISTINCT doc_id) FROM [1314howe].[reuters_terms.csv]) AS D, 
+           COUNT(*) AS docs_with_T 
+    FROM [1314howe].[reuters_terms.csv] 
+    GROUP BY term_id
+) a
+HAVING SUM(frequency) > 1000 
+ORDER BY [tf-idf] DESC;",YES,aggr-having
+select (66),select (66),NO,NO Error
+SELECT  * FROM  [412].[bact detection distinct peptides] LEFT JOIN  [412].[interact-2015_May_6_Bacteria_Detection9.pep.xls] ON [412].[bact detection distinct peptides].peptide=[interact-2015_May_6_Bacteria_Detection9.pep.xls].peptide,"SELECT 
+    AVG([interact-2015_May_6_Bacteria_Detection9.pep.xls].someColumn) AS AvgColumn, -- Assuming someColumn is numeric, using AVG without GROUP BY
+    * 
+FROM 
+    [412].[bact detection distinct peptides] 
+LEFT JOIN 
+    [412].[interact-2015_May_6_Bacteria_Detection9.pep.xls] 
+    ON [412].[bact detection distinct peptides].peptide = [interact-2015_May_6_Bacteria_Detection9.pep.xls].peptide;",YES,aggr-attribute
+"WITH  Numbered AS (SELECT  [DateTime],  [LAT],  [LON],  ROW_NUMBER() OVER (ORDER BY  [DateTime] ASC) AS [Row] FROM  [1059].[SDS_VIEW]) ,  Paired AS (SELECT  a.[DateTime] AS [DateTime] ,  DATEDIFF(second,  a.[DateTime],  b.[DateTime]) AS [Elapsed (s)] ,  a.[LAT] AS [lat1deg] ,  a.[LON] AS [lon1deg] ,  b.[LAT] AS [lat2deg] ,  b.[LON] AS [lon2deg] ,  a.[LAT] * PI() / 180 AS [lat1] ,  b.[LAT] * PI() / 180  AS [lat2] ,  (a.[LAT] - b.[LAT]) * PI() / 180 AS [dlat] ,  (a.[LON] - b.[LON]) * PI() / 180 AS [dlon] FROM  Numbered a JOIN  Numbered b ON a.[Row]+1 = b.[Row]) ,  Trig AS (SELECT  * ,  POWER(SIN(dlat/2), 2) + POWER(SIN(dlon/2), 2) * COS(lat1) * COS(lat2) AS val FROM  Paired) ,  Distance AS (SELECT  * ,  6378100 * 2 * atn2(sqrt(val),  sqrt(1-val)) AS [Distance (m)] FROM  Trig) SELECT  TOP 500 * ,  [Distance (m)] / NULLIF([Elapsed (s)], 0) AS [Velocity (m/s)] FROM  Distance","WITH  Numbered AS (SELECT  [DateTime],  [LAT],  [LON],  ROW_NUMBER() OVER (ORDER BY  [DateTime] ASC) AS [Row] FROM  [1059].[SDS_VIEW]) ,  Paired AS (SELECT  a.[DateTime] AS [DateTime] ,  DATEDIFF(second,  a.[DateTime],  b.[DateTime]) AS [Elapsed (s)] ,  a.[LAT] AS [lat1deg] ,  a.[LON] AS [lon1deg] ,  b.[LAT] AS [lat2deg] ,  b.[LON] AS [lon2deg] ,  a.[LAT] * PI() / 180 AS [lat1] ,  b.[LAT] * PI() / 180  AS [lat2] ,  (a.[LAT] - b.[LAT]) * PI() / 180 AS [dlat] ,  (a.[LON] - b.[LON]) * PI() / 180 AS [dlon] FROM  Numbered a JOIN  Numbered b ON a.[Row]+1 = b.[Row]) ,  Trig AS (SELECT  * ,  POWER(SIN(dlat/2), 2) + POWER(SIN(dlon/2), 2) * COS(lat1) * COS(lat2) AS val FROM  Paired) ,  Distance AS (SELECT  * ,  6378100 * 2 * atn2(sqrt(val),  sqrt(1-val)) AS [Distance (m)] FROM  Trig) SELECT  TOP 500 * ,  [Distance (m)] / NULLIF([Elapsed (s)], 0) AS [Velocity (m/s)] FROM  Distance",NO,NO Error
+"SELECT  [entry NO.] as [B1.2 entry NO.], [protein] AS [B1.2 protein], [protein probability] AS [B1.2 protein probability], [protein description] AS [B1.2 protein description], [percent coverage] AS [B1.2 percent coverage], [tot indep spectra] AS [B1.2 tot indep spectra], [percent share of spectrum IDs] AS [B1.2 percent share of spectrum IDs], [peptides] as [B1.2 peptides] FROM  [412].[table_interact-2015_May_6_Bacteria_Detection51.prot.xls]","SELECT 
+    [entry NO.] as [B1.2 entry NO.], 
+    [protein] AS [B1.2 protein], 
+    AVG([protein probability]) AS [B1.2 protein probability], -- Misusing AVG without GROUP BY
+    [protein description] AS [B1.2 protein description], 
+    [percent coverage] AS [B1.2 percent coverage], 
+    [tot indep spectra] AS [B1.2 tot indep spectra], 
+    [percent share of spectrum IDs] AS [B1.2 percent share of spectrum IDs], 
+    [peptides] as [B1.2 peptides] 
+FROM  
+    [412].[table_interact-2015_May_6_Bacteria_Detection51.prot.xls];",YES,aggr-attribute
+"SELECT [protein] AS [protein45], [protein probability] AS [protein probability45], [percent coverage] AS [percent coverage45], [tot indep spectra] AS [tot indep spectra45], [peptides] AS [peptides45] FROM  [412].[table_Prophet_2014_Sept_08_BeringSea45.prot.xls] WHERE  [tot indep spectra]>1","SELECT 
+    x.[protein] AS [protein45], 
+    x.[protein probability] AS [protein probability45], 
+    x.[percent coverage] AS [percent coverage45], 
+    x.[tot indep spectra] AS [tot indep spectra45], 
+    x.[peptides] AS [peptides45] 
+FROM  
+    [412].[table_Prophet_2014_Sept_08_BeringSea45.prot.xls] 
+WHERE  
+    y.[tot indep spectra] > 1;",YES,alias-undefined
+SELECT  * FROM  [412].[table_loadings from skyline nmds.txt] INNER JOIN  [412].[table_Cg proteome db evalue -10.txt] ON [412].[table_loadings from skyline nmds.txt].Protein=[412].[table_Cg proteome db evalue -10.txt].Protein,SELECT  * FROM  [412].[table_loadings from skyline nmds.txt] INNER JOIN  [412].[table_Cg proteome db evalue -10.txt] ON [412].[table_loadings from skyline nmds.txt].Protein=[412].[table_Cg proteome db evalue -10.txt].Protein,NO,NO Error
+"select * FROM  ( select cast(month + '/' + day + '/' + year as datetime) as ddate ,  cast(substring(stime, 1, 2) as integer) as hours ,  cast(substring(stime, 3, 2) as integer) as minutes ,  cast(substring(stime, 5, 2) as integer) as seconds ,  * from ( select substring(sdate, len(sdate) - 5, 2) as day ,  substring(sdate, len(sdate) - 3, 2) as month ,  substring(sdate, len(sdate) - 1, 2) as year ,  substring(ztime, len(ztime) - 5, 6) as stime ,  * from ( select '00000' + cast(time as varchar) as ztime ,  '0' + cast(date as varchar) as sdate ,  * from [1002].[Tokyo_0_merged_data.csv] ) x ) y ) z order by timestamp","SELECT * 
+FROM (
+    SELECT 
+        CAST(month + '/' + day + '/' + year AS DATETIME) AS ddate,
+        CAST(SUBSTRING(stime, 1, 2) AS INTEGER) AS hours,
+        CAST(SUBSTRING(stime, 3, 2) AS INTEGER) AS minutes,
+        CAST(SUBSTRING(stime, 5, 2) AS INTEGER) AS seconds,
+        *
+    FROM (
+        SELECT 
+            SUBSTRING(sdate, LEN(sdate) - 5, 2) AS day,
+            SUBSTRING(sdate, LEN(sdate) - 3, 2) AS month,
+            SUBSTRING(sdate, LEN(sdate) - 1, 2) AS year,
+            SUBSTRING((SELECT ztime FROM [1002].[Tokyo_0_merged_data.csv] WHERE ztime IS NOT NULL), LEN(ztime) - 5, 6) AS stime,
+            *
+        FROM (
+            SELECT 
+                '00000' + CAST(time AS VARCHAR) AS ztime,
+                '0' + CAST(date AS VARCHAR) AS sdate,
+                *
+            FROM [1002].[Tokyo_0_merged_data.csv]
+        ) x
+    ) y
+) z
+ORDER BY timestamp;",YES,type-mismatch-nested
+select * FROM  [1123].[Mgo_RNAseq_transcript],"SELECT *, CAST(Column1 AS INT) AS ConvertedColumn -- Assuming Column1 is a text column containing NOn-numeric data
+FROM [1123].[Mgo_RNAseq_transcript];",YES,type-mismatch-condition
+"SELECT SUM([C1A_15 SpC/L]) AS [SUM C1A_15 SpC/L], SUM([C1B_16 SpC/L]) AS [SUM C1B_16 SpC/L], SUM([C2_17 SpC/L]) AS [SUM C2_17 SpC/L], SUM([C3_18 SpC/L]) AS [SUM C3_18 SpC/L], SUM([T8A_21 SpC/L]) AS [SUM T8A_21 SpC/L], SUM([T10_22 SpC/L]) AS [SUM T10_22 SpC/L], SUM([T11_23 SpC/L]) AS [SUM T11_23 SpC/L], SUM([V13B_28 SpC/L]) AS [SUM V13B_28 SpC/L], SUM([V14_29 SpC/L]) AS [SUM V14_29 SpC/L], SUM([V17_30 SpC/L]) AS [SUM V17_30 SpC/L], SUM([VT21_33 SpC/L]) AS [SUM VT21_33 SpC/L], SUM([VT22_34 SpC/L]) AS [SUM VT22_34 SpC/L], SUM([VT23_35 SpC/L]) AS [SUM VT23_35 SpC/L], SUM([C2_41 SpC/L]) AS [SUM C2_41 SpC/L], SUM([C1A_42 SpC/L]) AS [SUM C1A_42 SpC/L], SUM([C3_43 SpC/L]) AS [SUM C3_43 SpC/L], SUM([T10_46 SpC/L]) AS [SUM T10_46 SpC/L], SUM([T8A_47 SpC/L]) AS [SUM T8A_47 SpC/L], SUM([T11_50 SpC/L]) AS [SUM T11_50 SpC/L], SUM([VT23_53 SpC/L]) AS [SUM VT23_53 SpC/L], SUM([VT21_54 SpC/L]) AS [SUM VT21_54 SpC/L], SUM([VT22_55 SpC/L]) AS [SUM VT22_55 SpC/L] FROM  [412].[Macoma individual SpC-L]","SELECT 
+    [Sample ID],  -- NOn-aggregated column added without GROUP BY clause
+    SUM([C1A_15 SpC/L]) AS [SUM C1A_15 SpC/L], 
+    SUM([C1B_16 SpC/L]) AS [SUM C1B_16 SpC/L], 
+    SUM([C2_17 SpC/L]) AS [SUM C2_17 SpC/L], 
+    SUM([C3_18 SpC/L]) AS [SUM C3_18 SpC/L], 
+    SUM([T8A_21 SpC/L]) AS [SUM T8A_21 SpC/L], 
+    SUM([T10_22 SpC/L]) AS [SUM T10_22 SpC/L], 
+    SUM([T11_23 SpC/L]) AS [SUM T11_23 SpC/L], 
+    SUM([V13B_28 SpC/L]) AS [SUM V13B_28 SpC/L], 
+    SUM([V14_29 SpC/L]) AS [SUM V14_29 SpC/L], 
+    SUM([V17_30 SpC/L]) AS [SUM V17_30 SpC/L], 
+    SUM([VT21_33 SpC/L]) AS [SUM VT21_33 SpC/L], 
+    SUM([VT22_34 SpC/L]) AS [SUM VT22_34 SpC/L], 
+    SUM([VT23_35 SpC/L]) AS [SUM VT23_35 SpC/L], 
+    SUM([C2_41 SpC/L]) AS [SUM C2_41 SpC/L], 
+    SUM([C1A_42 SpC/L]) AS [SUM C1A_42 SpC/L], 
+    SUM([C3_43 SpC/L]) AS [SUM C3_43 SpC/L], 
+    SUM([T10_46 SpC/L]) AS [SUM T10_46 SpC/L], 
+    SUM([T8A_47 SpC/L]) AS [SUM T8A_47 SpC/L], 
+    SUM([T11_50 SpC/L]) AS [SUM T11_50 SpC/L], 
+    SUM([VT23_53 SpC/L]) AS [SUM VT23_53 SpC/L], 
+    SUM([VT21_54 SpC/L]) AS [SUM VT21_54 SpC/L], 
+    SUM([VT22_55 SpC/L]) AS [SUM VT22_55 SpC/L]
+FROM  
+    [412].[Macoma individual SpC-L];",YES,aggr-attribute
+select * from Glycerol_Stocks_Locations where Target_name like 'MytuD.00010.a.A1%',"SELECT * 
+FROM Glycerol_Stocks_Locations 
+WHERE Target_name LIKE 'MytuD.00010.a.A1%'
+HAVING COUNT(Target_name) > 1;",YES,aggr-having
+"create table Inproceedings (pubid int primary key,  booktitle text,  editor text)","create table Inproceedings (pubid int primary key,  booktitle text,  editor text)",NO,NO Error
+SELECT  * FROM  [826].[table_thapsIT_hemizygous_genes.txt] IT join [826].[Hemi_ALL_temp] artifact on IT.proteinId != artifact.proteinId,SELECT  * FROM  [826].[table_thapsIT_hemizygous_genes.txt] IT join [826].[Hemi_ALL_temp] artifact on IT.proteinId != artifact.proteinId,NO,NO Error
+"SELECT  * FROM  [1123].[RobertsLab_PrimerDatabase] Where ""Organism"" like '%gigas' or Organism like '%oyst%' AND ""Designed By"" like 'Brad%'","SELECT  * 
+FROM  [1123].[RobertsLab_PrimerDatabase] r
+WHERE  x.""Organism"" LIKE '%gigas' OR r.Organism LIKE '%oyst%' AND y.""Designed By"" LIKE 'Brad%';",YES,alias-undefined
+SELECT  * FROM  [1123].[qDOD_Protein_Sequences] pro Left Join [1123].[qDOD_Cgigas_GO_GOslim] cgslim,SELECT  * FROM  [1123].[qDOD_Protein_Sequences] pro Left Join [1123].[qDOD_Cgigas_GO_GOslim] cgslim,NO,NO Error
+SELECT  * FROM  [790].[table_PhoneBook.csv] where [name]='Sara',SELECT  * FROM  [790].[table_PhoneBook.csv] where [name]='Sara',NO,NO Error
+SELECT  * FROM  [826].[deUrea_BH.csv] where logFC < 0 and BH < 0.0001,"SELECT * 
+FROM [826].[deUrea_BH.csv] 
+WHERE logFC = (SELECT logFC FROM [826].[deUrea_BH.csv] WHERE BH < 0.05);",YES,type-mismatch-nested
+"SELECT  [entry NO.] as [C3.2 entry NO.], [protein] AS [C3.2 protein], [protein probability] AS [C3.2 protein probability], [protein description] AS [C3.2 protein description], [percent coverage] AS [C3.2 percent coverage], [tot indep spectra] AS [C3.2 tot indep spectra], [percent share of spectrum IDs] AS [C3.2 percent share of spectrum IDs], [peptides] as [C3.2 peptides] FROM  [412].[table_interact-2015_May_6_Bacteria_Detection89_150512121311.prot.xls]","SELECT  [entry NO.] as [C3.2 entry NO.], [protein] AS [C3.2 protein], [protein probability] AS [C3.2 protein probability], [protein description] AS [C3.2 protein description], [percent coverage] AS [C3.2 percent coverage], [tot indep spectra] AS [C3.2 tot indep spectra], [percent share of spectrum IDs] AS [C3.2 percent share of spectrum IDs], [peptides] as [C3.2 peptides] FROM  [412].[table_interact-2015_May_6_Bacteria_Detection89_150512121311.prot.xls]",NO,NO Error
+"SELECT  [DMY]/10000 AS day1, ([DMY]%10000)/100 AS month, ([DMY]%100) AS year, [HMS]/10000 as hour, ([HMS]%10000)/100 as minute, ([HMS]%100) as second, LAT, LON, SALINITY, [OCEAN.TEMP],  day,  [file] FROM  [1057].[table_MBARI_1_sds.csv] WHERE  ISNUMERIC(DMY)<>0 AND  ISNUMERIC(HMS)<>0","SELECT 
+  [DMY]/10000 AS day1, 
+  ([DMY]%10000)/100 AS month, 
+  ([DMY]%100) AS year, 
+  [HMS]/10000 AS hour, 
+  ([HMS]%10000)/100 AS minute, 
+  ([HMS]%100) AS second, 
+  LAT, LON, SALINITY, [OCEAN.TEMP], day, [file] 
+FROM 
+  [1057].[table_MBARI_1_sds.csv] 
+WHERE 
+  LAT = (SELECT LAT FROM [1057].[table_MBARI_1_sds.csv] WHERE SALINITY > 35);",YES,type-mismatch-nested
+SELECT  * FROM  [1123].[TJGR_geNOmic_gene.txt] Where gID = 'CGI_10000088',SELECT  * FROM  [1123].[TJGR_geNOmic_gene.txt] Where gID = 'CGI_10000088',NO,NO Error
+SELECT  * FROM  [1123].[qDOD_scaffold_sequence.txt] Where Column1 = 'scaffold29146',SELECT  * FROM  [1123].[qDOD_scaffold_sequence.txt] Where Column1 = 'scaffold29146',NO,NO Error
+SELECT  * FROM  [1123].[OlyO transcriptome v3 swiss-prot Blast]oly left join [1123].[uniprot-reviewed_wGO_010714]up on oly.Column1=up.Entry,"SELECT * 
+FROM [1123].[OlyO transcriptome v3 swiss-prot Blast] AS oly 
+LEFT JOIN [1123].[uniprot-reviewed_wGO_010714] AS up 
+ON oly.Column1 = up.Entry
+ORDER BY Column1",YES,alias-ambiguous
+"SELECT [protein] AS [protein19], [protein probability] AS [protein probability19], [percent coverage] AS [percent coverage19], [tot indep spectra] AS [tot indep spectra19], [peptides] AS [peptides19] FROM  [412].[table_Prophet_2014_Sept_08_BeringSea19.prot.xls] WHERE  [tot indep spectra]>1","SELECT [protein] AS [protein19], 
+       [protein probability] AS [protein probability19], 
+       [percent coverage] AS [percent coverage19], 
+       [tot indep spectra] AS [tot indep spectra19], 
+       [peptides] AS [peptides19] 
+FROM [412].[table_Prophet_2014_Sept_08_BeringSea19.prot.xls] 
+WHERE [tot indep spectra] > 1
+HAVING COUNT([protein]) > 5;",YES,aggr-having
+SELECT  * FROM  [1123].[fish546_module1_blast_table] INNER JOIN  [1123].[associations_uni_swisspro_012410] ON [1123].[fish546_module1_blast_table].SPID=[1123].[associations_uni_swisspro_012410].ID,"SELECT * 
+FROM [1123].[fish546_module1_blast_table] 
+INNER JOIN [1123].[associations_uni_swisspro_012410] 
+ON [1123].[fish546_module1_blast_table].SPID = (
+    SELECT ID 
+    FROM [1123].[associations_uni_swisspro_012410] 
+    WHERE Description LIKE '%protein%'
+);",YES,type-mismatch-nested
+"SELECT  CAST([Time] AS Datetime) AS [DateTime] ,  DATEDIFF(SECOND, {d '1970-01-01'},  CAST([Time] AS Datetime)) AS [UnixTimestamp] ,  CAST([LAT] AS VARCHAR) AS [LAT] ,  CAST([LON] AS VARCHAR) AS [LON] ,  CASE WHEN [CONDUCTIVITY] = 'NA' THEN NULL ELSE [CONDUCTIVITY] END AS [CONDUCTIVITY] ,  CAST([SALINITY] AS VARCHAR) AS [SALINITY] --  ,  CAST([OCEAN.TEMP] AS VARCHAR) AS [OCEAN.TEMP] --  ,  CAST([BULK.RED] AS VARCHAR) AS [BULK.RED] --  ,  CAST([STREAM.PRESSURE] AS VARCHAR) AS [STREAM.PRESSURE] --  ,  CAST([FILTER.PRESSURE] AS VARCHAR) AS [FILTER.PRESSURE] --  ,  CASE WHEN [MACHINE.TEMP] = 'NA' THEN NULL ELSE [MACHINE.TEMP] END AS [MACHINE.TEMP] --  ,  CAST([Xaccel] AS VARCHAR) AS [Xaccel] --  ,  CAST([Yaccel] AS VARCHAR) AS [Yaccel] --  ,  CAST([Zaccel] AS VARCHAR) AS [Zaccel] --  ,  CAST([MILLISECOND.TIMER] AS VARCHAR) AS [MILLISECOND.TIMER] --  ,  CAST([LASER.POWER] AS VARCHAR) AS [LASER.POWER] --  ,  CAST([EVENT.RATE] AS VARCHAR) AS [EVENT.RATE] --  ,  CAST([FLOW.METER] AS VARCHAR) AS [FLOW.METER] --  ,  CASE WHEN [position] = 'NA' THEN NULL ELSE [position] END AS [position] --  ,  CAST([CHL] AS VARCHAR) AS [CHL] --  ,  CAST([Light.Trans] AS VARCHAR) AS [Light.Trans] --  ,  CAST([acq.Error] AS VARCHAR) AS [acq.Error] --  ,  CAST([D1.D2] AS VARCHAR) AS [D1.D2] --  ,  CASE WHEN [PAR] = 'NA' THEN NULL ELSE [PAR] END AS [PAR] --  ,  CASE WHEN [time] = 'NA' THEN NULL ELSE [time] END AS [time] --   ,  CASE WHEN [day] = 'NA' THEN NULL ELSE [day] END AS [day] --  ,  CAST([file] AS VARCHAR) AS [file] --  ,  CASE WHEN [DMY] = 'NA' THEN NULL ELSE [DMY] END AS [DMY] --  ,  CASE WHEN [HMS] = 'NA' THEN NULL ELSE [HMS] END AS [HMS] FROM  [1059].[sds.tab] --ORDER BY  [UnixTimestamp] ASC","SELECT  
+    CAST(z.[Time] AS Datetime) AS [DateTime],  
+    DATEDIFF(SECOND, {d '1970-01-01'}, CAST(z.[Time] AS Datetime)) AS [UnixTimestamp],  
+    CAST(z.[LAT] AS VARCHAR) AS [LAT],  
+    CAST(z.[LON] AS VARCHAR) AS [LON],  
+    CASE WHEN z.[CONDUCTIVITY] = 'NA' THEN NULL ELSE z.[CONDUCTIVITY] END AS [CONDUCTIVITY],  
+    CAST(z.[SALINITY] AS VARCHAR) AS [SALINITY]
+FROM  
+    [1059].[sds.tab];",YES,alias-undefined
+"SELECT  [Saito_Id] ,  CASE WHEN [Identified Proteins] = '#NO Error' THEN NULL ELSE [Identified Proteins] END AS [Identified Proteins] ,  CASE WHEN [Accession] = '#NO Error' THEN NULL ELSE [Accession] END AS [Accession] ,  CASE WHEN [BLAST_NR ANNOTATION] = '#NO Error' THEN NULL ELSE [BLAST_NR ANNOTATION] END AS [Accession] ,  [BLAST NR OR GANISM] ,  [BLAST Microbial P col1] ,  [BLAST Microbial P col2] ,  [Molecular Weight] ,  [(G13) S1-15m] ,  [(G14)-S1-40m] ,  [(G15)-S1-70m] ,  [(G10)-S4-45m] ,  [(G11)-S4-65m] ,  [(G2)-S8-33m] ,  [(G3)-S8-70m] ,  [(G6)-S6-15m] ,  [(G7)-S6-45m] FROM  [446].[table_Saito_GEOMICS1D_SubsurfaceProteins_withprelimcounts.csv]","SELECT  [Saito_Id] ,  CASE WHEN [Identified Proteins] = '#NO Error' THEN NULL ELSE [Identified Proteins] END AS [Identified Proteins] ,  CASE WHEN [Accession] = '#NO Error' THEN NULL ELSE [Accession] END AS [Accession] ,  CASE WHEN [BLAST_NR ANNOTATION] = '#NO Error' THEN NULL ELSE [BLAST_NR ANNOTATION] END AS [Accession] ,  [BLAST NR OR GANISM] ,  [BLAST Microbial P col1] ,  [BLAST Microbial P col2] ,  [Molecular Weight] ,  [(G13) S1-15m] ,  [(G14)-S1-40m] ,  [(G15)-S1-70m] ,  [(G10)-S4-45m] ,  [(G11)-S4-65m] ,  [(G2)-S8-33m] ,  [(G3)-S8-70m] ,  [(G6)-S6-15m] ,  [(G7)-S6-45m] FROM  [446].[table_Saito_GEOMICS1D_SubsurfaceProteins_withprelimcounts.csv]",NO,NO Error
+SELECT  * FROM  [412].[all sequenced proteins all treatments.txt] LEFT JOIN  [101B_2_01.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_2_01.txt].proteinCG2_01 LEFT JOIN  [101B_2_02.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_2_02.txt].proteinCG2_02 LEFT JOIN  [101B_2_03.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_2_03.txt].proteinCG2_03 LEFT JOIN  [101B_5_01.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_5_01.txt].proteinCG5_01 LEFT JOIN  [101B_5_02.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_5_02.txt].proteinCG5_02 LEFT JOIN  [101B_5_03.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_5_03.txt].proteinCG5_03 LEFT JOIN  [101B_8_01.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_8_01.txt].proteinCG8_01 LEFT JOIN  [101B_8_02.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_8_02.txt].proteinCG8_02,SELECT  * FROM  [412].[all sequenced proteins all treatments.txt] LEFT JOIN  [101B_2_01.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_2_01.txt].proteinCG2_01 LEFT JOIN  [101B_2_02.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_2_02.txt].proteinCG2_02 LEFT JOIN  [101B_2_03.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_2_03.txt].proteinCG2_03 LEFT JOIN  [101B_5_01.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_5_01.txt].proteinCG5_01 LEFT JOIN  [101B_5_02.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_5_02.txt].proteinCG5_02 LEFT JOIN  [101B_5_03.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_5_03.txt].proteinCG5_03 LEFT JOIN  [101B_8_01.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_8_01.txt].proteinCG8_01 LEFT JOIN  [101B_8_02.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[101B_8_02.txt].proteinCG8_02,NO,NO Error
+"SELECT  [time],  attenuation FROM ( SELECT  [time],  attenuation FROM [1059].[CSTAR_VIEW] ) AS subbie","SELECT [time], attenuation 
+FROM (
+    SELECT [time], attenuation 
+    FROM [1059].[CSTAR_VIEW]
+) AS subbie
+WHERE [time] = (SELECT [time] FROM [1059].[CSTAR_VIEW] WHERE attenuation > 0.1);",YES,type-mismatch-nested
+"SELECT  GeneModel,  UniqueProteinId,  InterproEntry,  InterPro_desc,  count(*) FROM  [826].[FracyInterProScan_NONULL] GROUP BY  GeneModel,  UniqueProteinId,  InterproEntry,  InterPro_desc","SELECT 
+    GeneModel, 
+    UniqueProteinId, 
+    InterproEntry, 
+    InterPro_desc,
+    COUNT(*) AS TotalCount,
+    MAX(UniqueProteinId) AS MaxProteinId  -- Using MAX on a column already in GROUP BY
+FROM  
+    [826].[FracyInterProScan_NONULL]
+GROUP BY  
+    GeneModel, 
+    UniqueProteinId, 
+    InterproEntry, 
+    InterPro_desc;",YES,aggr-attribute
+"SELECT  sql_query,  sql_query_hash,  x_col_name,  y_col_name ,  vizlet_type,  count(*) as score FROM  [1307].[vizlets_23NOv11_10h34m16s_vizlet_and_action_features.csv] WHERE  action = 'promote' GROUP BY  sql_query,  sql_query_hash,  x_col_name,  y_col_name ,  vizlet_type","SELECT 
+    sql_query, 
+    sql_query_hash, 
+    x_col_name, 
+    y_col_name, 
+    vizlet_type, 
+    COUNT(CAST(sql_query AS INT)) as score -- Error: Casting a likely text column to an INT
+FROM 
+    [1307].[vizlets_23NOv11_10h34m16s_vizlet_and_action_features.csv]
+WHERE 
+    action = 'promote'
+GROUP BY 
+    sql_query, 
+    sql_query_hash, 
+    x_col_name, 
+    y_col_name, 
+    vizlet_type;",YES,type-mismatch-condition
+"SELECT  'arboretum' as datasource ,  Obs_id ,  NULL as species_code ,  species as common_name ,  NULL as scientific_name ,  q as questionable ,  st as state ,  Co as county ,  convert(datetime,  [date]) as date","SELECT 
+  'arboretum' as datasource, 
+  Obs_id, 
+  NULL as species_code, 
+  species as common_name, 
+  NULL as scientific_name, 
+  q as questionable, 
+  st as state, 
+  Co as county, 
+  convert(datetime, (SELECT [date] FROM YourTable WHERE condition_that_returns_multiple_rows)) as date
+FROM 
+  YourDataSource",YES,type-mismatch-nested
+SELECT  * FROM  [188].[table_ec_pathway.csv] where ec_number is null,"SELECT *
+FROM [188].[table_ec_pathway.csv] AS ec
+LEFT JOIN [188].[other_table] AS ot
+ON ec.ec_number = ot.ec_number
+WHERE ec_number IS NULL",YES,alias-ambiguous
+"SELECT  LAT,  LON,  [file],  [OCEAN.TEMP],  SALINITY,  day,  [BULK.RED], convert(date,  DMY,  101) as DMY, convert(date,  HMS,  103) as HMS FROM  [1057].[Thompson4_sds.tab]","SELECT 
+    LAT, 
+    LON, 
+    [file], 
+    [OCEAN.TEMP], 
+    SALINITY, 
+    day, 
+    [BULK.RED], 
+    CONVERT(date, DMY, 101) as DMY,  -- Assuming DMY is in MM/DD/YYYY which matches style 101
+    CONVERT(date, SALINITY, 103) as HMS 
+FROM 
+    [1057].[Thompson4_sds.tab];",YES,type-mismatch-condition
+"SELECT  TOP 10 a.fullname,  count(*) as c FROM   [1143].[author] a, [1143].[authored] b, [1143].[inproceedings] p WHERE  a.fullname = b.fullname and b.pubID = p.id and p.booktitle='NSDI' and NOt exists (SELECT  * FROM  [1143].[authored] b2, [1143].[inproceedings] p2 WHERE  a.fullname = b2.fullname and b2.pubID = p2.id and p2.booktitle='SIGCOMM') GROUP BY  a.fullname ORDER BY  c DESC","SELECT  TOP 10 a.fullname,  count(*) as c FROM   [1143].[author] a, [1143].[authored] b, [1143].[inproceedings] p WHERE  a.fullname = b.fullname and b.pubID = p.id and p.booktitle='NSDI' and NOt exists (SELECT  * FROM  [1143].[authored] b2, [1143].[inproceedings] p2 WHERE  a.fullname = b2.fullname and b2.pubID = p2.id and p2.booktitle='SIGCOMM') GROUP BY  a.fullname ORDER BY  c DESC",NO,NO Error
+"SELECT  one.pdb_id,  one.res_type,  two.res_type FROM  [1267].[h2_w_NOgaps_2.csv] one,  [1267].[h2_w_NOgaps_2.csv] two WHERE  one.pdb_id = two.pdb_id   AND  one.chain = two.chain AND  one.res_index = two.res_index + 1 AND  (two.res_surface_area_ratio > 0.3   OR  one.res_surface_area_ratio > 0.3)","SELECT 
+    one.pdb_id,
+    res_type,  -- Ambiguously referencing res_type without specifying the alias
+    two.res_type
+FROM 
+    [1267].[h2_w_NOgaps_2.csv] one,
+    [1267].[h2_w_NOgaps_2.csv] two 
+WHERE 
+    one.pdb_id = two.pdb_id AND
+    one.chain = two.chain AND
+    one.res_index = two.res_index + 1 AND
+    (two.res_surface_area_ratio > 0.3 OR one.res_surface_area_ratio > 0.3)",YES,alias-ambiguous
+SELECT  * FROM  [412].[protpeps] LEFT JOIN  [prot data all] --could use join ON [protpeps].[peptide sequence]=[prot data all].[peptide sequence],"SELECT  * 
+FROM  [412].[protpeps] p
+LEFT JOIN  [prot data all] d
+--could use join
+ON p.[peptide sequence] = x.[peptide sequence];",YES,alias-undefined
+"SELECT  ORIGIN,  DEST,  TAIL_NUM,  FL_NUM,  YEAR,  MONTH,  DAY_OF_MONTH,  COUNT(*) FROM  [372].[flights09] GROUP BY  ORIGIN,  DEST,  TAIL_NUM,  FL_NUM,  YEAR,  MONTH,  DAY_OF_MONTH","SELECT  ORIGIN,  DEST,  TAIL_NUM,  FL_NUM,  YEAR,  MONTH,  DAY_OF_MONTH,  COUNT(*) FROM  [372].[flights09] GROUP BY  ORIGIN,  DEST,  TAIL_NUM,  FL_NUM,  YEAR,  MONTH,  DAY_OF_MONTH",NO,NO Error
+"WITH  tmp AS (SELECT  stations.*, underway.* FROM  [446].[Underway_GeoMICS.csv] underway JOIN  [446].[Stations] stations ON sqrt( power(stations.[Latitude..Decimal.deg.] - underway.[lat.degN], 2) + power(stations.[Longitude..Decimal.deg.] - underway.[long.degW]-360, 2)) < 0.1) SELECT  DISTINCT Station FROM  tmp","WITH tmp AS (
+    SELECT stations.*, underway.* 
+    FROM [446].[Underway_GeoMICS.csv] underway 
+    JOIN [446].[Stations] stations 
+    ON sqrt( power(stations.[Latitude..Decimal.deg.] - (SELECT lat.degN FROM [446].[Underway_GeoMICS.csv] WHERE ConditionThatReturnsMultipleRows), 2) 
+    + power(stations.[Longitude..Decimal.deg.] - underway.[long.degW]-360, 2)) < 0.1
+) 
+SELECT DISTINCT Station 
+FROM tmp;",YES,type-mismatch-nested
+SELECT  sum(Total_Amount_of_Payment_USDollars) FROM  [1079].[OPPR_ALL_DTL_GNRL_093020141.csv],SELECT  sum(Total_Amount_of_Payment_USDollars) FROM  [1079].[OPPR_ALL_DTL_GNRL_093020141.csv],NO,NO Error
+"SELECT  * FROM  [ssgcid_EC_map] WHERE  ec_number in ('5.3.3.4', '5.4.99.14', '5.5.1.7')","SELECT  * FROM  [ssgcid_EC_map] WHERE  ec_number in ('5.3.3.4', '5.4.99.14', '5.5.1.7')",NO,NO Error
+SELECT  query FROM  [sqlshare].[1385_query_log] WHERE  status = 'success' and query like '%( select%' or query like '%(select%',"SELECT query as status, status as query 
+FROM [sqlshare].[1385_query_log]
+WHERE status = 'success' AND query like '%( select%' OR status like '%(select%'",YES,alias-ambiguous
+"SELECT  GO.*,  KEGG.*  FROM  [826].[Psemu1_GO_TranscriptIds_added.tab.txt] GO left outer join [826].[table_Psemu1_KEGG_TranscriptIds_added.tab.txt] KEGG on GO.transcriptId = KEGG.transcriptId","SELECT GO.*, 
+       KEGG.*
+FROM [826].[Psemu1_GO_TranscriptIds_added.tab.txt] GO 
+LEFT OUTER JOIN [826].[table_Psemu1_KEGG_TranscriptIds_added.tab.txt] KEGG 
+ON GO.transcriptId = KEGG.transcriptId
+HAVING COUNT(GO.transcriptId) > 1;",YES,aggr-having
+SELECT  * FROM  [1123].[qDOD Cgigas Gene Descriptions (Swiss-prot)] where CGI_ID like 'CGI_10027416',"SELECT *
+FROM [1123].[qDOD Cgigas Gene Descriptions (Swiss-prot)]
+WHERE CAST(CGI_ID AS INT) = 'CGI_10027416'; ",YES,type-mismatch-condition
+SELECT  * FROM  [1017].[matched_DEGs_IFheads_2] where heads='~FBgn',"SELECT COUNT(*), * 
+FROM [1017].[matched_DEGs_IFheads_2] 
+WHERE heads LIKE '%~FBgn%';",YES,aggr-attribute
+SELECT  * FROM  [1267].[cph2_w_1.csv] WHERE  gaps = 0,"SELECT *
+FROM [1267].[cph2_w_1.csv]
+WHERE CAST(gaps AS VARCHAR) = 0;  ",YES,type-mismatch-condition
+"SELECT  floor(latitude/0.7)*0.7 as latbin ,  floor(longitude/0.7)*0.7 as lonbin ,  floor(0.12/0.7)*0.7 ,  species FROM  [690].[All3col]","SELECT 
+    floor(latitude / 0.7) * 0.7 as latbin,
+    floor(longitude / 0.7) * 0.7 as lonbin,
+    floor(CAST(species AS FLOAT) / 0.7) * 0.7,
+    species 
+FROM 
+    [690].[All3col];",YES,type-mismatch-condition
+"SELECT  Distinct A0A000 as SPID, ""GO:0003824"" as GOID FROM  [354].[SPID_GOnumber.txt]","SELECT DISTINCT 
+    (SELECT A0A000 FROM [354].[SPID_GOnumber.txt] WHERE ConditionThatReturnsMultipleRows) as SPID, 
+    ""GO:0003824"" as GOID 
+FROM [354].[SPID_GOnumber.txt];",YES,type-mismatch-nested
+"select pathway_name,  s.genus,  count(distinct ec.ec_number) from [ec_pathway.csv] ec join [ssgcid_EC_map] s on (s.""EC Numbers"" = ec.ec_number) where pathway_name is NOt null group by pathway_name,  s.genus","SELECT pathway_name, 
+       s.genus, 
+       COUNT(DISTINCT ec.ec_number)
+FROM [ec_pathway.csv] ec 
+JOIN [ssgcid_EC_map] s 
+  ON (s.""EC Numbers"" = ec.ec_number) 
+WHERE pathway_name IS NOT NULL 
+GROUP BY pathway_name, s.genus
+HAVING COUNT(ec.ec_number) > 10;",YES,aggr-having
+select count(*) from 1385s,SELECT COUNT(*) FROM 1385s WHERE 'data' = 100;,YES,type-mismatch-condition
+"SELECT  vizlet_type,  avg(score) ,  avg(x_kurtosis),  avg(y_kurtosis) ,  avg(x_coeff_var),  avg(y_coeff_var) ,  avg(x_gap_variance) ,  avg(x_unique_ratio) FROM  [1314howe].[Vizlet Scores and Features] WHERE  score > 0 GROUP BY  vizlet_type","SELECT  vizlet_type,  avg(score) ,  avg(x_kurtosis),  avg(y_kurtosis) ,  avg(x_coeff_var),  avg(y_coeff_var) ,  avg(x_gap_variance) ,  avg(x_unique_ratio) FROM  [1314howe].[Vizlet Scores and Features] WHERE  score > 0 GROUP BY  vizlet_type",NO,NO Error
+SELECT  * FROM  [1057].[table_sds_2.tab],"SELECT  * 
+FROM  [1057].[table_sds_2.tab] x
+WHERE  y.column_name = 'some_value';",YES,alias-undefined
+SELECT  * FROM  [412].[cddanNOt.txt] where [CD accession] like 'cd05047',"SELECT COUNT(*), [CD accession] 
+FROM [412].[cddanNOt.txt] 
+WHERE [CD accession] LIKE '%cd05047%' group by avon;",YES,aggr-attribute
+"WITH  UniquePos AS (SELECT  DISTINCT [time],  [LAT],  [LON] FROM  [1059].[STATS_VIEW]), Numbered AS (SELECT  [time] as [DateTime],  [LAT],  [LON],  ROW_NUMBER() OVER (ORDER BY  [Time] ASC) AS [Row] FROM  UniquePos) ,  Paired AS (SELECT  a.[DateTime] AS [DateTime] ,  DATEDIFF(second,  a.[DateTime],  b.[DateTime]) AS [Elapsed (s)] ,  a.[LAT] AS [lat1deg] ,  a.[LON] AS [lon1deg] ,  b.[LAT] AS [lat2deg] ,  b.[LON] AS [lon2deg] ,  a.[LAT] * PI() / 180 AS [lat1] ,  b.[LAT] * PI() / 180  AS [lat2] ,  (a.[LAT] - b.[LAT]) * PI() / 180 AS [dlat] ,  (a.[LON] - b.[LON]) * PI() / 180 AS [dlon] FROM  Numbered a JOIN  Numbered b ON a.[Row]+1 = b.[Row]) ,  Trig AS (SELECT  * ,  POWER(SIN(dlat/2), 2) + POWER(SIN(dlon/2), 2) * COS(lat1) * COS(lat2) AS val FROM  Paired) ,  Distance AS (SELECT  * ,  6378100 * 2 * atn2(sqrt(val),  sqrt(1-val)) AS [Distance (m)] FROM  Trig) SELECT  * ,  [Distance (m)] / NULLIF([Elapsed (s)], 0) AS [Velocity (m/s)] FROM  Distance","WITH UniquePos AS (
+    SELECT DISTINCT [time], [LAT], [LON] 
+    FROM [1059].[STATS_VIEW]
+), 
+Numbered AS (
+    SELECT [time] AS [DateTime], 
+           [LAT], 
+           [LON], 
+           ROW_NUMBER() OVER (ORDER BY [Time] ASC) AS [Row] 
+    FROM UniquePos
+), 
+Paired AS (
+    SELECT a.[DateTime] AS [DateTime], 
+           DATEDIFF(second, a.[DateTime], b.[DateTime]) AS [Elapsed (s)], 
+           a.[LAT] AS [lat1deg], 
+           a.[LON] AS [lon1deg], 
+           b.[LAT] AS [lat2deg], 
+           b.[LON] AS [lon2deg], 
+           a.[LAT] * PI() / 180 AS [lat1], 
+           b.[LAT] * PI() / 180 AS [lat2], 
+           (a.[LAT] - b.[LAT]) * PI() / 180 AS [dlat], 
+           (a.[LON] - b.[LON]) * PI() / 180 AS [dlon] 
+    FROM Numbered a 
+    JOIN Numbered b ON a.[Row] + 1 = b.[Row]
+), 
+Trig AS (
+    SELECT *, 
+           POWER(SIN(dlat/2), 2) + POWER(SIN(dlon/2), 2) * COS(lat1) * COS(lat2) AS val 
+    FROM Paired
+), 
+Distance AS (
+    SELECT *, 
+           6378100 * 2 * atn2(sqrt(val), sqrt(1-val)) AS [Distance (m)] 
+    FROM Trig
+)
+SELECT *, 
+       [Distance (m)] / NULLIF([Elapsed (s)], 0) AS [Velocity (m/s)] 
+FROM Distance
+HAVING COUNT([Distance (m)]) > 10;  ",YES,aggr-having
+"SELECT  DISTINCT CASE WHEN PATINDEX('%[0-9]%',  [protein]) = 1 -- first char is number AND  CHARINDEX(', ',  [protein]) = 0 -- AND  NO comma present THEN [protein] ELSE SUBSTRING([protein], PATINDEX('%[0-9]%',  [protein]),  -- start at first number CHARINDEX(', ',  [protein])-PATINDEX('%[0-9]%',  [protein])) -- length END AS [protein] ,  [tot indep spectra] FROM  [412].[C1_TCAfile176_1.txt]","SELECT  DISTINCT CASE WHEN PATINDEX('%[0-9]%',  [protein]) = 1 -- first char is number AND  CHARINDEX(', ',  [protein]) = 0 -- AND  NO comma present THEN [protein] ELSE SUBSTRING([protein], PATINDEX('%[0-9]%',  [protein]),  -- start at first number CHARINDEX(', ',  [protein])-PATINDEX('%[0-9]%',  [protein])) -- length END AS [protein] ,  [tot indep spectra] FROM  [412].[C1_TCAfile176_1.txt]",NO,NO Error
+SELECT  * FROM  [1123].[table_Table S14.csv],"SELECT 
+    AVG([SomeColumn]) AS AvgValue, -- Using AVG() without proper context
+    *  -- Including all columns without a GROUP BY clause
+FROM 
+    [1123].[table_Table S14.csv];",YES,aggr-attribute
+"select [crystals?],  cleaved,  [Protein Code-1] from [xstal_tracker.csv] x left join proteins_cleaved_pdb p on (p.ssgcidid = x.[Protein Code-1]) where [Initial trials set up] < '08-01-2011' and cleaved is null","SELECT 
+    x.[crystals?],  
+    z.cleaved,  
+    x.[Protein Code-1] 
+FROM 
+    [xstal_tracker.csv] x 
+LEFT JOIN 
+    proteins_cleaved_pdb p 
+ON 
+    (p.ssgcidid = x.[Protein Code-1])
+WHERE 
+    y.[Initial trials set up] < '08-01-2011' 
+    AND z.cleaved IS NULL;",YES,alias-undefined
+"SELECT chr as seqname, 'methratio' as source, 'CpG' as feature, pos as start, pos + 1 as [end], cast(ratio as float) as score, strand, '.' as frame, '.' as attribute","SELECT chr as seqname, 'methratio' as source, 'CpG' as feature, pos as start, pos + 1 as [end], cast(ratio as float) as score, strand, '.' as frame, '.' as attribute",NO,NO Error
+"select fullname,  conf_id,  organizer_type,  count(*) as c from [1143].tbl_organizer y group by fullname,  conf_id,  organizer_type having count(*) >= 2","SELECT 
+    fullname, 
+    conf_id, 
+    organizer_type, 
+    count(*) AS c, 
+    y.date_created  
+FROM 
+    [1143].tbl_organizer y 
+GROUP BY 
+    fullname, 
+    conf_id, 
+    organizer_type 
+HAVING 
+    count(*) >= 2;",YES,aggr-attribute
+SELECT  * FROM  [1123].[MgoTophat_coverage_CDS_summ_cv] Where cv > 1,SELECT  * FROM  [1123].[MgoTophat_coverage_CDS_summ_cv] Where cv > 1,NO,NO Error
+"SELECT CGI_ID, GOslim_bin, aspect FROM  [1123].[Cgigas-DEGlist-sql]deg left join [1123].[qDOD_Cgigas_GOslim_DISTINCT]sl on deg.baseMean=sl.CGI_ID where aspect like 'P'","SELECT CGI_ID, GOslim_bin, aspect 
+FROM [1123].[Cgigas-DEGlist-sql] AS deg 
+LEFT JOIN [1123].[qDOD_Cgigas_GOslim_DISTINCT] AS sl 
+ON deg.CGI_ID = sl.CGI_ID 
+WHERE aspect LIKE 'P'",YES,alias-ambiguous
+"SELECT  count(*) FROM  [826].[PmTE_ALL-DE.txt] DE --  ,  [826].[table_Psemu1FL_RT_spgp_gp_ok.txt] supergroup --WHERE  supergroup.Consensus = DE.name --    AND  logFC_Fe < 1 --    AND  logFC_P > 1 --    AND  logFC_Si > 1 --    AND  logFC_Urea > 1 --    AND  (PValue_Fe < 0.05 --         OR  PValue_P < 0.05 --         OR  PValue_Si < 0.05 --         OR  PValue_Urea < 0.05)","SELECT COUNT(*)
+FROM [826].[PmTE_ALL-DE.txt] DE
+WHERE DE.name = (SELECT Consensus FROM [826].[table_Psemu1FL_RT_spgp_gp_ok.txt]
+                 WHERE PValue_Fe < 0.05);  ",YES,type-mismatch-nested
+SELECT  * FROM  [826].[PmUreaSigDEonly05pvaluecutoff.txt] urea inner join [826].[table_PmSistarveSigDEonly05pvaluecutoff.txt] Si on urea.Urea_TranscriptID = Si.Si_TranscriptID where Si.Si_logFC > 1 and urea.Urea_logFC > 1,"SELECT  * 
+FROM  [826].[PmUreaSigDEonly05pvaluecutoff.txt] urea 
+INNER JOIN [826].[table_PmSistarveSigDEonly05pvaluecutoff.txt] Si 
+ON urea.Urea_TranscriptID = Si.Si_TranscriptID
+WHERE  x.Si_logFC > 1 
+AND  y.Urea_logFC > 1;",YES,alias-undefined
+"select s.ssgcidid,  s.uniprot,  ec.""EC Numbers"",  ec.""Database"" as ec_source,  s.anNOtation from [Unique_EC_mapped_to_UniProt] ec join [ssgcid_uniprot.csv] s on (s.uniprot = ec.accession)","SELECT s.ssgcidid, 
+       s.uniprot, 
+       ec.""EC Numbers"", 
+       ec.""Database"" AS ec_source, 
+       s.anNOtation 
+FROM [Unique_EC_mapped_to_UniProt] ec 
+JOIN [ssgcid_uniprot.csv] s 
+  ON (s.uniprot = ec.accession)
+HAVING COUNT(s.uniprot) > 1;",YES,aggr-having
+SELECT  count(*) FROM  [1079].[view_depth_breadth_per_view.csv] where depth = 0,"SELECT COUNT(*) 
+FROM [1079].[view_depth_breadth_per_view.csv] 
+WHERE depth = 0
+HAVING COUNT(depth) > 1;",YES,aggr-having
+"select d.DtoA as bad_ones,  u.Container as SetNO,  u.Clone_name as uw_constructID,  u.nt_seq_uncleaved,  u.aa_seq_uncleaved from [table_DtoA_candidates.csv] d left join [table_qryUWExportConstructs.csv] u on (u.Clone_name = d.DtoA)","select d.DtoA as bad_ones,  u.Container as SetNO,  u.Clone_name as uw_constructID,  u.nt_seq_uncleaved,  u.aa_seq_uncleaved from [table_DtoA_candidates.csv] d left join [table_qryUWExportConstructs.csv] u on (u.Clone_name = d.DtoA)",NO,NO Error
+"SELECT  InterproEntry,  InterproIdHits,  Interpro_desc_Ox FROM  [826].[PhatrInterproIdsHitCounts] JOIN  [826].[AllOxInterProIds.tab.txt] ON InterproId_Ox = InterproEntry order by InterproIdHits DESC","SELECT InterproEntry, 
+       InterproIdHits, 
+       Interpro_desc_Ox 
+FROM [826].[PhatrInterproIdsHitCounts] 
+JOIN [826].[AllOxInterProIds.tab.txt] 
+  ON InterproId_Ox = InterproEntry 
+ORDER BY InterproIdHits DESC
+HAVING COUNT(InterproEntry) > 5;",YES,aggr-having
+select * from tiny_sample,"SELECT *, COUNT(*)  
+FROM tiny_sample;",YES,aggr-attribute
+SELECT  COUNT(DISTINCT y) FROM  [354].[twitter_rv.6200000],SELECT COUNT(DISTINCT CAST('y' AS INT)) FROM [354].[twitter_rv.6200000];,YES,type-mismatch-condition
+"WITH  SurfaceMetals AS (SELECT  Station, MIN([Depth..m.]) AS MinDepth FROM  [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] GROUP BY  Station) SELECT  iron.Station,  iron.Label,  iron.[Depth..m.],  SurfaceMetals.MinDepth FROM [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] iron ,  [446].[Iron-related_Proteins] protein ,  SurfaceMetals WHERE  iron.Station = protein.Station AND  SurfaceMetals.Station = iron.Station --AND  iron.[Depth..m.] = SurfaceMetals.MinDepth","WITH SurfaceMetals AS (
+    SELECT Station, 
+           MIN([Depth..m.]) AS MinDepth 
+    FROM [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] 
+    GROUP BY Station
+)
+SELECT iron.Station, 
+       iron.Label, 
+       iron.[Depth..m.], 
+       SurfaceMetals.MinDepth 
+FROM [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] iron, 
+     [446].[Iron-related_Proteins] protein, 
+     SurfaceMetals 
+WHERE iron.Station = protein.Station 
+  AND SurfaceMetals.Station = iron.Station
+HAVING COUNT(iron.Station) > 1;  ",YES,aggr-having
+"SELECT  NTILE(100) OVER(ORDER BY  clock asc) as progress ,  issues/ticks as issues_per_tick ,  memrefs/ticks as memrefs_per_tick ,  phantoms/ticks as phantoms_per_tick ,  streams/ticks as streams_per_tick FROM  ( SELECT  m1.source as source1,  m2.source as source2 ,  m1.clock as clock ,  (m2.clock - m1.clock) as ticks ,  (m2.issues - m1.issues)  as issues ,  (m2.memrefs - m1.memrefs)  as memrefs ,  (m2.phantoms - m1.phantoms)  as phantoms ,  (m2.streams - m1.streams)  as streams FROM  1314howe.measurement m1 ,  1314howe.measurement m2 WHERE  m2.clock > m1.clock AND  NOT EXISTS ( SELECT  clock FROM  1314howe.measurement m3 WHERE  m1.clock < m3.clock AND  m2.clock > m3.clock ) ) x ORDER BY  clock asc","SELECT  
+    NTILE(100) OVER(ORDER BY y.clock asc) as progress, 
+    issues/ticks as issues_per_tick, 
+    memrefs/ticks as memrefs_per_tick, 
+    phantoms/ticks as phantoms_per_tick, 
+    streams/ticks as streams_per_tick 
+FROM  
+    (SELECT  
+        m1.source as source1, 
+        m2.source as source2, 
+        m1.clock as clock, 
+        (m2.clock - m1.clock) as ticks, 
+        (m2.issues - m1.issues) as issues, 
+        (m2.memrefs - m1.memrefs) as memrefs, 
+        (m2.phantoms - m1.phantoms) as phantoms, 
+        (m2.streams - m1.streams) as streams 
+    FROM  
+        1314howe.measurement m1, 
+        1314howe.measurement m2 
+    WHERE  
+        m2.clock > m1.clock 
+        AND NOT EXISTS 
+            (SELECT clock FROM 1314howe.measurement m3 WHERE m1.clock < m3.clock AND m2.clock > m3.clock)
+    ) x 
+ORDER BY 
+    z.clock asc;",YES,alias-undefined
+"select * FROM  [1002].[Tokyo_0_optode.csv] o, [1002].[Tokyo_0_tsg.csv] t, [1002].[Tokyo_0_suna.csv] s WHERE  isnumeric(o.[long.dc]) = 1 AND  isnumeric(o.[lat.dc]) = 1 AND  isnumeric([X.NO3..uMol.L.]) = 1 AND  isnumeric([O2.Conc..uM.]) = 1 AND  o.date = t.date AND  o.date = s.date AND  t.date = s.date AND  o.time = t.time AND  o.time = s.time AND  t.time = s.time","SELECT * 
+FROM [1002].[Tokyo_0_optode.csv] o, [1002].[Tokyo_0_tsg.csv] t, [1002].[Tokyo_0_suna.csv] s 
+WHERE o.[long.dc] + 'text' = 1 
+  AND o.[lat.dc] + 'text' = 1 
+  AND [X.NO3..uMol.L.] + 'text' = 1 
+  AND [O2.Conc..uM.] + 'text' = 1 
+  AND o.date = t.date 
+  AND o.date = s.date 
+  AND t.date = s.date 
+  AND o.time = t.time 
+  AND o.time = s.time 
+  AND t.time = s.time;",YES,type-mismatch-condition
+"SELECT  dateadd(year,  i.n,  '1/1/2014') FROM  [1314howe].[thousand] i","SELECT  
+    dateadd(year,  x.n,  '1/1/2014') 
+FROM  
+    [1314howe].[thousand] i;",YES,alias-undefined
+SELECT  * FROM  1385_queries where is_public = 1,"SELECT *
+FROM 1385_queries
+WHERE is_public = (SELECT is_public FROM 1385_queries WHERE created_at > '2023-01-01');  ",YES,type-mismatch-nested
+"select r.* ,  g.[Vessel label] ,  g.Address","SELECT r.*, 
+       g.[Vessel label], 
+       g.Address 
+FROM r, g
+HAVING COUNT(r.*) > 1; ",YES,aggr-having
+Select * From [1123].[Gill_Done_2] Where Percent_Meth > 50 and Gil >10 and CG >10 and CDScount >3,"SELECT * 
+FROM [1123].[Gill_Done_2]
+WHERE Percent_Meth > '50%' -- Comparing numeric to string with percentage symbol
+  AND Gil > 'ten'       
+  AND CG > 'data'         
+  AND CDScount > 3.5;      ",YES,type-mismatch-condition
+"SELECT  [Saito_Id] ,  CASE WHEN [Identified Proteins] = '#NO Error' THEN NULL ELSE [Identified Proteins] END AS [Identified Proteins] ,  CASE WHEN [Accession] = '#NO Error' THEN NULL ELSE [Accession] END AS [Accession] ,  CASE WHEN [BLAST_NR ANNOTATION] = '#NO Error' THEN NULL ELSE [BLAST_NR ANNOTATION] END AS [BLAST_NR ANNOTATION] ,  CASE WHEN [BLAST NR OR GANISM] = '#NO Error' THEN NULL ELSE [BLAST NR OR GANISM] END AS [BLAST NR OR GANISM] ,  CASE WHEN [BLAST Microbial P col1] = '#NO Error' THEN NULL ELSE [BLAST Microbial P col1] END AS [BLAST Microbial P col1] ,  CASE WHEN [BLAST Microbial P col2] = '#NO Error' THEN NULL ELSE [BLAST Microbial P col2] END AS [BLAST Microbial P col2] ,  CASE WHEN CHARINDEX('kDa', [Molecular Weight]) = 0 THEN NULL ELSE SUBSTRING([Molecular Weight],  1,  CHARINDEX('kDa', [Molecular Weight])) END AS [Molecular Weight (kDa)] --  ,  CASE WHEN CHARINDEX('kDa', [Molecular Weight]) = 0 THEN NULL ELSE CAST(SUBSTRING([Molecular Weight],  1,  CHARINDEX('kDa', [Molecular Weight])) AS FLOAT) END AS [Molecular Weight (kDa)] ,  [(G13) S1-15m] ,  [(G14)-S1-40m] ,  [(G15)-S1-70m] ,  [(G10)-S4-45m] ,  [(G11)-S4-65m] ,  [(G2)-S8-33m] ,  [(G3)-S8-70m] ,  [(G6)-S6-15m] ,  [(G7)-S6-45m] FROM  [446].[table_Saito_GEOMICS1D_SubsurfaceProteins_withprelimcounts.csv]","SELECT  
+    x.[Saito_Id],  
+    CASE WHEN x.[Identified Proteins] = '#NO Error' THEN NULL ELSE x.[Identified Proteins] END AS [Identified Proteins],  
+    CASE WHEN x.[Accession] = '#NO Error' THEN NULL ELSE x.[Accession] END AS [Accession],  
+    CASE WHEN x.[BLAST_NR ANNOTATION] = '#NO Error' THEN NULL ELSE x.[BLAST_NR ANNOTATION] END AS [BLAST_NR ANNOTATION],  
+    CASE WHEN x.[BLAST NR OR GANISM] = '#NO Error' THEN NULL ELSE x.[BLAST NR OR GANISM] END AS [BLAST NR OR GANISM],  
+    CASE WHEN x.[BLAST Microbial P col1] = '#NO Error' THEN NULL ELSE x.[BLAST Microbial P col1] END AS [BLAST Microbial P col1],  
+    CASE WHEN x.[BLAST Microbial P col2] = '#NO Error' THEN NULL ELSE x.[BLAST Microbial P col2] END AS [BLAST Microbial P col2],  
+    CASE WHEN CHARINDEX('kDa', x.[Molecular Weight]) = 0 THEN NULL ELSE SUBSTRING(x.[Molecular Weight], 1, CHARINDEX('kDa', x.[Molecular Weight])) END AS [Molecular Weight (kDa)],  
+    x.[(G13) S1-15m],  
+    x.[(G14)-S1-40m],  
+    x.[(G15)-S1-70m],  
+    x.[(G10)-S4-45m],  
+    x.[(G11)-S4-65m],  
+    x.[(G2)-S8-33m],  
+    x.[(G3)-S8-70m],  
+    x.[(G6)-S6-15m],  
+    x.[(G7)-S6-45m] 
+FROM  
+    [446].[table_Saito_GEOMICS1D_SubsurfaceProteins_withprelimcounts.csv] x
+WHERE 
+    y.[Saito_Id] = 'some_value';",YES,alias-undefined
+SELECT  * FROM  [826].[deFe_BH.csv] where logFC > 0 and BH < 0.0001,"SELECT * 
+FROM [826].[deFe_BH.csv] 
+WHERE logFC > 0 
+  AND BH < 0.0001
+HAVING COUNT(logFC) > 1; ",YES,aggr-having
+SELECT  * FROM  [412].[sig qvalues OA and lowMS.txt] LEFT JOIN  [table_TJGR_Gene_SPID_evalue_Description.txt] ON [412].[sig qvalues OA and lowMS.txt].protein=[table_TJGR_Gene_SPID_evalue_Description.txt].[CGI Protein],SELECT  * FROM  [412].[sig qvalues OA and lowMS.txt] LEFT JOIN  [table_TJGR_Gene_SPID_evalue_Description.txt] ON [412].[sig qvalues OA and lowMS.txt].protein=[table_TJGR_Gene_SPID_evalue_Description.txt].[CGI Protein],NO,NO Error
+"SELECT CGI_ID, len(sequence)- len(REPLACE(sequence,  'C',  '')) as C, len(sequence)- len(REPLACE(sequence,  'G',  '')) as G, (len(sequence)- len(REPLACE(sequence,  'CG',  '')))/2 as CG, len(sequence)- len(REPLACE(sequence,  'CG',  ' ')) as CG,","SELECT CGI_ID,
+       len(sequence) - len(REPLACE(sequence, 'C', '')) as C,
+       len(sequence) - len(REPLACE(sequence, 'G', '')) as G,
+       (SELECT COUNT(*) FROM aNOther_table WHERE condition >300) as CG 
+FROM your_table_name;",YES,type-mismatch-nested
+"SELECT  DISTINCT leftT.follower AS x,  rightT.followee AS z FROM  [1314howe].[twitter4M] leftT JOIN  [1314howe].[twitter4M] rightT ON leftT.followee=rightT.follower WHERE  leftT.follower=1000 ) joined","SELECT DISTINCT 
+    leftT.follower AS x, 
+    rightT.followee AS z, 
+    COUNT(*)  -- Aggregate function without GROUP BY or proper aggregation context
+FROM 
+    [1314howe].[twitter4M] leftT 
+JOIN 
+    [1314howe].[twitter4M] rightT 
+ON 
+    leftT.followee = rightT.follower 
+WHERE 
+    leftT.follower = 1000;",YES,aggr-attribute
+SELECT  COUNT(DISTINCT X) FROM (SELECT  y AS x FROM  [354].[twitter_rv.6200000] UNION SELECT  x FROM  [354].[twitter_rv.6200000] ) fsddfs,"SELECT COUNT(DISTINCT x) FROM (
+    SELECT y AS x FROM [354].[twitter_rv.6200000]
+    UNION
+    SELECT x FROM [354].[twitter_rv.6200000]
+) AS ambiguous
+WHERE x > 100",YES,alias-ambiguous
+SELECT  top 5 * count(*) FROM  [1123].[TJGR_geNOmic_gene.txt] -- FROM  [1314howe].[corrected_TJGR_geNOmic_gene.txt] WHERE  gID LIKE '%\_%' AND  gID = 'CGI',SELECT  top 5 * count(*) FROM  [1123].[TJGR_geNOmic_gene.txt] -- FROM  [1314howe].[corrected_TJGR_geNOmic_gene.txt] WHERE  gID LIKE '%\_%' AND  gID = 'CGI',NO,NO Error
+select * from [CRdb_requestors.csv] cr left join [CTTdb_Requestors.csv] ct on (ct.PI_name = cr.PI_name) order by ExternalRequestorID desc,select * from [CRdb_requestors.csv] cr left join [CTTdb_Requestors.csv] ct on (ct.PI_name = cr.PI_name) order by ExternalRequestorID desc,NO,NO Error
+"SELECT  SUM(cnt) FROM ( SELECT  x, COUNT(DISTINCT y) AS cnt FROM ( SELECT a.follower AS x ,  b.followee AS y FROM  [354].[twitter_rv.6157841] a JOIN  [354].[twitter_rv.6157841] b ON a.followee = b.follower ) joined WHERE  x < 1000 GROUP BY  x ) summed","SELECT SUM(cnt) FROM (
+    SELECT x, COUNT(DISTINCT y) AS cnt
+    FROM (
+        SELECT a.follower AS x, b.followee AS y
+        FROM [354].[twitter_rv.6157841] a
+        JOIN [354].[twitter_rv.6157841] b ON a.followee = b.follower
+    ) joined
+    WHERE x < 1000
+    GROUP BY x
+) summed
+WHERE cnt > 10",YES,alias-ambiguous
+SELECT  * FROM [1123].[qDOD Cgigas Gene Descriptions (Swiss-prot)] Where description = 'Vitello_',"SELECT *
+FROM [1123].[qDOD Cgigas Gene Descriptions (Swiss-prot)] AS main
+LEFT JOIN [1123].[OtherTable] AS other
+ON main.ID = other.ID
+WHERE description = 'Vitello_'",YES,alias-ambiguous
+WAITFOR  DELAY '00:00:55' SELECT  * FROM  [1318].[table_United States Wind Energy Potential.csv],WAITFOR  DELAY '00:00:55' SELECT  * FROM  [1318].[table_United States Wind Energy Potential.csv],NO,NO Error
+SELECT  * FROM  [1314howe].[upload_failing.csv],"SELECT 
+    AVG([ColumnName]), 
+    *  
+FROM 
+    [1314howe].[upload_failing.csv];",YES,aggr-attribute
+"SELECT  COUNT(t1.species) FROM  [354].[OR 3col_pos] t1 ,  [354].[OR 3col_pos] t2 WHERE  sqrt(power(t1.latitude-t2.latitude, 2)+power(t1.longitude-t2.longitude, 2)) < 0.000001 AND  t1.latitude is NOt null AND  t2.latitude is NOt null","SELECT COUNT(species) FROM [354].[OR 3col_pos] t1, [354].[OR 3col_pos] t2
+WHERE sqrt(power(t1.latitude - t2.latitude, 2) + power(t1.longitude - t2.longitude, 2)) < 0.000001
+AND t1.latitude is NOt null
+AND t2.latitude is NOt null",YES,alias-ambiguous
+"select 1385,  count(*) from 1385_queries where 1=1 and (sql_code  like '%table_%' and sql_code NOt like '%AND %' and sql_code NOt like '%JOIN %') and is_public = 1","SELECT 1385, COUNT(*)
+FROM 1385_queries
+WHERE 1=1
+  AND (sql_code LIKE '%table_%' 
+       AND sql_code NOT LIKE '%AND %' 
+       AND sql_code NOT LIKE '%JOIN %'
+       AND is_public = (SELECT is_public FROM 1385_queries WHERE created_at > '2023-01-01')) ",YES,type-mismatch-nested
+select count(*) from [CTTdb_Requestors.csv] ct left outer join [CRdb_requestors.csv] cr on (ct.PI_name = cr.PI_name),"SELECT count(*)
+FROM [CTTdb_Requestors.csv] AS ct
+LEFT OUTER JOIN [CRdb_requestors.csv] AS cr 
+ON (ct.PI_name = cr.PI_name)
+WHERE PI_name IS NOT NULL",YES,alias-ambiguous
+SELECT  COUNT(*) FROM  [1016].[freeway_loopdata],SELECT  COUNT(*) FROM  [1016].[freeway_loopdata],NO,NO Error
+SELECT  ALogP FROM  [1267].[table_h2_fragment_qsar.csv] ORDER BY  ALogP,SELECT  ALogP FROM  [1267].[table_h2_fragment_qsar.csv] ORDER BY  ALogP,NO,NO Error
+SELECT  * FROM  [412].[all sequenced proteins all treatments.txt] LEFT JOIN  [103B_230_01.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[103B_230_01.txt].proteinCG230_01 LEFT JOIN  [103B_230_02.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[103B_230_02.txt].proteinCG230_02 LEFT JOIN  [103B_230_03.txt] ON [all sequenced proteins all treatments.txt].[All Proteins]=[103B_230_03.txt].proteinCG230_03,"SELECT  
+    AVG([412].[103B_230_01.txt].proteinCG230_01),  -- Introducing AVG function incorrectly
+    *  -- Including all columns without a GROUP BY clause
+FROM  
+    [412].[all sequenced proteins all treatments.txt] 
+LEFT JOIN  
+    [412].[103B_230_01.txt] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[103B_230_01.txt].proteinCG230_01 
+LEFT JOIN  
+    [412].[103B_230_02.txt] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[103B_230_02.txt].proteinCG230_02 
+LEFT JOIN  
+    [412].[103B_230_03.txt] 
+    ON [412].[all sequenced proteins all treatments.txt].[All Proteins] = [412].[103B_230_03.txt].proteinCG230_03;",YES,aggr-attribute
+SELECT  * FROM  [446].[table_P8-A.top1000.sorted.nr.tab] WHERE  [hit.description] LIKE '%urea%',"SELECT *
+FROM [446].[table_P8-A.top1000.sorted.nr.tab] AS p8
+LEFT JOIN [446].[table_related] AS rel
+ON p8.id = rel.id
+WHERE [hit.description] LIKE '%urea%'",YES,alias-ambiguous
+SELECT  * FROM  [446].[LineP_CAMERA_anNOtation_full] protein WHERE  (protein.FUNCTION_1 LIKE '%Iron%' OR  protein.FUNCTION_1 LIKE '%ferr%' OR  protein.FUNCTION_1 LIKE '%Fe[^a-z]%' OR  protein.FUNCTION_2 LIKE '%iron%' OR  protein.FUNCTION_2 LIKE '%ferr%' OR  protein.FUNCTION_3 LIKE '%iron%' OR  protein.FUNCTION_3 LIKE '%ferr%'),"SELECT * 
+FROM [446].[LineP_CAMERA_anNOtation_full] protein 
+WHERE (protein.FUNCTION_1 LIKE 5 OR  -- Using a numeric where a string pattern is expected
+       protein.FUNCTION_1 LIKE '%ferr%' OR
+       protein.FUNCTION_1 LIKE '%Fe[^a-z]%' OR
+       protein.FUNCTION_2 + 10 LIKE '%iron%' OR -- Adding numeric to string before LIKE comparison
+       protein.FUNCTION_2 LIKE '%ferr%' OR
+       protein.FUNCTION_3 / 2 LIKE '%iron%' OR -- Dividing string column by numeric
+       protein.FUNCTION_3 LIKE '%ferr%');",YES,type-mismatch-condition
+"SELECT  [protein] AS [protein 70FL.3], [protein probability] AS [probability 70FL.3], [tot indep spectra] AS [tot spectra 70FL.3] FROM  [412].[table_interact-2015_May_26_Geoduck_65.prot.xls]","SELECT  [protein] AS [protein 70FL.3], [protein probability] AS [probability 70FL.3], [tot indep spectra] AS [tot spectra 70FL.3] FROM  [412].[table_interact-2015_May_26_Geoduck_65.prot.xls]",NO,NO Error
+SELECT  * FROM  [1267].[cph2_w_1.csv] ORDER BY  (Cast(GLU as float) / Cast(res_num as float)) DESC,SELECT  * FROM  [1267].[cph2_w_1.csv] ORDER BY  (Cast(GLU as float) / Cast(res_num as float)) DESC,NO,NO Error
+SELECT  * FROM  [1123].[BiGill_RNAseq_exon],SELECT  * FROM  [1123].[BiGill_RNAseq_exon],NO,NO Error
+select * from g111,select * from g111,NO,NO Error
+"SELECT  maxflood.timestamp as max_flood_time ,  slackebb.timestamp as slack_ebb_time ,  maxebb.timestamp as max_ebb_time ,  slackflood.timestamp as slack_flood_time FROM  [1314howe].[Pile Point tide events labeled by tidal cycle] maxflood ,  [1314howe].[Pile Point tide events labeled by tidal cycle] slackebb ,  [1314howe].[Pile Point tide events labeled by tidal cycle] maxebb ,  [1314howe].[Pile Point tide events labeled by tidal cycle] slackflood WHERE  maxflood.current_intensity = 'Max Flood' AND  slackebb.current_intensity = '""Slack,  Ebb Begins""' AND  maxebb.current_intensity = 'Max Ebb' AND  slackflood.current_intensity = '""Slack,  Flood Begins""' AND  maxflood.tidal_cycle = slackebb.tidal_cycle AND  maxflood.tidal_cycle = maxebb.tidal_cycle AND  maxflood.tidal_cycle = slackflood.tidal_cycle","SELECT 
+    maxflood.timestamp as max_flood_time,
+    slackebb.timestamp as slack_ebb_time,
+    maxebb.timestamp as max_ebb_time,
+    slackflood.timestamp as slack_flood_time
+FROM 
+    [1314howe].[Pile Point tide events labeled by tidal cycle] maxflood,
+    [1314howe].[Pile Point tide events labeled by tidal cycle] slackebb,
+    [1314howe].[Pile Point tide events labeled by tidal cycle] maxebb,
+    [1314howe].[Pile Point tide events labeled by tidal cycle] slackflood
+WHERE
+    maxflood.current_intensity = 'Max Flood' AND
+    slackebb.current_intensity = '""Slack, Ebb Begins""' AND
+    maxebb.current_intensity = 'Max Ebb' AND
+    slackflood.current_intensity = '""Slack, Flood Begins""' AND
+    tidal_cycle = slackebb.tidal_cycle AND  -- Ambiguous reference
+    tidal_cycle = maxebb.tidal_cycle AND    -- Ambiguous reference
+    tidal_cycle = slackflood.tidal_cycle    -- Ambiguous reference",YES,alias-ambiguous
+SELECT  * FROM  [1117].[OrcaMaster2010.csv] WHERE  Lat BETWEEN 48.2727 AND  48.2870,"SELECT * 
+FROM [1117].[OrcaMaster2010.csv]
+WHERE Lat BETWEEN 'NOrth' AND 'south'; ",YES,type-mismatch-condition
+"SELECT  [Date] ,  [Total Fat],  ( SELECT  avg([Total Fat]) FROM  [1314howe].[total_fat_6_month_projection] past WHERE  past.[Date] < NOw.[Date] ) as running_average_fat_grams FROM  [1314howe].[total_fat_6_month_projection] NOw where [Date] > '1/25/2012'","SELECT  
+    [Date],  
+    SUM([Total Fat]),  -- Incorrect use of SUM without GROUP BY
+    (
+        SELECT AVG([Total Fat]) 
+        FROM [1314howe].[total_fat_6_month_projection] past 
+        WHERE past.[Date] < NOw.[Date]
+    ) AS running_average_fat_grams 
+FROM 
+    [1314howe].[total_fat_6_month_projection] NOw 
+WHERE 
+    [Date] > '1/25/2012';",YES,aggr-attribute
+"select a.fullname,  count(*) as totalPUBS from [1143].author a,  [1143].authored b,  [1143].inproceedings p where a.fullname = b.fullname and b.pubID = p.id and p.booktitle = 'PODS' and NOt exists (select * from [1143].authored b2,  [1143].inproceedings p2 where a.fullname=b2.fullname and b2.pubID = p2.id and p2.booktitle in ('SIGMOD Conference',  'VLDB')) group by a.fullname order by count(*) desc","select a.fullname,  count(*) as totalPUBS from [1143].author a,  [1143].authored b,  [1143].inproceedings p where a.fullname = b.fullname and b.pubID = p.id and p.booktitle = 'PODS' and NOt exists (select * from [1143].authored b2,  [1143].inproceedings p2 where a.fullname=b2.fullname and b2.pubID = p2.id and p2.booktitle in ('SIGMOD Conference',  'VLDB')) group by a.fullname order by count(*) desc",NO,NO Error
+"SELECT 
+    s.time, 
+    t.timestamp 
+FROM 
+    [1002].[sds.tab] s
+JOIN 
+    [1002].[Tokyo_1_merged_data_time.csv] t ON s.time = t.time  -- Assumed common join condition
+ORDER BY 
+    s.time;","SELECT 
+    AVG(s.time),  -- Incorrect use of AVG on likely NOn-numeric column
+    t.timestamp 
+FROM 
+    [1002].[sds.tab] s, 
+    [1002].[Tokyo_1_merged_data_time.csv] t 
+ORDER BY 
+    s.time;",YES,aggr-attribute
+SELECT  1385name FROM  [718].[table_1385s_1.csv] WHERE  major = 'history',"SELECT 1385name 
+FROM [718].[table_1385s_1.csv] AS t1
+JOIN [718].[table_1385s_2.csv] AS t2 ON t1.id = t2.id
+WHERE major = 'history'",YES,alias-ambiguous
+"SELECT max(salary),  min(salary),  avg(salary),  count(*) FROM  ( SELECT  Name,  [Job Title] as job_title, [2010 Gross Earnings] as salary FROM  [1314howe].[uw_salaries_2011.txt] ) x WHERE  job_title like '%RESEAR%SENIOR %' AND  job_title NOt like '%APL%' AND  salary > 112800 --ORDER BY  salary desc","SELECT MAX(salary), MIN(salary), AVG(salary), COUNT(*)
+FROM (
+  SELECT Name, [Job Title] as job_title, [2010 Gross Earnings] as salary
+  FROM [1314howe].[uw_salaries_2011.txt]
+) x
+WHERE job_title LIKE '%RESEAR%SENIOR %'
+  AND job_title NOT LIKE '%APL%'
+  AND salary > (SELECT salary FROM [1314howe].[uw_salaries_2011.txt] WHERE job_title LIKE '%MANAGER%')",YES,type-mismatch-nested
+"SELECT  [score] FROM  [823].[CGbigill5x_asgff] WHERE  CAST([score] AS NUMERIC) < 0.25 WHERE  isnumeric(score) = 1 AND  CAST(score AS NUMERIC) < 0.25 WHERE  ISNUMERIC(score)=1 AND  CONVERT(NUMERIC, score) < 0.25 WHERE  isnumeric(score) <> 1 AND  score < 0.25 ORDER BY  score DESC","SELECT [score]
+FROM [823].[CGbigill5x_asgff]
+WHERE ISNUMERIC(score) = 1 AND CAST(score AS VARCHAR) < '0.25' -- Type mismatch by comparing numeric as string
+ORDER BY score DESC;",YES,type-mismatch-condition
+SELECT  * FROM  [1199].[LoanStats3b_securev1.csv] where addr_state = 'WA',"SELECT 
+    AVG(balance),  -- Assuming there's a column named 'balance'
+    * 
+FROM 
+    [1199].[LoanStats3b_securev1.csv] 
+WHERE 
+    addr_state = 'WA';",YES,aggr-attribute
+"SELECT [protein] AS [protein10], [protein probability] AS [protein probability10], [percent coverage] AS [percent coverage10], [tot indep spectra] AS [tot indep spectra10], [peptides] AS [peptides10] FROM  [412].[table_Prophet_2014_Sept_08_BeringSea10.prot.xls] WHERE  [tot indep spectra]>1","SELECT [protein] AS [protein10], 
+       [protein probability] AS [protein probability10], 
+       [percent coverage] AS [percent coverage10], 
+       [tot indep spectra] AS [tot indep spectra10], 
+       [peptides] AS [peptides10] 
+FROM [412].[table_Prophet_2014_Sept_08_BeringSea10.prot.xls] 
+WHERE [tot indep spectra] > 1
+HAVING COUNT([protein]) > 5;",YES,aggr-having
+"SELECT  CAST(SUBSTRING(V2,  1,  23) as datetime) as [time],  V2,  V7 as attenuation FROM  [1059].[cstar.csv]","SELECT CAST(SUBSTRING(V2, 1, 23) AS datetime) AS [time], 
+       V2, 
+       V7 AS attenuation 
+FROM [1059].[cstar.csv]
+HAVING COUNT(V2) > 1;  ",YES,aggr-having
+"SELECT  Column2 FROM  [1123].[BSoysterGENE] Where ""Sum mRNA"" > 50 and ""Percent mCpG (CDS)"" > 80 and ""Percent mCpG (Intron)"" < 20","SELECT Column2 
+FROM [1123].[BSoysterGENE] 
+WHERE ""Sum mRNA"" > 50 
+  AND ""Percent mCpG (CDS)"" > 80 
+  AND ""Percent mCpG (Intron)"" < 20
+HAVING COUNT(Column2) > 1; ",YES,aggr-having
+"SELECT  date,  time,  time_of_day_kNOts,  intensity,  rank() over (partition by date,  intensity order by time) FROM  [1052].[Discovery Island 2000-11.txt] x","SELECT 
+    date, 
+    time, 
+    time_of_day_kNOts, 
+    intensity, 
+    rank() over (partition by date, intensity order by time)
+FROM 
+    [1052].[Discovery Island 2000-11.txt] x
+JOIN 
+    [1052].[OtherTable] y
+ON 
+    x.date = y.date
+WHERE 
+    date BETWEEN '2000-01-01' AND '2000-12-31'",NO,NO Error
+"SELECT  * FROM  [1123].[BiGoRNA_genetable_clc]clc left join [1123].[qDOD Cgigas Gene Descriptions (Swiss-prot)]sp on clc.[""Name""]=sp.CGI_ID","SELECT *
+FROM [1123].[BiGoRNA_genetable_clc] AS clc
+LEFT JOIN [1123].[qDOD Cgigas Gene Descriptions (Swiss-prot)] AS sp
+ON clc.[""Name""] = sp.CGI_ID
+WHERE Name = 'SpecificName'",YES,alias-ambiguous
+"SELECT  count(*) FROM  ( SELECT  fs.sql_query,  vs.query_hash,  vs.x_col,  vs.y_col,  vs.vizlet_type--,  count(*) as score FROM  [1307].[vizlets_28NOv11_16h16m43s_every_displayed_vizlet.csv] vs LEFT OUTER JOIN  [1307].[vizlets_23NOv11_10h34m16s_vizlet_and_action_features.csv] fs ON (vs.query_hash = fs.sql_query_hash and vs.x_col = fs.x_col_name and vs.y_col = fs.y_col_name and vs.vizlet_type = fs.vizlet_type) WHERE  action = 'promote' --  GROUP BY  sql_query,  sql_query_hash,  x_col_name,  y_col_name,  fs.vizlet_type --ORDER BY  count(*) asc --  ) z","SELECT  count(*) FROM  ( SELECT  fs.sql_query,  vs.query_hash,  vs.x_col,  vs.y_col,  vs.vizlet_type--,  count(*) as score FROM  [1307].[vizlets_28NOv11_16h16m43s_every_displayed_vizlet.csv] vs LEFT OUTER JOIN  [1307].[vizlets_23NOv11_10h34m16s_vizlet_and_action_features.csv] fs ON (vs.query_hash = fs.sql_query_hash and vs.x_col = fs.x_col_name and vs.y_col = fs.y_col_name and vs.vizlet_type = fs.vizlet_type) WHERE  action = 'promote' --  GROUP BY  sql_query,  sql_query_hash,  x_col_name,  y_col_name,  fs.vizlet_type --ORDER BY  count(*) asc --  ) z",NO,NO Error
+SELECT  count(*) FROM  [1259].[ecoli_NOgaps_1.csv],"SELECT COUNT(*)
+FROM [1259].[ecoli_NOgaps_1.csv]
+WHERE id = (SELECT id FROM [1259].[ecoli_NOgaps_1.csv] WHERE length > 1000);  ",YES,type-mismatch-nested
+"SELECT  TOP 1 * FROM  [354].[Dan's binning] a, [354].[Dan's binning]  b","SELECT TOP 1 *
+FROM [354].[Dan's binning] a, [354].[Dan's binning] b
+WHERE a.id = (SELECT id FROM [354].[Dan's binning] WHERE value > 100); ",YES,type-mismatch-nested
+"SELECT  'INSERT INTO PathwayGenusPdb (PathwayId, Genus, EnzymesInPdb) VALUES (''' + PathwayId + ''', ''' + Genus + ''', ' + CAST(EnzymesInPdb as varchar(4)) + ')' as Statement","SELECT  'INSERT INTO PathwayGenusPdb (PathwayId, Genus, EnzymesInPdb) VALUES (''' + PathwayId + ''', ''' + Genus + ''', ' + CAST(EnzymesInPdb as varchar(4)) + ')' as Statement",NO,NO Error
+SELECT  sum(BAR_amt) FROM  [1314howe].[ALL_Operations_Details.csv] WHERE  category_label = 'Salaries' -- or category_label = 'Benefits' AND  Description like 'Total Post-docs',"SELECT SUM(BAR_amt)
+FROM [1314howe].[ALL_Operations_Details.csv]
+WHERE category_label = 'Salaries' 
+  AND CAST(Description AS INT) LIKE 'Total Post-docs';",YES,type-mismatch-condition
+SELECT  * FROM [187].[table_Matrix A.txt]  A full outer join [187].[table_Matrix B.txt] B on A.row_num = B.row_num and A.column_num  = b.column_num,SELECT  * FROM [187].[table_Matrix A.txt]  A full outer join [187].[table_Matrix B.txt] B on A.row_num = B.row_num and A.column_num  = b.column_num,NO,NO Error
+"SELECT  Distinct SightDate,  Month,  Day,  [Year] FROM  [1117].[OrcaMaster2010.csv] WHERE  [Year] BETWEEN 2006 AND  2010 AND  Pod <> 'Ts?'","SELECT 
+    AVG(Month),  -- Assuming 'Month' is numeric for demonstration
+    SightDate, 
+    Day, 
+    [Year]
+FROM 
+    [1117].[OrcaMaster2010.csv]
+WHERE 
+    [Year] BETWEEN 2006 AND 2010
+    AND Pod <> 'Ts?'
+GROUP BY 
+    SightDate, 
+    Day, 
+    [Year];",YES,aggr-attribute
+SELECT  * FROM    [1017].[DESeq2_join_spid.txt]deg left join [94].[Phel_clc_blastx_uniprot_sprot_sqlready_1.tab]eval on deg.Column1=eval.Column1 where Column21 = 'sp',"SELECT *
+FROM [1017].[DESeq2_join_spid.txt]deg
+LEFT JOIN [94].[Phel_clc_blastx_uniprot_sprot_sqlready_1.tab]eval ON deg.Column1 = eval.Column1
+WHERE Column21 = (SELECT Column21 FROM [1017].[DESeq2_join_spid.txt] WHERE some_condition = 'value'); ",YES,type-mismatch-nested
+SELECT  * FROM  [826].[PN_multiseries_ESTs_clust.vs.Fracy1FM2_SHOR TFOR M.tab.txt] hits left join [826].[table_Fracy1_ecpathwayinfo_FilteredModels2_SHOR TFOR M.tab.txt] anNOtate on hits.hit_id = anNOtate.proteinId,"SELECT * 
+FROM [826].[PN_multiseries_ESTs_clust.vs.Fracy1FM2_SHORTFORM.tab.txt] hits 
+LEFT JOIN [826].[table_Fracy1_ecpathwayinfo_FilteredModels2_SHORTFORM.tab.txt] anNOtate 
+ON hits.hit_id = anNOtate.proteinId
+HAVING COUNT(hits.hit_id) > 1; ",YES,aggr-having
+"SELECT  rank % 4 as phase ,  rank / 4 as tidal_cycle ,  * FROM  ( SELECT  rank() OVER(ORDER BY  timestamp) as rank,  * FROM  ( SELECT  cast(date + ' ' + time as datetime) as timestamp ,  location,  event_kNOts ,  current_intensity FROM  [1052].[Pile Point Currents 00-11.txt] ) x ) y ORDER BY  timestamp","SELECT 
+    rank % '4' as phase, 
+    rank / 4 as tidal_cycle,
+    *
+FROM (
+    SELECT 
+        RANK() OVER (ORDER BY timestamp) as rank,
+        *
+    FROM (
+        SELECT 
+            CAST(location + current_intensity AS DATETIME) as timestamp, 
+            location,
+            event_kNOts,
+            current_intensity
+        FROM [1052].[Pile Point Currents 00-11.txt]
+    ) x
+) y
+ORDER BY timestamp;",YES,type-mismatch-condition
+"SELECT  time,  pop,  lat,  long ,  flow,  bulk_red,  event_rate ,  salinity,  temperature,  evt,  opp,  n ,   fluorescence,  conc,  flag FROM  [1314howe].[stats.tab]","SELECT 
+    AVG(time),  -- Assuming 'time' could be a numerical field; typically this is illogical
+    pop, 
+    lat, 
+    long, 
+    flow, 
+    bulk_red, 
+    event_rate, 
+    salinity, 
+    temperature, 
+    evt, 
+    opp, 
+    n, 
+    fluorescence, 
+    conc, 
+    flag
+FROM 
+    [1314howe].[stats.tab];",YES,aggr-attribute
+"SELECT  a.company_permalink,  a.company_name,  f.funding FROM  [372].[acqui_cleaned] a,  [372].[funding_cleaned] f where a.company_permalink = f.company_permalink","SELECT a.company_permalink, a.company_name, f.funding
+FROM [372].[acqui_cleaned] a, [372].[funding_cleaned] f
+WHERE a.company_permalink = (SELECT company_permalink FROM [372].[funding_cleaned] WHERE total_funding > 1000000);  ",YES,type-mismatch-nested
+"SELECT  [VLP.mL] as VirusCount ,  [DAPI..cells.ml.] as BactCount FROM  [446].[Virus_Count_vs_Bact_Count]","SELECT  [VLP.mL] as VirusCount ,  [DAPI..cells.ml.] as BactCount FROM  [446].[Virus_Count_vs_Bact_Count]",NO,NO Error
+"SELECT  a.[Depth..m.] ,  b.[Depth..m.] ,  b.[Station],  a.[Station],  a.[longitude..Decimal.deg.] ,  a.[Tot.Cu.nM.] ,  b.[Ammonia.oxidation.rate..nmol.l.1.d.1.] AS Ammonia_oxydation_rate_nmol FROM  [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] a ,  [446].[V2_Horak_GeoMICS data.csv] b WHERE a.[longitude..Decimal.deg.] = b.[longitude..Decimal.deg.] --AND  a.[Depth..m.] != b.[Depth..m.] AND  b.[Ammonia.oxidation.rate..nmol.l.1.d.1.] <> 'NA' ORDER BY  b.Station,  a.Station,  a.[Depth..m.],  b.[Depth..m.]","SELECT a.[Depth..m.], b.[Depth..m.], b.[Station], a.[Station], a.[longitude..Decimal.deg.], a.[Tot.Cu.nM.], 
+       b.[Ammonia.oxidation.rate..nmol.l.1.d.1.] AS Ammonia_oxydation_rate_nmol
+FROM [446].[V2_GEOMICS_Fe-Cu-Mn-Zn-Vedamati.csv] a, [446].[V2_Horak_GeoMICS data.csv] b
+WHERE a.[longitude..Decimal.deg.] = (SELECT [longitude..Decimal.deg.] FROM [446].[V2_Horak_GeoMICS data.csv] WHERE [Ammonia.oxidation.rate..nmol.l.1.d.1.] <> 'NA' AND Station = 'Station1')  
+ORDER BY b.Station, a.Station, a.[Depth..m.], b.[Depth..m.]",YES,type-mismatch-nested
+"SELECT  * FROM  [1123].[AggCo Oyster Bisulfite mRNA and CDS] Where ""SUM mRNA"" > 100 and ""Percent mCpG (CDS)"" > 90","SELECT  * FROM  [1123].[AggCo Oyster Bisulfite mRNA and CDS] Where ""SUM mRNA"" > 100 and ""Percent mCpG (CDS)"" > 90",NO,NO Error
+SELECT  numSpecies FROM  [354].[tmpColumnNameTest],"SELECT  y.numSpecies 
+FROM  [354].[tmpColumnNameTest] x;",YES,alias-undefined
+select * from tbl_revenue where treasurer_fullname NOt in (select fullname from tbl_person),select * from tbl_revenue where treasurer_fullname NOt in (select fullname from tbl_person),NO,NO Error
+"SELECT  row_number() over (order by [Total Fat] DESC) as row ,  * FROM  [1314howe].[categorized_fat_with_calories] c","SELECT ROW_NUMBER() OVER (ORDER BY (SELECT [Total Fat] FROM [1314howe].[categorized_fat_with_calories] WHERE [Category] = 'Snack') DESC) AS row, *
+FROM [1314howe].[categorized_fat_with_calories] c",YES,type-mismatch-nested
+"SELECT  CAST([DMY] AS Date) AS [Date] ,  [DMY] + ' ' + [HMS] ,  [LAT] ,  [LON] ,  [CONDUCTIVITY] ,  [SALINITY] ,  [OCEAN.TEMP] ,  [BULK.RED] ,  [STREAM.PRESSURE] ,  [FILTER.PRESSURE] ,  [MACHINE.TEMP] ,  [Xaccel] ,  [Yaccel] ,  [Zaccel] ,  [MILLISECOND.TIMER] ,  [LASER.POWER] ,  [EVENT.RATE] ,  [FLOW.METER] ,  [position] ,  [CHL] ,  [LightTrans] ,  [acqError] ,  [D1D2] ,  [PAR] ,  [time] ,  [day] ,  [file] FROM  [1059].[sds2.tab]","SELECT CAST([DMY] AS Date) AS [Date], 
+       [DMY] + ' ' + [HMS], 
+       [LAT], 
+       [LON], 
+       [CONDUCTIVITY], 
+       [SALINITY], 
+       [OCEAN.TEMP], 
+       [BULK.RED], 
+       [STREAM.PRESSURE], 
+       [FILTER.PRESSURE], 
+       [MACHINE.TEMP], 
+       [Xaccel], 
+       [Yaccel], 
+       [Zaccel], 
+       [MILLISECOND.TIMER], 
+       [LASER.POWER], 
+       [EVENT.RATE], 
+       [FLOW.METER], 
+       [position], 
+       [CHL], 
+       [LightTrans], 
+       [acqError], 
+       [D1D2], 
+       [PAR], 
+       [time], 
+       [day], 
+       [file] 
+FROM [1059].[sds2.tab]
+HAVING COUNT([LAT]) > 1; ",YES,aggr-having
+"SELECT  LEN([protein]) - LEN(REPLACE([protein],  ', ',  '')) + 1 FROM  [412].[A1 file 21 reduced]","SELECT LEN([protein]) - LEN(REPLACE([protein], ', ', CAST(100 AS VARCHAR))) + 1 
+FROM [412].[A1 file 21 reduced];",YES,type-mismatch-condition
+SELECT  * FROM  [1123].[Mgo_RNAseq_transcript],"SELECT *
+FROM [1123].[Mgo_RNAseq_transcript]
+WHERE gene_id = (SELECT gene_id FROM [1123].[Mgo_RNAseq_transcript] WHERE expression_level > 1000); ",YES,type-mismatch-nested
+select count(*) from [CRdb_requestors.csv] cr left join [CTTdb_Requestors.csv] ct on (ct.PI_name = cr.PI_name),select count(*) from [CRdb_requestors.csv] cr left join [CTTdb_Requestors.csv] ct on (ct.PI_name = cr.PI_name),NO,NO Error
+select distinct journal from article where journal like '%TODS%',"SELECT DISTINCT journal
+FROM article AS art
+JOIN publication AS pub ON art.article_id = pub.article_id
+WHERE journal LIKE '%TODS%'",NO,NO Error
+SELECT Len(sequence_gg) FROM  [1123].[TJGR_geNOmic_gene.txt] Where gID like '%CGI_10000001%',"SELECT 
+    AVG(Len(sequence_gg)) AS AverageSequenceLength  -- Assuming sequence_gg is numeric for AVG, which is illogical
+FROM 
+    [1123].[TJGR_geNOmic_gene.txt]
+WHERE 
+    gID LIKE '%CGI_10000001%';",YES,aggr-attribute
+"select ecp.pathway_name,  se.genus,  count(ecp.ec_number) from [ssgcid_EC_map] se join [ec_pathway.csv] ecp on ecp.ec_number = se.""EC Numbers"" where ecp.pathway_name <> '' group by ecp.pathway_name,  se.genus","SELECT pathway_name, genus, COUNT(ec_number) 
+FROM [ssgcid_EC_map] AS se 
+JOIN [ec_pathway.csv] AS ecp 
+ON ec_number = ec_numbers
+WHERE pathway_name <> ''
+GROUP BY pathway_name, genus",YES,alias-ambiguous
+"SELECT  DISTINCT CASE WHEN PATINDEX('%[0-9]%',  [protein]) = 1 -- first char is number AND  CHARINDEX(', ',  [protein]) = 0 AND  NO comma present THEN [protein] ELSE SUBSTRING([protein], PATINDEX('%[0-9]%',  [protein]),  -- start at first number CHARINDEX(', ',  [protein])-PATINDEX('%[0-9]%',  [protein])) -- length END AS [protein A213] ,  [tot indep spectra] AS [tot spectra A213] FROM  [412].[A2_file13.txt]","SELECT  
+    DISTINCT CASE 
+        WHEN PATINDEX('%[0-9]%', x.[protein]) = 1 -- first char is number 
+        AND CHARINDEX(', ', x.[protein]) = 0 -- NO comma present 
+        THEN x.[protein] 
+        ELSE SUBSTRING(x.[protein], PATINDEX('%[0-9]%', x.[protein]), CHARINDEX(', ', x.[protein]) - PATINDEX('%[0-9]%', x.[protein])) 
+        END AS [protein A213],  
+    y.[tot indep spectra] AS [tot spectra A213] 
+FROM  
+    [412].[A2_file13.txt];",YES,alias-undefined
+SELECT  distinct Protin FROM  [412].[allblast],SELECT  distinct Protin FROM  [412].[allblast],NO,NO Error
+"SELECT  residues.pdb_id,  proteins.gaps,  residues.res_type,  residues.res_index,  residues.res_type ,  residues.res_type_sh,  residues.chain,  residues.res_surface_area,  residues.res_surface_area_ratio, residues.phi,  residues.psi,  residues.structure FROM  [1267].[H2_w_2.csv] residues FULL JOIN  [1267].[h2_w_1.csv] proteins ON proteins.pdb_id=residues.pdb_id WHERE  proteins.gaps = 0  AND  residues.pdb_id IS NOT NULL ORDER BY  residues.pdb_id","SELECT  residues.pdb_id,  proteins.gaps,  residues.res_type,  residues.res_index,  residues.res_type ,  residues.res_type_sh,  residues.chain,  residues.res_surface_area,  residues.res_surface_area_ratio, residues.phi,  residues.psi,  residues.structure FROM  [1267].[H2_w_2.csv] residues FULL JOIN  [1267].[h2_w_1.csv] proteins ON proteins.pdb_id=residues.pdb_id WHERE  proteins.gaps = 0  AND  residues.pdb_id IS NOT NULL ORDER BY  residues.pdb_id",NO,NO Error
+SELECT  * FROM  [1123].[OAMS_SkylineData.csv] WHERE  PrecursorCharge <3,SELECT  * FROM  [1123].[OAMS_SkylineData.csv] WHERE  PrecursorCharge <3,NO,NO Error
+SELECT  * FROM  [1314howe].[uwsalaries.csv] WHERE  title like '%SOFTWARE%' order by sal desc,"SELECT *
+FROM [1314howe].[uwsalaries.csv]
+WHERE title LIKE '%SOFTWARE%'
+  AND salary = (SELECT salary FROM [1314howe].[uwsalaries.csv] WHERE title LIKE '%MANAGER%')  
+ORDER BY sal DESC;",YES,type-mismatch-nested
+"select u.[ec numbers] as enzyme,  a.proteinssgcidid from report_anacor a join [uniprot_enzyme_map.csv] u on (u.accession = a.uniprot)","SELECT enzyme, proteinssgcidid
+FROM report_anacor AS a
+JOIN [uniprot_enzyme_map.csv] AS u
+ON (u.accession = a.uniprot)
+WHERE ec_numbers = 'specific value'",YES,alias-ambiguous
+"WITH  Numbered AS (SELECT  [time] as [DateTime],  [LAT],  [LON],  ROW_NUMBER() OVER (ORDER BY  [Time] ASC) AS [Row] FROM  [1059].[STATS_VIEW]) ,  Paired AS (SELECT  a.[DateTime] AS [DateTime] ,  DATEDIFF(second,  a.[DateTime],  b.[DateTime]) AS [Elapsed (s)] ,  a.[LAT] AS [lat1deg] ,  a.[LON] AS [lon1deg] ,  b.[LAT] AS [lat2deg] ,  b.[LON] AS [lon2deg] ,  a.[LAT] * PI() / 180 AS [lat1] ,  b.[LAT] * PI() / 180  AS [lat2] ,  (a.[LAT] - b.[LAT]) * PI() / 180 AS [dlat] ,  (a.[LON] - b.[LON]) * PI() / 180 AS [dlon] FROM  Numbered a JOIN  Numbered b ON a.[Row]+1 = b.[Row]) ,  Trig AS (SELECT  * ,  POWER(SIN(dlat/2), 2) + POWER(SIN(dlon/2), 2) * COS(lat1) * COS(lat2) AS val FROM  Paired) ,  Distance AS (SELECT  * ,  6378100 * 2 * atn2(sqrt(val),  sqrt(1-val)) AS [Distance (m)] FROM  Trig) SELECT  * ,  [Distance (m)] / NULLIF([Elapsed (s)], 0) AS [Velocity (m/s)] FROM  Distance","WITH  Numbered AS (SELECT  [time] as [DateTime],  [LAT],  [LON],  ROW_NUMBER() OVER (ORDER BY  [Time] ASC) AS [Row] FROM  [1059].[STATS_VIEW]) ,  Paired AS (SELECT  a.[DateTime] AS [DateTime] ,  DATEDIFF(second,  a.[DateTime],  b.[DateTime]) AS [Elapsed (s)] ,  a.[LAT] AS [lat1deg] ,  a.[LON] AS [lon1deg] ,  b.[LAT] AS [lat2deg] ,  b.[LON] AS [lon2deg] ,  a.[LAT] * PI() / 180 AS [lat1] ,  b.[LAT] * PI() / 180  AS [lat2] ,  (a.[LAT] - b.[LAT]) * PI() / 180 AS [dlat] ,  (a.[LON] - b.[LON]) * PI() / 180 AS [dlon] FROM  Numbered a JOIN  Numbered b ON a.[Row]+1 = b.[Row]) ,  Trig AS (SELECT  * ,  POWER(SIN(dlat/2), 2) + POWER(SIN(dlon/2), 2) * COS(lat1) * COS(lat2) AS val FROM  Paired) ,  Distance AS (SELECT  * ,  6378100 * 2 * atn2(sqrt(val),  sqrt(1-val)) AS [Distance (m)] FROM  Trig) SELECT  * ,  [Distance (m)] / NULLIF([Elapsed (s)], 0) AS [Velocity (m/s)] FROM  Distance",NO,NO Error
+"SELECT  a.company_permalink,  a.company_name,  f.funding,  cast(replace(price_amount,  ', ',  '') as numeric) as price,  cast(replace(price_amount,  ', ',  '') as numeric) - funding as profit,  acquired_at,  acquirer_name FROM  [372].[acqui] a,  [372].[funding_cleaned] f where a.company_permalink = f.company_permalink and a.price_amount != '' and a.price_amount NOt like '%-%' and  a.price_currency_code = 'USD' order by cast(replace(price_amount,  ', ',  '') as numeric) - funding DESC","SELECT  
+    a.company_permalink, 
+    a.company_name, 
+    SUM(f.funding) as total_funding,  -- Introducing aggregate function
+    cast(replace(price_amount,  ', ',  '') as numeric) as price, 
+    cast(replace(price_amount,  ', ',  '') as numeric) - SUM(f.funding) as profit,  -- Using aggregate in calculation
+    acquired_at, 
+    acquirer_name 
+FROM  
+    [372].[acqui] a,  
+    [372].[funding_cleaned] f 
+WHERE 
+    a.company_permalink = f.company_permalink 
+    and a.price_amount != '' 
+    and a.price_amount NOt like '%-%' 
+    and a.price_currency_code = 'USD' 
+ORDER BY 
+    cast(replace(price_amount,  ', ',  '') as numeric) - SUM(f.funding) DESC;",YES,aggr-attribute
+SELECT  * FROM  [1123].[Phel_sig_NOrmalized_exp]sig left join [1123].[Phel_clc_wID_info]des on sig.contig=des.Column1,SELECT  * FROM  [1123].[Phel_sig_NOrmalized_exp]sig left join [1123].[Phel_clc_wID_info]des on sig.contig=des.Column1,NO,NO Error
+"select USER_NAME(p.grantee_principal_id) AS principal_name, dp.type_desc AS principal_type_desc, p.class_desc, OBJECT_NAME(p.major_id) AS object_name,  o.type, p.permission_name, p.state_desc AS permission_state_desc,  p.* from    sys.database_permissions p inner   JOIN  sys.database_principals dp on     p.grantee_principal_id = dp.principal_id inner   JOIN  sys.objects o on p.major_id = o.object_id WHERE  o.type = 'V' and dp.type_desc = 'SQL_USER'","select USER_NAME(p.grantee_principal_id) AS principal_name, dp.type_desc AS principal_type_desc, p.class_desc, OBJECT_NAME(p.major_id) AS object_name,  o.type, p.permission_name, p.state_desc AS permission_state_desc,  p.* from    sys.database_permissions p inner   JOIN  sys.database_principals dp on     p.grantee_principal_id = dp.principal_id inner   JOIN  sys.objects o on p.major_id = o.object_id WHERE  o.type = 'V' and dp.type_desc = 'SQL_USER'",NO,NO Error
+"SELECT  T1 ,  C1 ,  S ,  SV ,  T2 ,  case when [X.NO3..uMol.L.] = 'NA' then NULL else [X.NO3..uMol.L.] end as  Nitrate ,  case when [O2.Conc..uM.] = 'NA' then NULL else [O2.Conc..uM.] end as  Oxygen ,  o.date ,  o.time ,  case when o.[long.dc] = 'NA' then NULL else o.[long.dc] end as longitude ,  case when o.[lat.dc] = 'NA' then NULL else o.[lat.dc] end as latitude","SELECT  T1 ,  C1 ,  S ,  SV ,  T2 ,  case when [X.NO3..uMol.L.] = 'NA' then NULL else [X.NO3..uMol.L.] end as  Nitrate ,  case when [O2.Conc..uM.] = 'NA' then NULL else [O2.Conc..uM.] end as  Oxygen ,  o.date ,  o.time ,  case when o.[long.dc] = 'NA' then NULL else o.[long.dc] end as longitude ,  case when o.[lat.dc] = 'NA' then NULL else o.[lat.dc] end as latitude",NO,NO Error
+"WITH  DEGMIN (DLAT,  DLON) AS (SELECT  CAST([LAT] AS FLOAT)/100 AS DLAT ,  CAST([LON] AS FLOAT)/-100 AS DLON FROM  [1059].[SDS_VIEW_VARCHAR]) SELECT  TOP 5 ROUND(DLAT,  0,  1) + ([DLAT] - ROUND(DLAT,  0,  1))*100/60 AS LAT FROM  DEGMIN WHERE  [DLAT] IS NOT NULL","WITH DEGMIN (DLAT, DLON) AS (
+    SELECT  
+        CAST(x.[LAT] AS FLOAT)/100 AS DLAT, 
+        CAST(x.[LON] AS FLOAT)/-100 AS DLON 
+    FROM  
+        [1059].[SDS_VIEW_VARCHAR]
+)
+SELECT  
+    TOP 5 ROUND(z.DLAT, 0, 1) + (z.[DLAT] - ROUND(z.DLAT, 0, 1)) * 100 / 60 AS LAT 
+FROM  
+    DEGMIN 
+WHERE  
+    y.[DLAT] IS NOT NULL;",YES,alias-undefined
