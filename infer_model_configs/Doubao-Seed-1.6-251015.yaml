@@ -6,8 +6,8 @@ model:
   reasoning_ability: True
 
 inference:
-  model_name: ep_id # if qwen platform model using model name, else doubao platform using ep_id
-  doubao_model_name: Doubao-Seed-1.6-251015 # if using doubao model filled with real model name
+  model_name: ep-20251205135937-7dhcx # if qwen platform model using model name, else doubao platform using ep_id
+  model_identifier: Doubao-Seed-1.6-251015 # if using doubao model filled with real model name
   reasoning: False
   max_workers: 10
 

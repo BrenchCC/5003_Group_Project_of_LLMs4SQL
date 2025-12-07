@@ -1,4 +1,5 @@
 import os
+import sys
 import math
 import json
 import logging
@@ -8,6 +9,7 @@ import pandas as pd
 import json_repair
 from tqdm import tqdm
 
+sys.path.append(os.getcwd())
 from inference.infer_type import InferType, OUTPUT_KEY
 from utils.llm_server import LLMServer
 
@@ -57,26 +59,28 @@ class Inference:
         model_name: str,
         infer_type: InferType,
         data_dir: str = "datasets/processed_data",
-        doubao_model_name: str = None,
+        model_identifier: str = None,
+        stream: bool = False,
         reasoning: bool = False,
-        max_workers: int = 10
+        max_workers: int = 10,
+        **kwargs
     ):
         self.llms = llms
         self.model_name = model_name
-        self.doubao_model_name = doubao_model_name
+        self.model_identifier = model_identifier
         self.data_dir = data_dir
         self.infer_type = infer_type
         self.reasoning = reasoning
         self.max_workers = max_workers
+        self.stream = stream
+
+        self.temperature = kwargs.get("temperature", 0.3)
+        self.top_p = kwargs.get("top_p", 0.7)
 
         # set output dir based on model and infer type
-        output_dir = None
-        if self.llms.model_type == "doubao":
-            output_dir = os.path.join("outputs", infer_type, self.doubao_model_name)
-            os.makedirs(output_dir, exist_ok=True)
-        else:
-            output_dir = os.path.join("outputs", infer_type, self.model_name)
-            os.makedirs(output_dir, exist_ok=True)
+
+        output_dir = os.path.join("outputs", infer_type, self.model_identifier)
+        os.makedirs(output_dir, exist_ok=True)
         self.output_dir = output_dir
 
         # freeze data paths / prompt
@@ -152,7 +156,7 @@ class Inference:
 
     # -------------------------- Core inference --------------------------
 
-    def infer_single(self, record: dict, temperature: float = 0.1, top_p = 0.7):
+    def infer_single(self, record: dict):
         """Infer + parse JSON + update the record."""
         user_prompt = self.construct_user_prompt(record)
 
@@ -160,9 +164,10 @@ class Inference:
             query = user_prompt,
             model_name = self.model_name,
             system_prompt = self.prompt,
+            stream = self.stream,
             enable_thinking = self.reasoning,
-            temperature = temperature,
-            top_p = top_p,
+            temperature = self.temperature,
+            top_p = self.top_p,
         )
 
         parsed = self._parse_json(raw_result)
@@ -235,7 +240,7 @@ if __name__ == "__main__":
     test_inference = Inference(
         llms = test_llm_server,
         model_name = "ep-20251117162016-2k2kx",
-        doubao_model_name = "Doubao-Seed-1.6-251015",
+        model_identifier = "Doubao-Seed-1.6-251015",
         infer_type = InferType.SYNTAX_ERROR,
         reasoning = False,
     )

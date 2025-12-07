@@ -1,0 +1,50 @@
+{
+    "Join-Order": {
+        "missing_token": {
+            "precision": 0.9811320754716981,
+            "recall": 0.9629629629629629,
+            "f1": 0.9719626168224299
+        },
+        "missing_token_type": {
+            "precision": 0.5487654320987655,
+            "recall": 0.496740055563585,
+            "f1": 0.49035594181148867
+        },
+        "missing_token_location": {
+            "mae": 19.212962962962962,
+            "hr": 0.1388888888888889
+        }
+    },
+    "SDSS": {
+        "missing_token": {
+            "precision": 0.9145299145299145,
+            "recall": 0.9727272727272728,
+            "f1": 0.9427312775330396
+        },
+        "missing_token_type": {
+            "precision": 0.7545807871171066,
+            "recall": 0.7091751877312469,
+            "f1": 0.719317767132076
+        },
+        "missing_token_location": {
+            "mae": 20.70909090909091,
+            "hr": 0.20909090909090908
+        }
+    },
+    "SQLShare": {
+        "missing_token": {
+            "precision": 0.9456521739130435,
+            "recall": 0.90625,
+            "f1": 0.9255319148936171
+        },
+        "missing_token_type": {
+            "precision": 0.5515044858523119,
+            "recall": 0.49601050429691795,
+            "f1": 0.5139217391008
+        },
+        "missing_token_location": {
+            "mae": 9.796875,
+            "hr": 0.25
+        }
+    }
+}

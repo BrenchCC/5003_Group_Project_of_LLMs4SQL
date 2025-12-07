@@ -1,0 +1,14 @@
+# inference model configs
+model:
+  model_type: qwen
+  base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+  api_key: api_key
+  reasoning_ability: True
+
+inference:
+  model_name: deepseek-v3.1 # if qwen platform model using model name, else doubao platform using ep_id
+  model_identifier: DeepSeek-V3.1-Terminus-Thinking # using custom model_identifier to identify model
+  stream: True
+  reasoning: True
+  max_workers: 10
+

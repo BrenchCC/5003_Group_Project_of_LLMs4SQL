@@ -48,7 +48,8 @@ def initialize_inference_system(model_config: dict, infer_config: dict, infer_ty
         llms = llm_server,
         infer_type = infer_type,
         model_name = infer_config["model_name"],
-        doubao_model_name = infer_config.get("doubao_model_name"),
+        model_identifier = infer_config.get("model_identifier"),
+        stream = infer_config.get("stream", False),
         reasoning = infer_config["reasoning"],
         max_workers = infer_config["max_workers"],
     )
@@ -66,15 +67,11 @@ def single_infer_pipeline(config_path, infer_option):
     inference = initialize_inference_system(model_config, infer_config, infer_type)
 
     results = inference.infer_batch()
-    if inference.llms.model_type == "doubao":
-        logger.info(f"{inference.doubao_model_name} infer for {infer_option} has finished")
-    else:
-        logger.info(f"{inference.model_name} infer for {infer_option} has finished")
+    logger.info(f"{inference.model_identifier} infer for {infer_option} has finished")
 
     return results
 
 def all_infer_pipeline(config_path, infer_option = "all"):
-    model_config, infer_config = parse_config(config_path)
     infer_options = ["syntax_error", "missing_token", "query_performance", "query_equality"]
     logger.info(f"infer_option is all, now infer in all pipeline for {infer_option}")
 

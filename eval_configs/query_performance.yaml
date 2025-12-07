@@ -1,0 +1,4 @@
+evaluation:
+  infer_type: query_performance
+  data_dir: outputs/query_performance
+  model_list: ['DeepSeek-V3.1-Terminus-Thinking', 'GLM-4.6', 'DeepSeek-V3.1-Terminus', 'Doubao-Seed-1.6-251015', 'qwen3-next-80b-a3b-instruct']

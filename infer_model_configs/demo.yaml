@@ -7,7 +7,7 @@ model:
 
 inference:
   model_name: model_name # if qwen platform model using model name, else doubao platform using ep_id
-  doubao_model_name: NULL # if using doubao model filled with real model name
+  model_identifier: NULL # using custom model_identifier to identify model
   reasoning: False
   max_workers: 10
 

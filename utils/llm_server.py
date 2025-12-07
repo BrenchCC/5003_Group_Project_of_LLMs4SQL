@@ -10,14 +10,14 @@ logger = logging.getLogger("LLMs_Server")
 
 class LLMServer:
     """
-    Unified interface for multiple LLM providers (doubao / qwen / deepseek/ normal).
+    Unified interface for multiple LLM providers platform (doubao / qwen / /SiliconFlow/ normal).
     Supports: chat, vision chat, embedding.
     Thinking ability is model-specific.
     """
 
-    def __init__(self, base_url: str, api_key: str, model_type: str, reasoning_ability: bool=False):
+    def __init__(self, base_url: str, api_key: str, model_type: str, reasoning_ability: bool = False):
         """
-        model_type: "doubao" | "qwen" | "normal" | etc.
+        model_type: "doubao" | "qwen" | "siliconflow" | "normal" | etc.
         """
         self.base_url = base_url
         self.api_key = api_key
@@ -50,7 +50,7 @@ class LLMServer:
             }
 
         # ----- Qwen -----
-        if self.model_type == "qwen":
+        if self.model_type == "qwen" or self.model_type == "siliconflow":
             return {
                 "extra_body": {
                     "enable_thinking": bool(enable_thinking)
@@ -96,20 +96,25 @@ class LLMServer:
 
             if stream:
                 result = ""
+                reasoning_content = ""
                 for chunk in completion:
                     if not chunk.choices:
                         continue
                     delta = chunk.choices[0].delta
-                    if delta.content:
-                        print(delta.content, end="")
+                    if hasattr(delta, "content") and delta.content is not None:
+                        # print(delta.content, end="")
                         result += delta.content
+                    
+                    if hasattr(delta, "reasoning_content") and delta.reasoning_content is not None:
+                        # print(delta.reasoning_content, end="", flush=True)
+                        reasoning_content += delta.reasoning_content    
             else:
                 result = completion.choices[0].message.content
 
-            try:
-                reasoning_content = completion.choices[0].message.reasoning_content
-            except:
-                reasoning_content = ""
+                try:
+                    reasoning_content = completion.choices[0].message.reasoning_content
+                except:
+                    reasoning_content = ""
             # Token Info
             try:
                 prompt_tok = completion.usage.prompt_tokens

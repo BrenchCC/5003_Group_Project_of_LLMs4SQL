@@ -1,0 +1,13 @@
+# inference model configs
+model:
+  model_type: SiliconFlow
+  base_url: https://api.siliconflow.cn/v1
+  api_key: api_key
+  reasoning_ability: True
+
+inference:
+  model_name: zai-org/GLM-4.6 # if qwen platform model using model name, else doubao platform using ep_id
+  model_identifier: GLM-4.6 # if using doubao model filled with real model name
+  reasoning: False
+  max_workers: 10
+
