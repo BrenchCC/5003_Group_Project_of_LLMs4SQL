@@ -1,0 +1,13 @@
+# inference model configs
+model:
+  model_type: qwen
+  base_url: https://dashscope.aliyuncs.com/compatible-mode/v1
+  api_key: api_key
+  reasoning_ability: False
+
+inference:
+  model_name: qwen3-next-80b-a3b-instruct # if qwen platform model using model name, else doubao platform using ep_id
+  doubao_model_name: NULL # if using doubao model filled with real model name
+  reasoning: False
+  max_workers: 10
+

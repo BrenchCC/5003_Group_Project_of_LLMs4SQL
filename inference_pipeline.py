@@ -11,7 +11,7 @@ from inference.infer_type import InferType
 
 def args_parser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--config', type = str, default = "infer_model_configs/Doubao-Seed-1.6-251015.yaml")
+    parser.add_argument('--config', type = str, default = "infer_model_configs/DeepSeek-V3.1-Terminus.yaml")
     parser.add_argument('--infer_option', type = str, default = "all", help = "[all, syntax_error, missing_token, query_performance, query_equality]")
     return parser.parse_args()
 

@@ -157,16 +157,16 @@ class Inference:
         user_prompt = self.construct_user_prompt(record)
 
         reasoning, raw_result, _, _ = self.llms.chat(
-            query=user_prompt,
-            model_name=self.model_name,
-            system_prompt=self.prompt,
-            enable_thinking=self.reasoning,
+            query = user_prompt,
+            model_name = self.model_name,
+            system_prompt = self.prompt,
+            enable_thinking = self.reasoning,
             temperature = temperature,
             top_p = top_p,
         )
 
         parsed = self._parse_json(raw_result)
-        if not parsed:
+        if not parsed or not isinstance(parsed, dict):
             logger.warning(f"Record failed JSON parse: {record}")
             parsed = {}
 
