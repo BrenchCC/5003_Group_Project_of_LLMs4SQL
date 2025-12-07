@@ -173,6 +173,9 @@ class Inference:
         for out_key in OUTPUT_KEY[self.infer_type]:
             record[out_key] = parsed.get(out_key)
 
+        if self.reasoning:
+            record["reasoning"] = reasoning
+
         return record
 
     # -------------------------- Batch inference --------------------------

@@ -76,7 +76,7 @@ def single_infer_pipeline(config_path, infer_option):
 def all_infer_pipeline(config_path, infer_option = "all"):
     model_config, infer_config = parse_config(config_path)
     infer_options = ["syntax_error", "missing_token", "query_performance", "query_equality"]
-    logger.info("infer_option is all, now infer in all pipeline for {infer_option}")
+    logger.info(f"infer_option is all, now infer in all pipeline for {infer_option}")
 
     for idx, infer_option in enumerate(infer_options):
         infer_type = infer_type_mapping(infer_option)
