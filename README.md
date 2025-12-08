@@ -123,17 +123,20 @@ pip install -r requirements.txt
 ```
 ## 2. Dataset Instruction 
 - Details in [datasets](datasets/raw_data)
+- [Data Preprocessing Code](datasets/raw_data/datasets_stats.ipynb)
+- [Data Mapping Code](datasets/data_tranform.ipynb) 
 
 ## 3. Model Using Overview
 - Doubao-Seed-1.6-251015 ~ no reasoning
 - qwen3-next-80b-a3b-instruct ~ no reasoning
-- glm-4.6 ~ no reasoning
+- GLM-4.6 ~ no reasoning
 - DeepSeek-V3.1-Terminus(deepseek-v3.1)~ no reasoning
 - DeepSeek-V3.1-Terminus(deepseek-v3.1)~ reasoning
 
 ## 4. Inference Pipeline
 - 4.1 Inference Configs
   - [infer_model_configs](infer_model_configs/demo.yaml): **Prepare your own model configs and put here**
+  - [Prompts](prompts/): **Prompt Engineering for different tasks**
 - 4.2 Inference Pipeline
   - [inference_pipeline.py](inference_pipeline.py)
   - using:

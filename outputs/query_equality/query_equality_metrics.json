@@ -1,0 +1,192 @@
+{
+  "DeepSeek-V3.1-Terminus-Thinking": {
+    "Join-Order": {
+      "query_equality": {
+        "precision": 0.925,
+        "recall": 0.7956989247311828,
+        "f1": 0.8554913294797687
+      },
+      "query_equality_type": {
+        "precision": 0.45126108268523124,
+        "recall": 0.4151882975412388,
+        "f1": 0.3780645093018318
+      }
+    },
+    "SDSS": {
+      "query_equality": {
+        "precision": 0.9774436090225563,
+        "recall": 0.7647058823529411,
+        "f1": 0.858085808580858
+      },
+      "query_equality_type": {
+        "precision": 0.5003869227666868,
+        "recall": 0.4205140538473872,
+        "f1": 0.41134047448180455
+      }
+    },
+    "SQLShare": {
+      "query_equality": {
+        "precision": 0.9534883720930233,
+        "recall": 0.7935483870967742,
+        "f1": 0.8661971830985916
+      },
+      "query_equality_type": {
+        "precision": 0.5860121178557767,
+        "recall": 0.5022931026800996,
+        "f1": 0.493140894851515
+      }
+    }
+  },
+  "GLM-4.6": {
+    "Join-Order": {
+      "query_equality": {
+        "precision": 0.90625,
+        "recall": 0.9354838709677419,
+        "f1": 0.9206349206349206
+      },
+      "query_equality_type": {
+        "precision": 0.542853717888781,
+        "recall": 0.5423280423280423,
+        "f1": 0.4589613349613349
+      }
+    },
+    "SDSS": {
+      "query_equality": {
+        "precision": 0.9818181818181818,
+        "recall": 0.9529411764705882,
+        "f1": 0.9671641791044776
+      },
+      "query_equality_type": {
+        "precision": 0.5898491422712875,
+        "recall": 0.5954383851442674,
+        "f1": 0.5449980288821991
+      }
+    },
+    "SQLShare": {
+      "query_equality": {
+        "precision": 0.954248366013072,
+        "recall": 0.9419354838709677,
+        "f1": 0.948051948051948
+      },
+      "query_equality_type": {
+        "precision": 0.569213333435286,
+        "recall": 0.527890444103338,
+        "f1": 0.5102942749638386
+      }
+    }
+  },
+  "DeepSeek-V3.1-Terminus": {
+    "Join-Order": {
+      "query_equality": {
+        "precision": 0.9852941176470589,
+        "recall": 0.7204301075268817,
+        "f1": 0.8322981366459629
+      },
+      "query_equality_type": {
+        "precision": 0.48984717010631645,
+        "recall": 0.4935681216931217,
+        "f1": 0.42228278115746154
+      }
+    },
+    "SDSS": {
+      "query_equality": {
+        "precision": 1.0,
+        "recall": 0.7705882352941177,
+        "f1": 0.8704318936877077
+      },
+      "query_equality_type": {
+        "precision": 0.5221400485836628,
+        "recall": 0.4994891826923077,
+        "f1": 0.44063601619355536
+      }
+    },
+    "SQLShare": {
+      "query_equality": {
+        "precision": 0.9838709677419355,
+        "recall": 0.7870967741935484,
+        "f1": 0.8745519713261649
+      },
+      "query_equality_type": {
+        "precision": 0.5834738388294984,
+        "recall": 0.4922037102013427,
+        "f1": 0.4770749457602812
+      }
+    }
+  },
+  "Doubao-Seed-1.6-251015": {
+    "Join-Order": {
+      "query_equality": {
+        "precision": 0.9558823529411765,
+        "recall": 0.6989247311827957,
+        "f1": 0.8074534161490685
+      },
+      "query_equality_type": {
+        "precision": 0.32260963674007154,
+        "recall": 0.2833207357016881,
+        "f1": 0.22762161948677717
+      }
+    },
+    "SDSS": {
+      "query_equality": {
+        "precision": 0.9931506849315068,
+        "recall": 0.8529411764705882,
+        "f1": 0.9177215189873418
+      },
+      "query_equality_type": {
+        "precision": 0.4451771544394885,
+        "recall": 0.4007551160960252,
+        "f1": 0.3682444011443776
+      }
+    },
+    "SQLShare": {
+      "query_equality": {
+        "precision": 0.9703703703703703,
+        "recall": 0.8451612903225807,
+        "f1": 0.9034482758620689
+      },
+      "query_equality_type": {
+        "precision": 0.4739238617608322,
+        "recall": 0.4490289400180226,
+        "f1": 0.4217500707069035
+      }
+    }
+  },
+  "qwen3-next-80b-a3b-instruct": {
+    "Join-Order": {
+      "query_equality": {
+        "precision": 0.875,
+        "recall": 0.5268817204301075,
+        "f1": 0.6577181208053691
+      },
+      "query_equality_type": {
+        "precision": 0.3143493761140819,
+        "recall": 0.24011826953003426,
+        "f1": 0.22728504627065907
+      }
+    },
+    "SDSS": {
+      "query_equality": {
+        "precision": 0.9587628865979382,
+        "recall": 0.5470588235294118,
+        "f1": 0.6966292134831461
+      },
+      "query_equality_type": {
+        "precision": 0.41771645021645026,
+        "recall": 0.34204487641987646,
+        "f1": 0.3200986927493796
+      }
+    },
+    "SQLShare": {
+      "query_equality": {
+        "precision": 0.9770992366412213,
+        "recall": 0.8258064516129032,
+        "f1": 0.8951048951048951
+      },
+      "query_equality_type": {
+        "precision": 0.4635126974684463,
+        "recall": 0.44177821237052123,
+        "f1": 0.41096241231289804
+      }
+    }
+  }
+}

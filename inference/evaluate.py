@@ -10,7 +10,7 @@ import pandas as pd
 sys.path.append(os.getcwd())
 from inference.infer_type import InferType
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Evaluate_Tools")
 
 OUTPUT_DATA = {
     "syntax_error": ["syntax_error_join_results.csv", "syntax_error_sdss_results.csv", "syntax_error_sqlshare_results.csv"],

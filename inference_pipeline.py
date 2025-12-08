@@ -1,6 +1,4 @@
 import os
-import sys
-import json
 import yaml
 import logging
 import argparse

@@ -1,4 +1,4 @@
 evaluation:
-  infer_type: syntax_error
-  data_dir: outputs/syntax_error
-  model_list: ['DeepSeek-V3.1-Terminus-Thinking', 'GLM-4.6', 'DeepSeek-V3.1-Terminus', 'Doubao-Seed-1.6-251015', 'qwen3-next-80b-a3b-instruct']
+  infer_type: syntax_error # infer_type
+  data_dir: outputs/syntax_error # evaluation_data_dir
+  model_list: ['DeepSeek-V3.1-Terminus-Thinking', 'GLM-4.6', 'DeepSeek-V3.1-Terminus', 'Doubao-Seed-1.6-251015', 'qwen3-next-80b-a3b-instruct'] # the model list you want to evaluate and compare
