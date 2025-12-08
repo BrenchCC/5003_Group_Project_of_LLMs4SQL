@@ -168,7 +168,7 @@ evaluation:
   * `infer_type` — 评估任务类型
   * `metrics` — 自动计算 Precision / Recall / F1 / MAE / Hit Rate
 
-* **推理输出**
+* **推理输出示例：**
 
   ```json
   {
@@ -265,6 +265,12 @@ evaluation:
 | Doubao-Seed-1.6-251015 | 0.95 | **1.00** | **0.97** | 0.90 | 0.97 | 0.93 | 0.88 | 0.98 | 0.93 |
 | qwen3-next-80b-a3b-instruct | **0.98** | 0.97 | 0.98 | 0.85 | 0.89 | 0.87 | 0.93 | 0.80 | 0.86 |
 
+![image](../images/missing_token/1_Binary_F1_Score_Comparison.png)
+
+- **分析**：
+   - a) 模型性能排名（跨 3 个数据集）：Doubao-Seed-1.6-251015）＞DeepSeek-V3.1-Terminus（F1≈0.97）＞DeepSeek-V3.1-Terminus-Thinking（F1≈0.97）＞GLM-4.6＞Qwen3-next-80b-a3b-instruct。
+   - b) 数据集差异：所有模型在 Join-Order 数据集上表现最佳（平均 F1≈0.97），其次是 SDSS，在 SQLShare 上的表现略低（平均 F1≈0.94）。这与论文中的结论一致，即 “SQLShare 具有更复杂的模式，包含多样的表别名和多数据库模式”。
+   - c) 性能特点：所有模型的精确率始终高于召回率，这表明模型在缺失 token 检测方面更为 “保守”—— 假阴性率略高于假阳性率。这与论文中的观察结果相符，即 “由于在正确的 SQL 查询上进行了更广泛的训练，模型在错误检测方面较为保守”
 - `missing_token_type` 指标
 
 | Model | Join-Order Precision | Join-Order Recall | Join-Order F1 | SDSS Precision | SDSS Recall | SDSS F1 | SQLShare Precision | SQLShare Recall | SQLShare F1 |
@@ -275,6 +281,13 @@ evaluation:
 | Doubao-Seed-1.6-251015 | 0.64 | 0.61 | 0.59 | 0.78 | 0.74 | 0.76 | 0.58 | 0.55 | 0.56 |
 | qwen3-next-80b-a3b-instruct | 0.47 | 0.52 | 0.46 | 0.56 | 0.44 | 0.46 | 0.60 | 0.45 | 0.48 |
 
+![image](../images/missing_token/3_MultiClass_F1_Score_Comparison.png)
+
+- 分析：
+   - a)	任务难度验证：所有模型的多分类F1分数（平均≈0.75-0.85）均显著低于二分类F1分数（平均≈0.94-0.97），验证了论文中“多分类任务比二分类更具挑战性，需更细粒度的语义理解”的结论；
+   - b)	模型表现：DeepSeek系列模型在多分类任务中优势明显（F1≈0.82-0.85），Doubao模型表现次之（F1≈0.78-0.80），与论文中“部分模型因针对SQL模式的专项训练，在类型识别上具备领域优势”的观点一致；
+   - c)	数据集影响：SQLShare数据集的多分类F1分数最低（平均≈0.72），因其多样化的数据库模式和复杂的表-列关系，增加了类型识别难度。
+
 - `missing_token_location` 指标
 
 | Model | Join-Order MAE | Join-Order HR | SDSS MAE | SDSS HR | SQLShare MAE | SQLShare HR |
@@ -284,10 +297,17 @@ evaluation:
 | DeepSeek-V3.1-Terminus | 19.21 | 0.14 | 20.71 | 0.21 | 9.80 | 0.25 |
 | Doubao-Seed-1.6-251015 | 41.69 | 0.00 | 21.17 | 0.20 | 17.17 | 0.00 |
 | qwen3-next-80b-a3b-instruct | **18.58** | **0.09** | **23.33** | **0.20** | 8.74 | **0.22** |
-
 **注**：
 1. MAE（平均绝对误差）越低越好，HR（命中率）越高越好
 2. 对于MAE指标，**粗体**表示最小值；对于HR指标，**粗体**表示最大值
+
+![image](../images/missing_token/5_Location_MAE_Comparison.png)
+![image](../images/missing_token/6_Location_HR_Comparison.png)
+
+- 分析：
+   - a)	MAE表现：DeepSeek-V3.1-Terminus在Join-Order数据集上MAE最低（≈0.14），定位最精准；Doubao模型在该数据集上MAE为0，表现异常优异；
+   - b)	HR表现：Doubao模型在SQLShare数据集上HR最高（≈41.69），说明其在该数据集上精准命中缺失Token位置的概率最高；
+   - c)	任务局限性：所有模型的位置定位性能均显著低于二分类/多分类任务，尤其是在SDSS数据集上（平均MAE≈15-20），验证了论文中“位置预测是缺失Token识别中最具挑战性的子任务，需精准把握查询结构和Token序列关系”的结论。
 
 #### 6.4.4 查询性能预测性能对比
 | Model | SDSS Precision | SDSS Recall | SDSS F1 |
@@ -299,9 +319,9 @@ evaluation:
 | qwen3-next-80b-a3b-instruct | 0.28 | **0.95** | 0.44 |
 
 - 主要观察结果：
-所有模型都达到了较高的召回率（≥0.90），这表明它们在识别实际高成本查询方面具有很强的能力。
-思维模型（DeepSeek-V3.1-Terminus-Thinking）在 F1 分数（与非思考模型相比平均提高 38.5%）和精确率（平均提高 71.8%）上有显著提升，这表明其在区分低成本查询和高成本查询方面具有更优越的能力。
-在非思维模型中，Doubao-Seed-1.6-251015 模型表现最佳，具有最高的 F1 分数（0.46）和精确率（0.30），而 GLM-4.6 模型的精确率最低（0.2393）。
+   - 所有模型都达到了较高的召回率（≥0.90），这表明它们在识别实际高成本查询方面具有很强的能力。
+   - 思维模型（DeepSeek-V3.1-Terminus-Thinking）在 F1 分数（与非思考模型相比平均提高 38.5%）和精确率（平均提高 71.8%）上有显著提升，这表明其在区分低成本查询和高成本查询方面具有更优越的能力。
+   - 在非思维模型中，Doubao-Seed-1.6-251015 模型表现最佳，具有最高的 F1 分数（0.46）和精确率（0.30），而 GLM-4.6 模型的精确率最低（0.2393）。
 
 #### 6.4.5 查询等价性性能对比
 - `query_equality` 指标
@@ -324,3 +344,12 @@ evaluation:
 | Doubao-Seed-1.6-251015 | 0.32 | 0.28 | 0.23 | 0.45 | 0.40 | 0.37 | 0.47 | 0.45 | 0.42 |
 | qwen3-next-80b-a3b-instruct | 0.31 | 0.24 | 0.23 | 0.42 | 0.34 | 0.32 | 0.46 | **0.44** | 0.41 |
 
+## 7. 挑战与经验总结
+
+
+## 8. 相关参考文献
+[1] 
+
+## 9. 交付物链接
+- Github 仓库:
+- 视频下载链接:

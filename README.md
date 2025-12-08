@@ -141,7 +141,7 @@ pip install -r requirements.txt
   - [inference_pipeline.py](inference_pipeline.py)
   - using:
   ```bash
-    python inference_pipeline.py --configs infer_model_configs/demo.yaml --infer_option <[all, syntax_error, query_equality, query_performance, missing_token]>
+    python inference_pipeline.py --config infer_model_configs/demo.yaml --infer_option <[all, syntax_error, query_equality, query_performance, missing_token]>
   ```
 
 ## 5. Evaluation Pipeline
@@ -151,7 +151,7 @@ pip install -r requirements.txt
   - [evaluation_pipeline.py](evaluation_pipeline.py)
   - using:
   ```bash
-    python evaluation_pipeline.py --configs eval_configs/demo.yaml
+    python evaluation_pipeline.py --config eval_configs/demo.yaml
   ```
 
 
