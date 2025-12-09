@@ -146,7 +146,7 @@ pip install -r requirements.txt
   - [inference_pipeline.py](inference_pipeline.py)
   - using:
   ```bash
-    python inference_pipeline.py --config infer_model_configs/demo.yaml --infer_option <[all, syntax_error, query_equality, query_performance, missing_token]>
+    python inference_pipeline.py --config infer_model_configs/demo.yaml --infer_option <[all, demo, syntax_error, query_equality, query_performance, missing_token]>
   ```
 
 ## 6. Evaluation Pipeline

@@ -448,5 +448,5 @@ evaluation:
 [5] Guo D, Yang D, Zhang H, et al. Deepseek-r1: Incentivizing reasoning capability in llms via reinforcement learning[J]. arXiv preprint arXiv:2501.12948, 2025.
 
 ## 9. 交付物链接
-- Github 仓库:
+- Github 仓库: https://github.com/BrenchCC/5003_Group_Project_of_LLMs4SQL
 - 视频下载链接:
