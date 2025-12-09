@@ -156,7 +156,7 @@ class Inference:
 
     # -------------------------- Core inference --------------------------
 
-    def infer_single(self, record: dict):
+    def infer_single(self, record: dict, debug: bool = False):
         """Infer + parse JSON + update the record."""
         user_prompt = self.construct_user_prompt(record)
 
@@ -171,6 +171,11 @@ class Inference:
         )
 
         parsed = self._parse_json(raw_result)
+        if debug:
+            logger.info(f"Input User prompt: {user_prompt}")
+            if reasoning:
+                logger.info(f"Model reasoning content: {reasoning}")
+            logger.info(f"Model response result: {raw_result}")
         if not parsed or not isinstance(parsed, dict):
             logger.warning(f"Record failed JSON parse: {record}")
             parsed = {}

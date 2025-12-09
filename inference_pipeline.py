@@ -10,10 +10,10 @@ from inference.infer_type import InferType
 def args_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type = str, default = "infer_model_configs/DeepSeek-V3.1-Terminus.yaml")
-    parser.add_argument('--infer_option', type = str, default = "all", help = "[all, syntax_error, missing_token, query_performance, query_equality]")
+    parser.add_argument('--infer_option', type = str, default = "all", help = "[all, demo, syntax_error, missing_token, query_performance, query_equality]")
     return parser.parse_args()
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger("Inference_Pipeline")
 
 def parse_config(config_path):
     logger.info(f"Loading config from {config_path}")
@@ -53,6 +53,19 @@ def initialize_inference_system(model_config: dict, infer_config: dict, infer_ty
     )
     logger.info("Inference system initialized")
     return inference
+
+def demo_infer_pipeline(config_path, input_query_dict: dict, infer_type = InferType.MISSING_TOKEN):
+    if infer_option != "demo":
+        logger.info("infer_option is not demo, not match demo infer pipeline")
+        return None
+    model_config, infer_config = parse_config(config_path)
+    inference = initialize_inference_system(model_config, infer_config, infer_type)
+
+    logger.info(f"Now infer for {inference.model_identifier} for demo")
+    result = inference.infer_single(input_query_dict, debug = True)
+    logger.info(f"{inference.model_identifier} infer for demo has finished")
+
+    return result
 
 def single_infer_pipeline(config_path, infer_option):
     model_config, infer_config = parse_config(config_path)
@@ -98,5 +111,11 @@ if __name__ == "__main__":
     # single_infer_pipeline(config_path, infer_option)
     if infer_option == "all":
         all_infer_pipeline(config_path, infer_option)
+    elif infer_option == "demo":
+        input_query_dict = {
+            "Modified_Statements": "SELECT MIN(chn.name) AS uncredited_voiced_character, MIN(t.title) AS russian_movie FROM char_name AS chn, cast_info AS ,company_name AS cn, company_type AS ct, movie_companies AS mc, role_type AS rt, title AS t WHERE ci.note LIKE '%(voice)%' AND ci.note LIKE '%(uncredited)%' AND cn.country_code = '[ru]' AND rt.role = 'actor' AND t.production_year > 2005 AND t.id = mc.movie_id AND t.id = ci.movie_id AND ci.movie_id = mc.movie_id AND chn.id = ci.person_role_id AND rt.id = ci.role_id AND cn.id = mc.company_id AND ct.id = mc.company_type_id;"
+        }
+        result = demo_infer_pipeline(config_path, input_query_dict)
     else:
         single_infer_pipeline(config_path, infer_option)
+    

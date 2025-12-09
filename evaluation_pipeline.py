@@ -194,7 +194,7 @@ def evaluate_pipeline(configs: dict):
 
     # Save tables
     for group, df in metrics_tables.items():
-        out_path = os.path.join(data_dir, f"{group}_{len(metrics_tables)}_models.csv")
+        out_path = os.path.join(data_dir, f"{group}_{len(model_list)}_models_evaluation.csv")
         results2csv(df, out_path)
     output_json_path = os.path.join(data_dir, f"{infer_type.value}_metrics.json")
     results2json(total_metrics, output_json_path)
