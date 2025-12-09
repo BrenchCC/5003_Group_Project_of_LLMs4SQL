@@ -126,28 +126,33 @@ pip install -r requirements.txt
 - [Data Preprocessing Code](datasets/raw_data/datasets_stats.ipynb)
 - [Data Mapping Code](datasets/data_tranform.ipynb) 
 
-## 3. Model Using Overview
+## 3. Docs
+- [Course Tuotorial Chinese](docs/course_tutorial.md)
+- [Report](docs/report.md) | [Report PDF File](docs/report.pdf)
+- [Assay Summary and Thinking](docs/summary_of_assay.md)
+
+## 4. Model Using Overview
 - Doubao-Seed-1.6-251015 ~ no reasoning
 - qwen3-next-80b-a3b-instruct ~ no reasoning
 - GLM-4.6 ~ no reasoning
 - DeepSeek-V3.1-Terminus(deepseek-v3.1)~ no reasoning
 - DeepSeek-V3.1-Terminus(deepseek-v3.1)~ reasoning
 
-## 4. Inference Pipeline
-- 4.1 Inference Configs
+## 5. Inference Pipeline
+- 5.1 Inference Configs
   - [infer_model_configs](infer_model_configs/demo.yaml): **Prepare your own model configs and put here**
   - [Prompts](prompts/): **Prompt Engineering for different tasks**
-- 4.2 Inference Pipeline
+- 5.2 Inference Pipeline
   - [inference_pipeline.py](inference_pipeline.py)
   - using:
   ```bash
     python inference_pipeline.py --config infer_model_configs/demo.yaml --infer_option <[all, syntax_error, query_equality, query_performance, missing_token]>
   ```
 
-## 5. Evaluation Pipeline
-- 5.1 Evaluation Configs
+## 6. Evaluation Pipeline
+- 6.1 Evaluation Configs
   - [eval_configs](eval_configs/demo.yaml): **Prepare your own evaluation configs**
-- 5.2 Evaluation Pipeline
+- 6.2 Evaluation Pipeline
   - [evaluation_pipeline.py](evaluation_pipeline.py)
   - using:
   ```bash
