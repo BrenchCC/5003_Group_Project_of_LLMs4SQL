@@ -182,7 +182,7 @@ evaluation:
 
 ## 6. 评估与结果
 ### 6.1 实验设置
-- **硬件环境**：Apple Mac M3 Pro，18 核 CPU，36 核 GPU（集成 / 并行加速），36GB 内存。
+- **硬件环境**：Apple Mac M3 Pro，18 核 CPU，36G 内存（集成 / 并行加速）
 - **软件环境**：
     - Python 3.10
     - `pandas / numpy / yaml / tqdm /matplotlib` 等数据处理库
