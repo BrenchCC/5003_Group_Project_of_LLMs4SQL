@@ -96,7 +96,7 @@ To address the limitations of the original paper's methodology, this project des
 - Since the original paper does not provide specific model versions, prompts, or sampling details, this project's experimental environment differs slightly from the paper, therefore no direct numerical comparisons are made.
 - The following models were selected for experimental comparative analysis:
     - **Doubao-Seed-1.6-251015** ~ Source: ByteDance's latest controllable thinking model
-    - **qwen3-next-80b-a3b-instruct** ~ Source: Alibaba / Tongyi Qianwen's latest non-thinking model in open-source series, MOE architecture
+    - **qwen3-next-80b-a3b-instruct** ~ Source: Alibaba / Tongyi Qwen's latest non-thinking model in open-source series, MOE architecture
     - **GLM-4.6** ~ Source: Zhipu AI's latest controllable thinking model
     - **DeepSeek-V3.1-Terminus** ~ Source: Controllable thinking model launched by DeepSeek
     - **DeepSeek-V3.1-Terminus (Thinking mode enabled)** ~ Source: Controllable thinking model launched by DeepSeek
@@ -449,4 +449,4 @@ Through systematic evaluation, this project reveals the capability boundaries an
 
 ## 9. Deliverables Links
 - Github Repository: https://github.com/BrenchCC/5003_Group_Project_of_LLMs4SQL 
-- Video Download Link:
+- Video Download Link: https://drive.google.com/file/d/1z-9LymGl5DqmMDddTOgs7Lj3ObUHoHAB/view?usp=sharing

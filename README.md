@@ -159,5 +159,10 @@ pip install -r requirements.txt
     python evaluation_pipeline.py --config eval_configs/demo.yaml
   ```
 
+  ```bash
+    python inference_pipeline.py --config infer_model_configs/demo.yaml --infer_option demo
+    python inference_pipeline.py --config infer_model_configs/demo_thinking.yaml --infer_option demo
+  ```
+
 
 
