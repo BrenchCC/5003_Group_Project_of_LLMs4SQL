@@ -6,6 +6,15 @@ import logging
 import argparse
 from typing import Dict, List, Any
 
+# Logging setup
+logger = logging.getLogger("Inference_Pipeline")
+logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.StreamHandler()
+        ]
+    )
 sys.path.append(os.getcwd())
 
 from inference.evaluate import EvaluateTool
@@ -13,13 +22,7 @@ from inference.infer_type import InferType
 
 import pandas as pd
 
-# Logging setup
-logger = logging.getLogger("Evaluation_Pipeline")
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s - %(name)s - %(levelname)s - %(message)s",
-    handlers=[logging.StreamHandler()],
-)
+
 
 # Argument parser
 def args_parser():

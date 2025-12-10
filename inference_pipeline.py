@@ -7,13 +7,24 @@ from utils.llm_server import LLMServer
 from inference.infer import Inference
 from inference.infer_type import InferType
 
+
+logger = logging.getLogger("Inference_Pipeline")
+logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+        handlers=[
+            logging.StreamHandler()
+        ]
+    )
+
+
 def args_parser():
     parser = argparse.ArgumentParser()
     parser.add_argument('--config', type = str, default = "infer_model_configs/DeepSeek-V3.1-Terminus.yaml")
     parser.add_argument('--infer_option', type = str, default = "all", help = "[all, demo, syntax_error, missing_token, query_performance, query_equality]")
     return parser.parse_args()
 
-logger = logging.getLogger("Inference_Pipeline")
+
 
 def parse_config(config_path):
     logger.info(f"Loading config from {config_path}")
@@ -95,14 +106,6 @@ def all_infer_pipeline(config_path, infer_option = "all"):
     return None
 
 if __name__ == "__main__":
-    logging.basicConfig(
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s',
-        handlers=[
-            logging.StreamHandler()
-        ]
-    )
-
     args = args_parser()
 
     config_path = args.config
