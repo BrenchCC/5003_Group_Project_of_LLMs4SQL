@@ -1,109 +1,50 @@
-# 5003 Group Project of LLMs4SQL
-Evaluate LLMs for SQL understanding and execution across five task-specific metrics, with reproducible inference and evaluation pipelines.
+# LLMs4SQL Group Project
 
-## Quick Start
-```bash
-git clone https://github.com/BrenchCC/5003_Group_Project_of_LLMs4SQL
-cd 5003_Group_Project_of_LLMs4SQL
+[中文说明](README_CN.md) · [Documentation](docs/README.md)
 
-conda create -n llms4sql python==3.10
-conda activate llms4sql
-pip install -r requirements.txt
-```
+This project evaluates how large language models understand SQL, following [*Evaluating SQL Understanding in Large Language Models*](docs/2410.10680v1.pdf). The paper covers five tasks. This repository has inference and quantitative evaluation pipelines for four: syntax error detection, missing token identification, query performance prediction, and query equivalence checking. Query explanation is discussed in the report but has no quantitative pipeline here.
 
-## Repository Structure
-```text
-.
-├── datasets
-│   ├── data_tranform.ipynb
-│   ├── processed_data
-│   └── raw_data
-├── docs
-├── eval_configs
-├── evaluation_pipeline.py
-├── infer_model_configs
-├── inference
-├── inference_pipeline.py
-├── outputs
-├── prompts
-├── Reference
-├── requirements.txt
-└── utils
-```
+## Project layout
 
-## Datasets
-- Raw data and stats: `datasets/raw_data`
-- Dataset statistics: `datasets/raw_data/datasets_stats.ipynb`
-- Data mapping: `datasets/data_tranform.ipynb`
+| Path | Contents |
+| --- | --- |
+| [`datasets/`](datasets/) | Raw and processed data, preprocessing and statistics notebooks |
+| [`prompts/`](prompts/) | Task prompts used by inference |
+| [`infer_model_configs/`](infer_model_configs/) | Model API and inference YAML configurations |
+| [`eval_configs/`](eval_configs/) | Evaluation YAML configurations |
+| [`inference_pipeline.py`](inference_pipeline.py) | Model inference for one or all four implemented tasks |
+| [`evaluation_pipeline.py`](evaluation_pipeline.py) | Metrics from saved inference results |
+| [`outputs/`](outputs/) | Saved predictions and metrics |
+| [`docs/`](docs/README.md) | Reports, paper PDFs, notes, and video scripts |
 
-## Documents
-- Course tutorial (Chinese): `docs/course_tutorial.md`
-- Project report: `docs/report.md`
-- Project report (PDF): `docs/report.pdf`
-- Assay summary and thinking: `docs/summary_of_assay.md`
+## Run the pipelines
 
-## Models Evaluated
-- Doubao-Seed-1.6-251015 (no reasoning)
-- qwen3-next-80b-a3b-instruct (no reasoning)
-- GLM-4.6 (no reasoning)
-- DeepSeek-V3.1-Terminus / deepseek-v3.1 (no reasoning)
-- DeepSeek-V3.1-Terminus / deepseek-v3.1 (reasoning)
+1. Use Python 3.10 and install dependencies from the repository root:
 
-## Inference Pipeline
-1. Prepare model configs in `infer_model_configs/`
-2. Prepare prompts in `prompts/`
-3. Run inference:
-```bash
-python inference_pipeline.py --config infer_model_configs/demo.yaml --infer_option <all|demo|syntax_error|query_equality|query_performance|missing_token>
-```
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## Evaluation Pipeline
-1. Prepare evaluation configs in `eval_configs/`
-2. Run evaluation:
-```bash
-python evaluation_pipeline.py --config eval_configs/demo.yaml
-```
+2. Choose a YAML file in [`infer_model_configs/`](infer_model_configs/). Set `model.api_key` to your own API key, check `model.base_url` and `inference.model_name`, and set a nonempty `inference.model_identifier` for the output directory. The tracked `demo.yaml` contains placeholders and cannot call a model as supplied. Keep credentials out of commits.
 
-## Reproducibility Checklist
-1. Confirm dataset files exist in `datasets/processed_data/`
-2. Confirm prompts exist in `prompts/`
-3. Prepare model configs in `infer_model_configs/`
-4. Run inference
-5. Run evaluation
-6. Collect results from `outputs/`
+3. Run inference from the repository root. Omit `--infer_option` to run all four implemented tasks, or select one:
 
-## Output Artifacts
-All outputs are saved under `outputs/`, grouped by task and model name.
+   ```bash
+   python inference_pipeline.py --config infer_model_configs/GLM-4.6.yaml --infer_option syntax_error
+   ```
 
-## Configuration Details
-### Model Configs (`infer_model_configs/`)
-Use YAML to define inference targets. Required fields typically include:
-- `model_name`: readable model id for output folders
-- `provider`: inference backend or API identifier
-- `base_url`: API endpoint
-- `api_key_env`: environment variable name for the API key
-- `temperature`, `max_tokens`: generation settings
+   Accepted options are `all`, `demo`, `syntax_error`, `missing_token`, `query_performance`, and `query_equality`. `demo` uses one built-in missing-token example. The four task options process CSV files in [`datasets/processed_data/`](datasets/processed_data/).
 
-Example (minimal):
-```yaml
-model_name: demo-model
-provider: openai_compatible
-base_url: https://api.example.com/v1
-api_key_env: DEMO_API_KEY
-temperature: 0.0
-max_tokens: 2048
-```
+4. After inference results exist for the models listed in an evaluation config, run evaluation:
 
-### Evaluation Configs (`eval_configs/`)
-Use YAML to define evaluation targets and dataset paths. Required fields typically include:
-- `task`: one of `syntax_error`, `query_equality`, `query_performance`, `missing_token`
-- `input_path`: dataset path
-- `output_dir`: output folder
+   ```bash
+   python evaluation_pipeline.py --config eval_configs/syntax_error.yaml
+   ```
 
-Example (minimal):
-```yaml
-task: syntax_error
-input_path: datasets/processed_data/syntax_error_join.csv
-output_dir: outputs/syntax_error
-```
+   Other task configs are in [`eval_configs/`](eval_configs/). Set `evaluation.model_list` to the model output directories you actually have. Evaluation reads `evaluation.data_dir/<model>/` and writes per-model metrics plus aggregate CSV and JSON files under that task's [`outputs/`](outputs/) directory.
 
+The inference YAML has `model` (`model_type`, `base_url`, `api_key`, `reasoning_ability`) and `inference` (`model_name`, `model_identifier`, `reasoning`, `max_workers`, and optional `stream`) sections. Evaluation YAML uses an `evaluation` section with `infer_type`, `data_dir`, and `model_list`. See the tracked YAML files for examples. The current code reads `model.api_key` directly from YAML; it does not resolve an environment-variable name.
+
+## Results and reading
+
+Existing results are in [`outputs/`](outputs/). Start with the [Chinese report](docs/report.md) or [English report](docs/DB_Unit_Five-report.md) for methodology and analysis. The [documentation index](docs/README.md) lists the paper, PDFs, notes, and presentation scripts.
